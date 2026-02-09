@@ -1,0 +1,147 @@
+# AI 개발팀 대시보드 - 로깅 설정
+# 버전: 1.0.0
+# 최종 갱신: 2026-02-03
+
+# 로그 레벨 정의
+levels:
+  ERROR: 40    # 오류, 예외
+  WARN: 30     # 경고, 잠재적 문제
+  INFO: 20     # 주요 상태 변화
+  DEBUG: 10    # 상세 디버깅
+  TRACE: 5     # 세부 추적
+
+# 기본 설정
+defaults:
+  level: INFO
+  format: "%(asctime)s [%(levelname)s] %(name)s: %(message)s"
+  date_format: "%Y-%m-%d %H:%M:%S"
+
+# 환경별 설정
+environments:
+  development:
+    level: DEBUG
+    format: colored
+    handlers:
+      - console
+    options:
+      console:
+        colors: true
+        show_timestamps: true
+        show_context: true
+
+  production:
+    level: INFO
+    format: json
+    handlers:
+      - file
+      - structured
+    options:
+      file:
+        path: "${LOG_DIR}/app.log"
+        max_size: "10MB"
+        backup_count: 5
+        encoding: utf-8
+      structured:
+        format: json
+        include_request_id: true
+
+  test:
+    level: DEBUG
+    format: simple
+    handlers:
+      - console
+    options:
+      console:
+        colors: false
+        show_timestamps: false
+
+# 모듈별 설정
+modules:
+  # 백엔드 모듈
+  api:
+    level: INFO
+    propagate: true
+
+  services:
+    level: DEBUG
+    propagate: true
+
+  core:
+    level: INFO
+    propagate: true
+
+  # 에이전트 관련
+  agents:
+    level: DEBUG
+    propagate: true
+    format: "%(asctime)s [%(levelname)s] [%(agent_id)s] %(message)s"
+
+  # 태스크 관련
+  tasks:
+    level: INFO
+    propagate: true
+    format: "%(asctime)s [%(levelname)s] [%(task_id)s] %(message)s"
+
+# 필수 로그 항목
+required_fields:
+  - timestamp
+  - level
+  - message
+
+# 선택 로그 항목
+optional_fields:
+  - agent_id
+  - task_id
+  - session_id
+  - request_id
+  - user_id
+  - duration_ms
+  - status
+  - error_code
+  - stack_trace
+
+# 로그 보존 정책
+retention:
+  ERROR: 90d   # 90일
+  WARN: 30d    # 30일
+  INFO: 14d    # 14일
+  DEBUG: 7d    # 7일
+  TRACE: 1d    # 1일
+
+# 민감 정보 필터링
+redact:
+  patterns:
+    - "api_key=.*"
+    - "password=.*"
+    - "secret=.*"
+    - "token=.*"
+    - "authorization:.*"
+  replacement: "[REDACTED]"
+
+# 로그 출력 형식
+formats:
+  colored: |
+    %(cyan)s%(asctime)s%(reset)s %(log_color)s%(levelname)-8s%(reset)s %(blue)s%(name)s%(reset)s: %(message)s
+
+  json: |
+    {"timestamp": "%(asctime)s", "level": "%(levelname)s", "logger": "%(name)s", "message": "%(message)s"}
+
+  simple: |
+    %(levelname)s: %(message)s
+
+# 에이전트 작업 로그 템플릿
+agent_log_template: |
+  {
+    "timestamp": "%(timestamp)s",
+    "agent_id": "%(agent_id)s",
+    "action": "%(action)s",
+    "target": "%(target)s",
+    "status": "%(status)s",
+    "duration_ms": %(duration_ms)d,
+    "context": {
+      "task_id": "%(task_id)s",
+      "session_id": "%(session_id)s",
+      "parent_action": "%(parent_action)s"
+    },
+    "details": "%(details)s"
+  }

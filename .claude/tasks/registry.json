@@ -1,0 +1,83 @@
+{
+  "project": "AI Dev Team Dashboard",
+  "tasks": [
+    {
+      "id": "TASK-001",
+      "title": "MVP 요구사항 정의 및 기능 명세서 작성",
+      "description": "IG Graph API 기반 OAuth 연결, 데이터 수집, 대시보드, 추천 기능의 상세 요구사항과 API 제약사항 정리",
+      "status": "DONE",
+      "agent": "PM-Planner",
+      "priority": "P0",
+      "dependencies": [],
+      "created_at": "2026-02-02T18:16:09.854678",
+      "updated_at": "2026-02-03T12:57:31.649948"
+    },
+    {
+      "id": "TASK-002",
+      "title": "시스템 아키텍처 및 DB 스키마 설계",
+      "description": "IG Graph API 연동 구조, Supabase DB 스키마(사용자, 미디어, 인사이트), API 엔드포인트 설계",
+      "status": "DONE",
+      "agent": "Architect",
+      "priority": "P0",
+      "dependencies": [],
+      "created_at": "2026-02-02T18:16:09.855867",
+      "updated_at": "2026-02-03T12:59:08.998643"
+    },
+    {
+      "id": "TASK-003",
+      "title": "대시보드 UI/UX 시안 및 컴포넌트 설계",
+      "description": "OAuth 연결, 성과 대시보드, Top 10 콘텐츠, 추천 섹션의 UI 시안 및 컴포넌트 스펙 작성",
+      "status": "DONE",
+      "agent": "Designer",
+      "priority": "P0",
+      "dependencies": [],
+      "created_at": "2026-02-02T18:16:09.856227",
+      "updated_at": "2026-02-03T12:59:44.164197"
+    },
+    {
+      "id": "TASK-004",
+      "title": "IG OAuth 및 Graph API 연동 백엔드 구현",
+      "description": "Instagram Graph API OAuth 플로우, 미디어/인사이트 데이터 수집 및 Supabase 저장 API 개발",
+      "status": "DONE",
+      "agent": "BE-Developer",
+      "priority": "P0",
+      "dependencies": [],
+      "created_at": "2026-02-02T18:16:09.856552",
+      "updated_at": "2026-02-03T13:00:09.762605"
+    },
+    {
+      "id": "TASK-005",
+      "title": "추천 알고리즘 v0 구현",
+      "description": "게시 시간대 분석, 베스트 토픽 추출, LLM 기반 훅 문장 생성 로직 개발",
+      "status": "DONE",
+      "agent": "AI-Engineer",
+      "priority": "P0",
+      "dependencies": [],
+      "created_at": "2026-02-02T18:16:09.856879",
+      "updated_at": "2026-02-03T13:00:19.983270"
+    },
+    {
+      "id": "TASK-006",
+      "title": "대시보드 프론트엔드 구현",
+      "description": "OAuth 연결, 성과 대시보드, Top 10 콘텐츠 표시, 추천 결과 UI 구현",
+      "status": "DONE",
+      "agent": "FE-Developer",
+      "priority": "P0",
+      "dependencies": [],
+      "created_at": "2026-02-02T18:16:09.857208",
+      "updated_at": "2026-02-03T13:00:28.154106"
+    },
+    {
+      "id": "TASK-007",
+      "title": "Vercel/Railway 배포 및 데모 계정 연동 테스트",
+      "description": "프론트엔드 Vercel, 백엔드 Railway 배포, 실제 IG 계정 연결 후 E2E 테스트 및 데모 준비",
+      "status": "DONE",
+      "agent": "QA-DevOps",
+      "priority": "P0",
+      "dependencies": [],
+      "created_at": "2026-02-02T18:16:09.857549",
+      "updated_at": "2026-02-03T12:45:00.000000"
+    }
+  ],
+  "last_updated": "2026-02-03T13:00:28.154137"
+}

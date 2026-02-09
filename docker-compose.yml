@@ -1,0 +1,46 @@
+version: '3.8'
+
+services:
+  # FastAPI 백엔드
+  backend:
+    build:
+      context: ./dashboard/backend
+      dockerfile: Dockerfile
+    container_name: ai-dev-team-backend
+    ports:
+      - "8000:8000"
+    volumes:
+      - ./dashboard/backend:/app
+      - ./.claude:/app/.claude:ro  # .claude 폴더 읽기 전용 마운트
+    env_file:
+      - ./dashboard/backend/.env
+    environment:
+      - PROJECT_ROOT=/app
+    restart: unless-stopped
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:8000/health"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+
+  # React 프론트엔드
+  frontend:
+    build:
+      context: ./dashboard/frontend
+      dockerfile: Dockerfile
+    container_name: ai-dev-team-frontend
+    ports:
+      - "5173:5173"
+    volumes:
+      - ./dashboard/frontend:/app
+      - /app/node_modules  # node_modules 제외
+    environment:
+      - VITE_API_URL=http://localhost:8000
+      - VITE_WS_URL=ws://localhost:8000
+    depends_on:
+      - backend
+    restart: unless-stopped
+
+networks:
+  default:
+    name: ai-dev-team-network

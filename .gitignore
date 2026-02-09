@@ -1,0 +1,72 @@
+# Environment
+.env
+.env.local
+.env.*.local
+*.env
+
+# Python
+__pycache__/
+*.py[cod]
+*$py.class
+*.so
+.Python
+venv/
+.venv/
+ENV/
+env/
+.eggs/
+*.egg-info/
+dist/
+build/
+
+# Node.js
+node_modules/
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+.pnpm-debug.log*
+
+# IDE
+.idea/
+.vscode/
+*.swp
+*.swo
+*~
+.DS_Store
+
+# Testing
+coverage/
+.coverage
+htmlcov/
+.pytest_cache/
+.nyc_output/
+
+# Build outputs
+*.log
+tmp/
+temp/
+.cache/
+
+# OS
+Thumbs.db
+
+# Secrets (never commit)
+*.pem
+*.key
+credentials.json
+secrets.json
+
+# Monday.com ID 매핑 파일
+.monday_id_map.json
+.monday_agent_map.json
+
+# Archive (구조 개편 이전 코드)
+_archive/
+
+# OS files
+.DS_Store
+**/.DS_Store
+
+# Environment
+.env
+.env.local

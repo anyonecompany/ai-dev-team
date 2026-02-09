@@ -1,0 +1,19 @@
+# __PROJECT_NAME__ Backend Dependencies
+# 자동 생성됨 - __DATE__
+
+# Web Framework
+fastapi>=0.109.0
+uvicorn[standard]>=0.27.0
+
+# Database
+supabase>=2.3.0
+
+# Configuration
+pydantic-settings>=2.1.0
+python-dotenv>=1.0.0
+
+# Logging
+structlog>=24.1.0
+
+# Utilities
+httpx>=0.26.0
