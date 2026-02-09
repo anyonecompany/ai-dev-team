@@ -1,7 +1,7 @@
 # 프로젝트 중앙 제어 헌장 (Master Charter)
 
-> 버전: 2.2.0
-> 최종 갱신: 2026-02-06
+> 버전: 3.0.0
+> 최종 갱신: 2026-02-09
 > 관리자: Human Lead
 
 ---
@@ -12,32 +12,29 @@
 |------|------|
 | 이름 | AI Development Team Platform |
 | 시작일 | 2026-02-02 |
-| 현재 단계 | MVP 완료 / 고도화 진행 중 |
-| 버전 | v0.2.0 |
+| 현재 단계 | Claude 에이전트 팀 구조 전환 완료 |
+| 버전 | v1.0.0 |
+| GitHub | https://github.com/anyonecompany/ai-dev-team |
 
 ---
 
 ## 기술 스택
 
-### Backend
-- Runtime: Python 3.11+
-- Framework: FastAPI
-- Database: Supabase (PostgreSQL)
-- 비동기: aiofiles, asyncio
-- 로깅: structlog
-- 재시도: tenacity
+### 핵심 (Claude 에이전트 팀)
+- 에이전트 오케스트레이션: Claude 에이전트 팀 (Opus 4.6 기반)
+- 프로젝트 관리: Monday.com (올인원 보드 "AI Dev Team Hub")
+- 알림: Slack 웹훅
+- 코드 저장소: GitHub (anyonecompany/ai-dev-team)
 
-### Frontend
-- Framework: React 18+
-- Language: TypeScript
-- Build: Vite
-- State: Zustand
-- Style: Tailwind CSS
+### 프로젝트별 기술 스택 (필요에 따라 선택)
+- Backend: Python 3.11+ / FastAPI / Supabase (PostgreSQL)
+- Frontend: React 18+ / TypeScript / Vite / Zustand / Tailwind CSS
+- 인프라: Docker / Vercel / Railway / GitHub Actions
 
-### 인프라
-- 배포: Vercel (Frontend) / Railway (Backend)
-- 컨테이너: Docker
-- CI/CD: GitHub Actions
+### 외부 연동
+- Slack: 웹훅 기반 알림 (`integrations/slack/slack_notifier.py`)
+- Monday.com: GraphQL API 올인원 보드 (`integrations/monday/monday_sync.py`)
+- GitHub: gh CLI + API
 
 ---
 
@@ -67,25 +64,30 @@
 
 ## 작업 프로토콜
 
-### 작업 시작 전 (필수)
-1. **`.claude/context/COMPACT_CONTEXT.md` 읽기** (필수, 최우선)
-   - 상세 내용이 필요할 때만 원본 문서(CLAUDE.md, OPERATING_PRINCIPLES.md) 참조
-2. **현재 상태 파악** - `.claude/handoff/current.md`
-3. **할당 작업 확인** - `.claude/tasks/TODO.md`
-4. **결정 로그 참조** - `.claude/context/decisions-log.md` (필요 시)
+### 새 프로젝트 시작
+1. `projects/` 하위에 `{project-name}-{YYYYMMDDHHMMSS}` 폴더 생성
+2. README.md, .gitignore, 기본 구조 생성
+3. Monday.com에 프로젝트 등록 → `create_project()`
+4. Slack에 프로젝트 생성 알림 → `notify_project_created()`
+5. 에이전트 활동 로그 기록 → `log_agent_activity()`
 
 ### 작업 중
-1. 태스크 상태를 `IN_PROGRESS`로 변경
-2. 주요 결정 사항은 `decisions-log.md`에 기록
-3. 다른 에이전트 영역 수정 필요 시 협의
+1. Monday.com 프로젝트 상태를 "진행중"으로 → `update_project_status()`
+2. 주요 작업마다 에이전트 활동 로그 기록
+3. 마일스톤 달성 시 기록 → `log_project_milestone()`
+4. 코드 변경 시 커밋 + push
 
-### 작업 완료 후 (필수)
-1. 품질 검증 실행 (`scripts/qa-check.sh`)
-2. **보안 검증 요청** (Security-Developer — 코드 변경 시 필수)
-3. `.claude/handoff/current.md`를 `HANDOFF_TEMPLATE.md` 형식으로 갱신
-4. `bash .claude/scripts/sync-context.sh` 실행하여 컴팩트 컨텍스트 갱신
-5. 태스크 파일을 `DONE/`으로 이동
-6. 핸드오프 문서 작성 (`handoff/HANDOFF_TEMPLATE.md` 참조)
+### 작업 완료 후
+1. QA 실행 → `/qa` 커맨드
+2. QA 통과 시:
+   - Monday.com에 QA 결과 기록 → `log_qa_result()`
+   - 프로젝트 상태 "완료"로 업데이트
+   - 산출물 기록 → `log_project_deliverables()`
+   - Slack에 결과 알림
+   - 커밋 + push
+3. QA 실패 시:
+   - `/qa-fix`로 자동 수정 시도 (최대 3회)
+   - Monday.com에 실패 결과 기록, 상태 "차단됨"
 
 ---
 
@@ -143,40 +145,35 @@
 
 ## 디렉토리 구조
 
+### 루트
+```
+ai-dev-team/
+├── .claude/              ← 에이전트 설정, 커맨드, 템플릿
+├── projects/             ← 모든 개발 프로젝트 (하위 폴더로 자동 생성)
+├── integrations/         ← 외부 서비스 연동
+│   ├── slack/            ← Slack 웹훅 알림
+│   ├── monday/           ← Monday.com 올인원 보드
+│   └── shared/           ← 공용 포맷팅 유틸
+├── tasks/                ← 글로벌 태스크 관리
+├── scripts/              ← 공용 스크립트
+└── _archive/             ← 아카이브 (참조만, 수정 금지)
+```
+
+### .claude/ 내부
 ```
 .claude/
-├── CLAUDE.md              # 이 파일 (마스터 헌장)
-├── agents/                # 에이전트 프로필
-│   ├── PM-Planner.md
-│   ├── Architect.md
-│   ├── BE-Developer.md
-│   ├── FE-Developer.md
-│   ├── QA-DevOps.md
-│   ├── Orchestrator.md
-│   └── Security-Developer.md
-├── docs/                  # 운영 문서
-│   ├── OPERATING_PRINCIPLES.md
-│   └── AI_BASIC_LAW_COMPLIANCE.md
-├── tasks/                 # 태스크 관리
-│   ├── TODO.md
-│   ├── registry.json
-│   ├── IN_PROGRESS/
-│   ├── BLOCKED/
-│   ├── REVIEW/
-│   └── DONE/
-├── templates/             # 템플릿
-│   ├── ORDER_TEMPLATE.md
-│   ├── TASK-TEMPLATE.md
-│   └── HANDOFF-TEMPLATE.md
-├── handoff/              # 인수인계
-│   └── current.md
-├── context/              # 컨텍스트
-│   ├── project-summary.md
-│   ├── decisions-log.md
-│   └── tech-debt.md
-├── scripts/              # 자동화 스크립트
-│   └── qa-check.sh
-└── settings.local.json   # 로컬 설정
+├── CLAUDE.md              ← 마스터 헌장
+├── agents/                ← 에이전트 프로필
+├── commands/              ← 커맨드 (/qa, /qa-fix, /qa-report)
+├── docs/                  ← 운영 문서, 법규 가이드
+├── tasks/                 ← 태스크 관리
+├── templates/             ← 프로젝트/태스크 템플릿
+├── handoff/               ← 인수인계 문서
+├── context/               ← 프로젝트 컨텍스트
+├── scripts/               ← 자동화 스크립트
+├── knowledge/             ← 지식 베이스
+├── reports/               ← QA/활동 리포트
+└── settings.local.json    ← 로컬 설정
 ```
 
 ---
@@ -234,6 +231,7 @@
 
 | 버전 | 날짜 | 변경 내용 |
 |------|------|----------|
+| 3.0.0 | 2026-02-09 | Claude 에이전트 팀 구조 전환, Monday.com 올인원 보드, QA 커맨드 신설 |
 | 2.2.0 | 2026-02-06 | 인공지능기본법 준수 가이드라인 추가, AI 컴플라이언스 품질 기준 신설 |
 | 2.1.0 | 2026-02-03 | Security-Developer 추가, 보안 게이트 도입 |
 | 2.0.0 | 2026-02-03 | 구조 개편, 운영 원칙 연동, 참조 체계 정립 |
@@ -243,49 +241,3 @@
 
 *이 문서는 모든 에이전트의 작업 시작점입니다. 반드시 숙지 후 작업을 진행하세요.*
 
----
-
-## 프로젝트 구조
-
-```
-ai-dev-team/
-├── .claude/              ← 에이전트 설정, 커맨드, 템플릿
-├── projects/             ← 모든 개발 프로젝트 (하위 폴더로 생성)
-├── integrations/         ← 외부 서비스 연동
-│   ├── slack/            ← Slack 알림
-│   ├── monday/           ← Monday.com 동기화
-│   └── shared/           ← 공용 유틸
-├── tasks/                ← 글로벌 태스크 관리
-├── scripts/              ← 공용 스크립트
-└── _archive/             ← 아카이브 (참조만, 수정 금지)
-```
-
-## 프로젝트 생성 규칙
-
-1. 모든 새 프로젝트는 반드시 `projects/` 하위에 생성
-2. 폴더명 형식: `{project-name}-{YYYYMMDDHHMMSS}`
-3. 프로젝트 생성 시 반드시 포함:
-   - README.md (프로젝트 설명, 기술 스택, 실행 방법)
-   - .gitignore (프로젝트 유형에 맞게)
-   - 적절한 디렉토리 구조
-4. 프로젝트 생성 후 Slack/Monday에 알림 전송
-
-## QA 규칙
-
-1. 코드 변경 후 반드시 QA 실행 (`/qa` 커맨드)
-2. QA 실패 시 `/qa-fix` 로 자동 수정 시도
-3. QA 결과는 `/qa-report` 로 Slack/Monday에 공유
-4. 커밋 전 QA 통과 필수
-
-## 연동 규칙
-
-1. 프로젝트 생성/완료/주요 변경 시 `integrations/` 모듈 사용
-2. Slack 알림: `integrations/slack/slack_notifier.py`
-3. Monday.com 동기화: `integrations/monday/monday_sync.py`
-4. 알림 포맷: `integrations/shared/notification_format.py`
-
-## 금지 사항 (구조 개편 이후 추가)
-
-1. `_archive/` 내 파일 수정 금지
-2. `projects/` 외부에 프로젝트 코드 생성 금지
-3. QA 미통과 상태로 커밋 금지

@@ -1,3 +1,22 @@
+# Phase 2: Monday.com 올인원 보드 + CLAUDE.md 튜닝 + QA 개선 (최종)
+
+## 개요
+
+기존 `_archive/dashboard/backend/services/monday_sync.py`의 좋은 패턴(rate limit 재시도, fire-and-forget, 마일스톤/산출물 추적)을 살려서 올인원 보드 구조로 통합한다.
+
+1. `integrations/monday/monday_sync.py` 전면 재작성
+2. `.claude/CLAUDE.md` 세부 튜닝
+3. QA 커맨드 개선
+4. 테스트 스크립트 작성
+5. 커밋 + push
+
+---
+
+## 1. integrations/monday/monday_sync.py 전면 재작성
+
+기존 파일을 **삭제 후** 아래 내용으로 새로 생성한다.
+
+```python
 """
 Monday.com 올인원 보드 동기화 모듈.
 
@@ -635,3 +654,407 @@ def get_board_url() -> str:
     if _board_id:
         return f"https://view.monday.com/board/{_board_id}"
     return ""
+```
+
+---
+
+## 2. .claude/CLAUDE.md 세부 튜닝
+
+CLAUDE.md에서 아래 변경을 수행한다.
+
+### 2-1. "프로젝트 정보" 테이블 수정
+
+기존:
+```
+| 현재 단계 | MVP 완료 / 고도화 진행 중 |
+| 버전 | v0.2.0 |
+```
+
+변경:
+```
+| 현재 단계 | Claude 에이전트 팀 구조 전환 완료 |
+| 버전 | v1.0.0 |
+| GitHub | https://github.com/anyonecompany/ai-dev-team |
+```
+
+### 2-2. "기술 스택" 섹션을 교체
+
+기존 Backend/Frontend/인프라 3개 섹션 전체를 아래로 교체:
+
+```markdown
+## 기술 스택
+
+### 핵심 (Claude 에이전트 팀)
+- 에이전트 오케스트레이션: Claude 에이전트 팀 (Opus 4.6 기반)
+- 프로젝트 관리: Monday.com (올인원 보드 "AI Dev Team Hub")
+- 알림: Slack 웹훅
+- 코드 저장소: GitHub (anyonecompany/ai-dev-team)
+
+### 프로젝트별 기술 스택 (필요에 따라 선택)
+- Backend: Python 3.11+ / FastAPI / Supabase (PostgreSQL)
+- Frontend: React 18+ / TypeScript / Vite / Zustand / Tailwind CSS
+- 인프라: Docker / Vercel / Railway / GitHub Actions
+
+### 외부 연동
+- Slack: 웹훅 기반 알림 (`integrations/slack/slack_notifier.py`)
+- Monday.com: GraphQL API 올인원 보드 (`integrations/monday/monday_sync.py`)
+- GitHub: gh CLI + API
+```
+
+### 2-3. "작업 프로토콜" 섹션을 교체
+
+기존 "작업 시작 전", "작업 중", "작업 완료 후" 전체를 아래로 교체:
+
+```markdown
+## 작업 프로토콜
+
+### 새 프로젝트 시작
+1. `projects/` 하위에 `{project-name}-{YYYYMMDDHHMMSS}` 폴더 생성
+2. README.md, .gitignore, 기본 구조 생성
+3. Monday.com에 프로젝트 등록 → `create_project()`
+4. Slack에 프로젝트 생성 알림 → `notify_project_created()`
+5. 에이전트 활동 로그 기록 → `log_agent_activity()`
+
+### 작업 중
+1. Monday.com 프로젝트 상태를 "진행중"으로 → `update_project_status()`
+2. 주요 작업마다 에이전트 활동 로그 기록
+3. 마일스톤 달성 시 기록 → `log_project_milestone()`
+4. 코드 변경 시 커밋 + push
+
+### 작업 완료 후
+1. QA 실행 → `/qa` 커맨드
+2. QA 통과 시:
+   - Monday.com에 QA 결과 기록 → `log_qa_result()`
+   - 프로젝트 상태 "완료"로 업데이트
+   - 산출물 기록 → `log_project_deliverables()`
+   - Slack에 결과 알림
+   - 커밋 + push
+3. QA 실패 시:
+   - `/qa-fix`로 자동 수정 시도 (최대 3회)
+   - Monday.com에 실패 결과 기록, 상태 "차단됨"
+```
+
+### 2-4. "디렉토리 구조" 섹션 교체
+
+기존 `.claude/` 내부 구조만 있는 것을 루트 구조 포함으로 교체:
+
+```markdown
+## 디렉토리 구조
+
+### 루트
+```
+ai-dev-team/
+├── .claude/              ← 에이전트 설정, 커맨드, 템플릿
+├── projects/             ← 모든 개발 프로젝트 (하위 폴더로 자동 생성)
+├── integrations/         ← 외부 서비스 연동
+│   ├── slack/            ← Slack 웹훅 알림
+│   ├── monday/           ← Monday.com 올인원 보드
+│   └── shared/           ← 공용 포맷팅 유틸
+├── tasks/                ← 글로벌 태스크 관리
+├── scripts/              ← 공용 스크립트
+└── _archive/             ← 아카이브 (참조만, 수정 금지)
+```
+
+### .claude/ 내부
+```
+.claude/
+├── CLAUDE.md              ← 마스터 헌장
+├── agents/                ← 에이전트 프로필
+├── commands/              ← 커맨드 (/qa, /qa-fix, /qa-report)
+├── docs/                  ← 운영 문서, 법규 가이드
+├── tasks/                 ← 태스크 관리
+├── templates/             ← 프로젝트/태스크 템플릿
+├── handoff/               ← 인수인계 문서
+├── context/               ← 프로젝트 컨텍스트
+├── scripts/               ← 자동화 스크립트
+├── knowledge/             ← 지식 베이스
+├── reports/               ← QA/활동 리포트
+└── settings.local.json    ← 로컬 설정
+```
+```
+
+### 2-5. 맨 하단 중복 섹션 삭제
+
+CLAUDE.md 맨 끝에 Phase 1에서 추가된 중복 섹션들을 삭제:
+- "## 프로젝트 구조" (중복)
+- "## 프로젝트 생성 규칙" (중복)
+- "## QA 규칙" (중복)
+- "## 연동 규칙" (중복)
+- "## 금지 사항 (구조 개편 이후 추가)" (중복)
+
+이 내용들은 위에서 이미 통합되었으므로 삭제한다.
+
+### 2-6. "변경 이력" 테이블에 추가
+
+```
+| 3.0.0 | 2026-02-09 | Claude 에이전트 팀 구조 전환, Monday.com 올인원 보드, QA 커맨드 신설 |
+```
+
+---
+
+## 3. QA 커맨드 개선
+
+### .claude/commands/qa.md 재작성
+
+```markdown
+# /qa - QA 전체 실행
+
+대상 프로젝트에 전체 QA를 실행하고 결과를 Monday.com과 Slack에 공유한다.
+
+## 사용법
+```
+/qa                    # 가장 최근 수정된 프로젝트 대상
+/qa {project-name}     # 특정 프로젝트 대상
+```
+
+## 절차
+
+### 1. 프로젝트 감지
+- 인자가 있으면 `projects/{project-name}*` 에서 찾기
+- 없으면 `projects/` 하위에서 가장 최근 수정된 폴더
+
+### 2. 프로젝트 유형 감지
+- `package.json` → Node.js/React
+- `requirements.txt` 또는 `pyproject.toml` → Python
+- 둘 다 → Fullstack (둘 다 실행)
+
+### 3. 검증 실행
+
+**Python:**
+```bash
+ruff check . 2>&1
+mypy . 2>&1 || pyright .
+pytest --tb=short 2>&1
+```
+
+**Node.js/React:**
+```bash
+npm run lint 2>&1 || npx eslint . 2>&1
+npx tsc --noEmit 2>&1
+npm test 2>&1
+npm run build 2>&1
+```
+
+### 4. 결과 종합
+각 항목별 PASS/FAIL/SKIP 판정
+
+### 5. 연동 (Python으로 실행)
+```python
+import asyncio, sys, os
+sys.path.insert(0, os.path.expanduser("~/ai-dev-team"))
+from dotenv import load_dotenv; load_dotenv(os.path.expanduser("~/ai-dev-team/.env"))
+
+from integrations.slack.slack_notifier import notify_qa_result
+from integrations.monday.monday_sync import sync_project_qa
+
+asyncio.run(notify_qa_result("{project_name}", {passed}, "{details}"))
+asyncio.run(sync_project_qa("{project_name}", {results_dict}, "{details}"))
+```
+
+### 6. 리포트 저장
+`.claude/reports/qa-{project-name}-{YYYYMMDD-HHmm}.md`
+```
+
+### .claude/commands/qa-fix.md 재작성
+
+```markdown
+# /qa-fix - QA 실행 + 자동 수정
+
+QA를 실행하고 실패 항목을 자동 수정한 뒤 재검증한다.
+
+## 사용법
+```
+/qa-fix                    # 가장 최근 프로젝트
+/qa-fix {project-name}     # 특정 프로젝트
+```
+
+## 절차
+
+1. `/qa`와 동일하게 전체 QA 실행
+2. 실패 항목별 자동 수정:
+   - **린트 실패** → `ruff format .` / `npx eslint --fix .`
+   - **타입 에러** → 에러 분석 후 코드 수정
+   - **테스트 실패** → 테스트 또는 소스 코드 수정
+   - **빌드 실패** → 에러 분석 후 수정
+3. 수정 후 QA 재실행
+4. **최대 3회 반복** (무한 루프 방지)
+5. 결과를 Slack/Monday에 공유
+6. 성공 시 커밋: `fix: auto-fix QA failures in {project-name}`
+7. 실패 시 Monday 상태 "차단됨", 에이전트 활동 로그에 실패 기록
+```
+
+### .claude/commands/qa-report.md 재작성
+
+```markdown
+# /qa-report - QA 결과 리포트 공유
+
+가장 최근 QA 결과를 정리하여 Slack과 Monday.com에 공유한다.
+
+## 사용법
+```
+/qa-report                    # 가장 최근 QA 결과
+/qa-report {project-name}     # 특정 프로젝트 QA 결과
+```
+
+## 절차
+
+1. `.claude/reports/` 에서 가장 최근 QA 리포트 파일 읽기
+2. `integrations/shared/notification_format.py`의 `format_qa_report()` 로 포맷
+3. Slack 채널에 리포트 전송
+4. Monday.com QA 그룹에 결과 기록 (아직 없으면)
+5. 터미널에도 결과 출력
+```
+
+---
+
+## 4. 테스트 스크립트 작성
+
+`integrations/test_integration.py` 를 새로 생성:
+
+```python
+#!/usr/bin/env python3
+"""
+Slack/Monday 연동 테스트 스크립트.
+
+실행: cd ~/ai-dev-team && python3 integrations/test_integration.py
+필요: pip3 install python-dotenv httpx
+"""
+
+import asyncio
+import os
+import sys
+
+sys.path.insert(0, os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
+
+try:
+    from dotenv import load_dotenv
+    load_dotenv(os.path.join(os.path.dirname(os.path.dirname(os.path.abspath(__file__))), ".env"))
+except ImportError:
+    print("⚠️  python-dotenv 없음. pip3 install python-dotenv httpx")
+
+
+async def test_slack():
+    """Slack 알림 테스트."""
+    print("\n═══ Slack 테스트 ═══")
+    from integrations.slack.slack_notifier import send_notification, notify_project_created, notify_qa_result
+
+    webhook = os.getenv("SLACK_WEBHOOK_URL", "")
+    channel = os.getenv("SLACK_CHANNEL", "")
+    print(f"  WEBHOOK: {'✅ 설정됨' if webhook else '❌ 미설정'}")
+    print(f"  CHANNEL: {channel or '❌ 미설정'}")
+
+    if not webhook:
+        print("  ⏭️  건너뜀")
+        return False
+
+    try:
+        await send_notification(channel, "🧪 [테스트] Slack 연동 테스트 메시지")
+        print("  ✅ 기본 알림 전송 완료")
+
+        await notify_project_created("연동-테스트-프로젝트")
+        print("  ✅ 프로젝트 생성 알림 완료")
+
+        await notify_qa_result("연동-테스트-프로젝트", True, "lint: PASS, typecheck: PASS")
+        print("  ✅ QA 결과 알림 완료")
+
+        print("  📱 Slack 채널을 확인하세요!")
+        return True
+    except Exception as e:
+        print(f"  ❌ 실패: {e}")
+        return False
+
+
+async def test_monday():
+    """Monday.com 연동 테스트."""
+    print("\n═══ Monday.com 테스트 ═══")
+    from integrations.monday.monday_sync import (
+        is_monday_enabled, initialize, create_project,
+        log_qa_result, log_agent_activity, get_board_url,
+    )
+
+    print(f"  API_TOKEN: {'✅ 설정됨' if is_monday_enabled() else '❌ 미설정'}")
+
+    if not is_monday_enabled():
+        print("  ⏭️  건너뜀")
+        return False
+
+    try:
+        print("  → 초기화 (보드/그룹/컬럼 확인)...")
+        await initialize()
+        url = get_board_url()
+        print(f"  ✅ 보드 URL: {url}")
+
+        print("  → 테스트 프로젝트 생성...")
+        proj_id = await create_project(
+            "연동 테스트 프로젝트",
+            description="Slack/Monday 연동 테스트용",
+            tech_stack=["Python", "FastAPI"],
+            github_link="https://github.com/anyonecompany/ai-dev-team",
+        )
+        print(f"  ✅ 프로젝트 ID: {proj_id}")
+
+        print("  → QA 결과 기록...")
+        qa_id = await log_qa_result(
+            "연동 테스트 프로젝트",
+            lint=True, typecheck=True, tests=True, build=None,
+            details="테스트용 QA 결과",
+        )
+        print(f"  ✅ QA ID: {qa_id}")
+
+        print("  → 에이전트 활동 로그...")
+        log_id = await log_agent_activity(
+            agent="QA-DevOps",
+            action="연동 테스트 실행",
+            description="Slack/Monday 연동 테스트 완료",
+        )
+        print(f"  ✅ 활동 로그 ID: {log_id}")
+
+        print(f"\n  📊 Monday.com 보드 확인: {url}")
+        return True
+    except Exception as e:
+        print(f"  ❌ 실패: {e}")
+        return False
+
+
+async def main():
+    print("╔══════════════════════════════════════╗")
+    print("║   AI Dev Team 연동 테스트            ║")
+    print("╚══════════════════════════════════════╝")
+
+    slack_ok = await test_slack()
+    monday_ok = await test_monday()
+
+    print("\n═══ 결과 요약 ═══")
+    print(f"  Slack:     {'✅ 성공' if slack_ok else '❌ 실패/건너뜀'}")
+    print(f"  Monday:    {'✅ 성공' if monday_ok else '❌ 실패/건너뜀'}")
+    print()
+
+
+if __name__ == "__main__":
+    asyncio.run(main())
+```
+
+---
+
+## 5. 실행 순서
+
+```bash
+cd ~/ai-dev-team
+
+# 1. 의존성 설치
+pip3 install python-dotenv httpx
+
+# 2. 위의 모든 파일 작성/수정 완료 후 연동 테스트
+python3 integrations/test_integration.py
+
+# 3. 테스트 성공 확인 후 커밋 + push
+git add -A
+git commit -m "feat: Monday.com all-in-one board + CLAUDE.md v3 + QA commands
+
+- monday_sync.py: single board with 3 groups, 12 columns, rate limit retry
+- fire-and-forget pattern, milestone/deliverables tracking
+- CLAUDE.md: v3.0.0 - Claude agent team structure
+- QA commands: /qa, /qa-fix, /qa-report with Slack/Monday integration
+- Integration test script"
+git push
+```
