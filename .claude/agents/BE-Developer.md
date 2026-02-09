@@ -180,3 +180,21 @@ pytest tests/test_xxx.py -v
 - 테스트 없이 완료 선언
 - 하드코딩된 민감 정보
 - Type hints 없는 함수
+
+---
+
+## Agent Teams 협업 규칙
+
+### 팀 내 역할
+- Architect 설계 완료 후 백엔드 구현
+- FE-Developer와 병렬 작업 가능
+
+### 파일 소유권
+- `backend/`, `api/`, `models/`, `services/`, `migrations/` 디렉토리 소유
+- **프론트엔드 코드 수정 절대 금지**
+- 공유 설정 파일 수정 시 리드에게 먼저 확인
+
+### 메시징 규칙
+- API 엔드포인트 구현 완료 시 FE-Developer에게 메시지로 API 스펙 전달
+- 완료 시 리드에게 결과 보고
+- plan approval 요청 시 구현할 엔드포인트 목록과 DB 모델 제시

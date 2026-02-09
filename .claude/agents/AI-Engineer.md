@@ -220,3 +220,21 @@ class ClaudeClient:
 - 비용 추정 없이 배포
 - 테스트 없이 프롬프트 확정
 - 버전 관리 없는 프롬프트 변경
+
+---
+
+## Agent Teams 협업 규칙
+
+### 팀 내 역할
+- AI/ML 기능이 필요한 프로젝트에서 활성화
+- BE-Developer와 병렬 작업 가능
+
+### 파일 소유권
+- `ai/`, `ml/`, `prompts/`, `pipelines/` 디렉토리 소유
+- **다른 에이전트 소유 디렉토리 수정 금지**
+- AI 관련 API 엔드포인트는 BE-Developer에게 통합 요청
+
+### 메시징 규칙
+- AI 모듈 구현 완료 시 BE-Developer에게 통합 방법 안내
+- 완료 시 리드에게 결과 보고
+- plan approval 요청 시 AI 파이프라인 구조와 모델 사용 계획 제시

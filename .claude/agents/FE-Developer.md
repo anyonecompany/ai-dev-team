@@ -199,3 +199,21 @@ npm run dev
 - 테스트 없이 완료 선언
 - 콘솔 에러 무시
 - 타입 체크 무시
+
+---
+
+## Agent Teams 협업 규칙
+
+### 팀 내 역할
+- Architect 설계 완료 후 프론트엔드 구현
+- BE-Developer와 병렬 작업 가능
+
+### 파일 소유권
+- `frontend/`, `src/`, `components/`, `pages/`, `hooks/`, `styles/` 디렉토리 소유
+- **백엔드 코드 수정 절대 금지**
+- 공유 설정 파일 수정 시 리드에게 먼저 확인
+
+### 메시징 규칙
+- BE-Developer로부터 API 스펙을 받아 연동
+- 완료 시 리드에게 결과 보고
+- plan approval 요청 시 구현할 페이지/컴포넌트 목록 제시

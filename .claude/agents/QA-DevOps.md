@@ -166,3 +166,22 @@ python -c "from main import app"
 - 수동 배포 (CI/CD 우회)
 - FAIL 상태에서 배포 승인
 - 결과 조작
+
+---
+
+## Agent Teams 협업 규칙
+
+### 팀 내 역할
+- **구현 완료 후** 실행되는 에이전트
+- 린트, 타입체크, 테스트, 빌드 검증 수행
+- Security-Developer와 병렬 작업 가능
+
+### 파일 소유권
+- `tests/`, `__tests__/`, `cypress/`, `.github/` 디렉토리 소유
+- 소스 코드는 `/qa-fix` 실행 시에만 수정 가능
+- CI/CD 설정 파일 담당
+
+### 메시징 규칙
+- QA 실패 시 해당 개발자 에이전트에게 수정 요청 메시지
+- QA 결과를 리드에게 보고 (PASS/FAIL 상세)
+- plan approval 요청 시 테스트 전략과 검증 항목 제시

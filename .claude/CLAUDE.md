@@ -1,6 +1,6 @@
 # 프로젝트 중앙 제어 헌장 (Master Charter)
 
-> 버전: 3.0.0
+> 버전: 3.1.0
 > 최종 갱신: 2026-02-09
 > 관리자: Human Lead
 
@@ -25,6 +25,7 @@
 - 프로젝트 관리: Monday.com (올인원 보드 "AI Dev Team Hub")
 - 알림: Slack 웹훅
 - 코드 저장소: GitHub (anyonecompany/ai-dev-team)
+- Agent Teams: Claude Code 내장 팀 기능 (실험적, tmux 분할 화면)
 
 ### 프로젝트별 기술 스택 (필요에 따라 선택)
 - Backend: Python 3.11+ / FastAPI / Supabase (PostgreSQL)
@@ -113,6 +114,96 @@
 - **테스트/자동화** → Haiku 모델
 - **비주얼/UI 작업** → Gemini 모델
 - **보안 감사/리뷰** → Security-Developer (Sonnet)
+
+---
+
+## Agent Teams 운영 가이드
+
+> Claude Code 내장 Agent Teams 기능으로 여러 에이전트가 동시에 협업합니다.
+> 상세 가이드: `.claude/docs/AGENT_TEAMS_GUIDE.md`
+
+### 사전 요구사항
+- tmux 설치: `brew install tmux`
+- tmux 세션 안에서 Claude Code 실행: `tmux new -s dev` → `claude`
+- Agent Teams 활성화: `settings.local.json`에 설정됨
+
+### 팀 구성 프롬프트 패턴
+
+#### 풀스택 프로젝트 (5인 팀)
+```
+에이전트 팀을 구성해서 이 프로젝트를 진행해줘.
+
+팀 구성:
+1. PM-Planner: 요구사항 분석 후 태스크 분해
+2. Architect: 시스템 설계, API/DB 스키마
+3. BE-Developer: FastAPI 백엔드 구현
+4. FE-Developer: React/TypeScript 프론트엔드 구현
+5. QA-DevOps: 린트, 타입체크, 테스트, 빌드 검증
+
+프로젝트: {프로젝트 설명}
+
+규칙:
+- projects/{project-name}-{timestamp}/ 에 생성
+- 각 팀원은 plan approval 후 구현 시작
+- BE와 FE는 Architect 설계 완료 후 병렬 진행
+- QA는 구현 완료 후 실행
+```
+
+#### 백엔드 전용 (3인 팀)
+```
+에이전트 팀을 구성해서 백엔드를 개발해줘.
+
+팀 구성:
+1. Architect: API 설계, DB 스키마
+2. BE-Developer: FastAPI 구현
+3. QA-DevOps: 테스트 및 검증
+
+프로젝트: {프로젝트 설명}
+```
+
+#### 코드 리뷰 (3인 팀)
+```
+에이전트 팀으로 코드 리뷰를 진행해줘.
+
+팀 구성:
+1. 보안 리뷰어: 인증/인가, 입력 검증, OWASP Top 10
+2. 품질 리뷰어: 코드 품질, 테스트 커버리지, 타입 안전성
+3. 성능 리뷰어: N+1 쿼리, 메모리 누수, 비동기 패턴
+
+대상: {리뷰 대상 경로}
+```
+
+### 파이프라인 순서
+
+| 단계 | 담당 에이전트 | 실행 방식 | 산출물 |
+|------|------------|----------|--------|
+| 1. 기획 | PM-Planner | 단독 | 태스크 목록, 요구사항 명세 |
+| 2. 설계 | Architect | 단독 | API 스키마, DB 스키마, 폴더 구조 |
+| 3. 구현 | BE/FE/AI-Engineer | **병렬** | 소스 코드 |
+| 4. 검증 | QA-DevOps + Security | **병렬** | QA 리포트, 보안 감사 |
+| 5. 통합 | 리드 (Orchestrator) | 단독 | 최종 보고, Monday/Slack 알림 |
+
+### 파일 소유권 (충돌 방지)
+
+| 에이전트 | 담당 디렉토리 |
+|---------|-------------|
+| BE-Developer | `backend/`, `api/`, `models/`, `services/` |
+| FE-Developer | `frontend/`, `src/`, `components/`, `pages/` |
+| AI-Engineer | `ai/`, `ml/`, `prompts/` |
+| QA-DevOps | `tests/`, `__tests__/` |
+| Architect | `docs/`, 루트 설정 파일 |
+
+### 리드 역할 (Orchestrator)
+- delegate 모드 사용 권장 (Shift+Tab)
+- 직접 코드 작성 금지, 조율만 담당
+- Monday.com/Slack 연동 처리
+- 팀원 간 의존성 관리
+
+### 비용 관리
+- 단순 작업: 팀 없이 단독 실행
+- 중간 복잡도: 3인 팀
+- 높은 복잡도: 5인 팀
+- 최대 7인 팀 (비용 급증 주의)
 
 ---
 
@@ -224,6 +315,7 @@ ai-dev-team/
 | 결정 로그 | `.claude/context/decisions-log.md` | 결정 이력 |
 | 보안 에이전트 | `.claude/agents/Security-Developer.md` | 보안 역할 정의 |
 | **인공지능기본법 가이드라인** | **`.claude/docs/AI_BASIC_LAW_COMPLIANCE.md`** | **AI 법규 준수 (필수)** |
+| Agent Teams 가이드 | `.claude/docs/AGENT_TEAMS_GUIDE.md` | 팀 실행 실용 가이드 |
 
 ---
 
@@ -231,6 +323,7 @@ ai-dev-team/
 
 | 버전 | 날짜 | 변경 내용 |
 |------|------|----------|
+| 3.1.0 | 2026-02-09 | Agent Teams 설정 및 운영 가이드 추가, 팀 협업 규칙 신설 |
 | 3.0.0 | 2026-02-09 | Claude 에이전트 팀 구조 전환, Monday.com 올인원 보드, QA 커맨드 신설 |
 | 2.2.0 | 2026-02-06 | 인공지능기본법 준수 가이드라인 추가, AI 컴플라이언스 품질 기준 신설 |
 | 2.1.0 | 2026-02-03 | Security-Developer 추가, 보안 게이트 도입 |
