@@ -1,7 +1,7 @@
 # 프로젝트 중앙 제어 헌장 (Master Charter)
 
-> 버전: 3.1.0
-> 최종 갱신: 2026-02-09
+> 버전: 3.2.0
+> 최종 갱신: 2026-02-27
 > 관리자: Human Lead
 
 ---
@@ -21,7 +21,7 @@
 ## 기술 스택
 
 ### 핵심 (Claude 에이전트 팀)
-- 에이전트 오케스트레이션: Claude 에이전트 팀 (Opus 4.6 기반)
+- 에이전트 오케스트레이션: Claude 에이전트 팀 (Opus 4.6 기반, Orchestrator/PM/Architect)
 - 프로젝트 관리: Monday.com (올인원 보드 "AI Dev Team Hub")
 - 알림: Slack 웹훅
 - 코드 저장소: GitHub (anyonecompany/ai-dev-team)
@@ -98,22 +98,21 @@
 
 | 역할 | 모델 | 주요 책임 |
 |------|------|----------|
-| PM-Planner | Opus 4.5 | 요구사항 분석, 태스크 생성 |
-| Architect | Opus 4.5 | 시스템 설계, API/DB 스키마 |
-| Designer | Gemini 2.0 + Sonnet | UI/UX 설계 |
+| PM-Planner | Opus 4.6 | 요구사항 분석, 태스크 생성 |
+| Architect | Opus 4.6 | 시스템 설계, API/DB 스키마 |
+| Orchestrator | Opus 4.6 | 작업 분배, 상태 관리, 팀 지휘 |
+| Designer | Sonnet 4.5 | UI/UX 설계 (Design Intelligence Engine) |
 | BE-Developer | Sonnet 4.5 | 백엔드 구현 |
 | FE-Developer | Sonnet 4.5 | 프론트엔드 구현 |
 | AI-Engineer | Sonnet 4.5 | ML/AI 기능 구현 |
-| QA-DevOps | Haiku 4.5 | 테스트, 배포, CI/CD |
-| Orchestrator | Sonnet 4.5 | 작업 분배, 상태 관리 |
 | Security-Developer | Sonnet 4.5 | 보안 감사, 시큐어 코딩, 취약점 분석 |
+| QA-DevOps | Haiku 4.5 | 테스트, 배포, CI/CD |
 
 ### 에이전트 호출 규칙
-- **기획/설계 작업** → Opus 모델
-- **구현 작업** → Sonnet 모델
-- **테스트/자동화** → Haiku 모델
-- **비주얼/UI 작업** → Gemini 모델
-- **보안 감사/리뷰** → Security-Developer (Sonnet)
+- **기획/설계/총괄** → Opus 4.6 (PM-Planner, Architect, Orchestrator)
+- **구현 작업** → Sonnet 4.5 (BE/FE/AI-Engineer, Designer, Security)
+- **테스트/자동화** → Haiku 4.5 (QA-DevOps)
+- **보안 감사/리뷰** → Security-Developer (Sonnet 4.5)
 
 ---
 
@@ -323,6 +322,7 @@ ai-dev-team/
 
 | 버전 | 날짜 | 변경 내용 |
 |------|------|----------|
+| 3.2.0 | 2026-02-27 | Opus 4.6 모델 업그레이드 (PM-Planner, Architect, Orchestrator), 에이전트 호출 규칙 정리 |
 | 3.1.0 | 2026-02-09 | Agent Teams 설정 및 운영 가이드 추가, 팀 협업 규칙 신설 |
 | 3.0.0 | 2026-02-09 | Claude 에이전트 팀 구조 전환, Monday.com 올인원 보드, QA 커맨드 신설 |
 | 2.2.0 | 2026-02-06 | 인공지능기본법 준수 가이드라인 추가, AI 컴플라이언스 품질 기준 신설 |

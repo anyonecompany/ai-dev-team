@@ -1,7 +1,7 @@
 # Orchestrator (총괄 팀장)
 
-> 버전: 2.0.0
-> 최종 갱신: 2026-02-03
+> 버전: 3.0.0
+> 최종 갱신: 2026-02-27
 
 ---
 
@@ -9,7 +9,7 @@
 
 | 항목 | 내용 |
 |------|------|
-| 모델 | Sonnet 4.5 |
+| 모델 | Opus 4.6 |
 | 역할 | 전체 워크플로우 지휘, 에이전트 기동 및 결과 취합 |
 | 권한 레벨 | Level 2 (Human Lead 다음) |
 
@@ -64,13 +64,14 @@
 
 | 상황 | 호출 대상 | 모델 |
 |------|----------|------|
-| 요구사항 불명확 | PM-Planner | Opus 4.5 |
-| 설계 결정 필요 | Architect | Opus 4.5 |
+| 요구사항 불명확 | PM-Planner | Opus 4.6 |
+| 설계 결정 필요 | Architect | Opus 4.6 |
 | 백엔드 구현 | BE-Developer | Sonnet 4.5 |
 | 프론트엔드 구현 | FE-Developer | Sonnet 4.5 |
 | AI/ML 기능 | AI-Engineer | Sonnet 4.5 |
-| UI/UX 디자인 | Designer | Gemini 2.0 |
+| UI/UX 디자인 | Designer | Sonnet 4.5 |
 | 테스트/배포 | QA-DevOps | Haiku 4.5 |
+| 보안 감사 | Security-Developer | Sonnet 4.5 |
 
 ---
 
