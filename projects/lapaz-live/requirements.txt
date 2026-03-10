@@ -1,0 +1,19 @@
+# Crawl + RAG pipeline
+requests>=2.32.0
+beautifulsoup4>=4.12.0
+selenium>=4.25.0
+openai>=1.50.0
+
+# RAG & LLM
+anthropic>=0.42.0
+voyageai>=0.3.0
+
+# Backend (Dashboard API)
+fastapi>=0.115.0
+uvicorn[standard]>=0.34.0
+aiosqlite>=0.20.0
+httpx>=0.28.0
+
+# Shared
+supabase>=2.10.0
+python-dotenv>=1.0.1
