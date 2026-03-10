@@ -22,8 +22,8 @@
 
 ### 핵심 (Claude 에이전트 팀)
 - 에이전트 오케스트레이션: Claude 에이전트 팀 (Opus 4.6 기반)
-- 프로젝트 관리: Monday.com (올인원 보드 "AI Dev Team Hub")
-- 알림: Slack 웹훅
+- 프로젝트 관리: **Notion** (Dev Home 워크스페이스)
+- 알림: Slack 웹훅 (Notion 보고 시 자동 발송)
 - 코드 저장소: GitHub (anyonecompany/ai-dev-team)
 - Agent Teams: Claude Code 내장 팀 기능 (실험적, tmux 분할 화면)
 
@@ -33,8 +33,8 @@
 - 인프라: Docker / Vercel / Railway / GitHub Actions
 
 ### 외부 연동
-- Slack: 웹훅 기반 알림 (`integrations/slack/slack_notifier.py`)
-- Monday.com: GraphQL API 올인원 보드 (`integrations/monday/monday_sync.py`)
+- **Notion: 태스크/의사결정/기술레퍼런스/프로젝트 관리** (`integrations/notion/reporter.py`)
+- **Slack: 웹훅 기반 알림** — Notion 보고 시 자동 발송 (`integrations/slack/slack_notifier.py`)
 - GitHub: gh CLI + API
 
 ---
@@ -65,30 +65,89 @@
 
 ## 작업 프로토콜
 
+### 보고 시스템 (필수)
+
+모든 프로젝트 작업은 **Notion + Slack**에 자동 보고한다.
+
+```python
+# 사용법 (프로젝트 루트에서)
+from integrations.notion.reporter import (
+    report_task_done, report_decision, report_techref,
+    report_completion, add_project, add_task,
+)
+
+# 또는 CLI
+python scripts/report.py --task "태스크명" --status "✅ 완료" --summary "요약"
+python scripts/report.py --file /path/to/report.json
+python scripts/report.py --new-project "프로젝트명"
+```
+
 ### 새 프로젝트 시작
 1. `projects/` 하위에 `{project-name}-{YYYYMMDDHHMMSS}` 폴더 생성
 2. README.md, .gitignore, 기본 구조 생성
-3. Monday.com에 프로젝트 등록 → `create_project()`
-4. Slack에 프로젝트 생성 알림 → `notify_project_created()`
-5. 에이전트 활동 로그 기록 → `log_agent_activity()`
+3. **Notion에 프로젝트 등록** → `add_project("프로젝트명", "🔵 탐색", "한줄 요약", icon="⚽")`
+4. **Notion에 태스크 등록** → `add_task("태스크명", priority="🔴 P0", project_name="프로젝트명", done_criteria="완료 조건")`
+5. Slack 알림은 자동 발송됨
 
-### 작업 중
-1. Monday.com 프로젝트 상태를 "진행중"으로 → `update_project_status()`
-2. 주요 작업마다 에이전트 활동 로그 기록
-3. 마일스톤 달성 시 기록 → `log_project_milestone()`
-4. 코드 변경 시 커밋 + push
+### ⚠️ project_name 필수 규칙
+
+**모든 Notion 보고 시 반드시 `project_name`을 지정해야 한다. 예외 없음.**
+
+- `report_decision(... project_name="프로젝트명")` ← 필수
+- `report_techref(... project_name="프로젝트명")` ← 필수
+- `add_task(... project_name="프로젝트명")` ← 필수
+- `report_completion(... project_name="프로젝트명")` ← 필수 (하위 항목 자동 전파)
+
+프로젝트가 지정되지 않은 DB 행은 고아 데이터다. 찾을 수 없으면 없는 것과 같다.
+
+### 작업 중 (실시간 보고 — 커밋이 아니라 작업 시점마다!)
+
+**중요: 커밋/푸시 시점이 아니라, 각 작업이 발생하는 시점에 즉시 보고해야 한다.**
+
+1. 태스크 시작 시 → `report_task_done("태스크명", "🔨 진행중")`
+2. 기술 결정 시 → `report_decision(title, category, decision, rationale, alternatives="대안", project_name="프로젝트명")`
+3. 태스크 완료 시 → `report_task_done("태스크명", "✅ 완료", "결과 요약")`
+4. 새 태스크 발생 시 → `add_task("구체적 행동 태스크명", priority="🟡 P1", project_name="프로젝트명", done_criteria="완료 조건")`
+5. 코드 변경 시 커밋 + push
+
+**보고 타이밍 예시:**
+```
+[태스크 시작] report_task_done("API 설계", "🔨 진행중")
+[결정 발생]  report_decision("SQLite 선택", "기술선택", "SQLite", "MVP 단순성", alternatives="PostgreSQL, MySQL", project_name="La Paz")
+[태스크 완료] report_task_done("API 설계", "✅ 완료", "4개 엔드포인트 확정")
+[후속 발견]  add_task("CORS 설정 추가", priority="🟡 P1", project_name="La Paz", done_criteria="CORS 미들웨어 적용 + 허용 도메인 설정")
+```
+
+### 태스크 작성 규칙
+- 태스크명은 **구체적 행동**으로 ("설계하기" X → "Supabase 테이블 3개 생성" O)
+- **완료 조건(done_criteria) 필수** — 없으면 끝났는지 알 수 없다
+- **대안(alternatives) 필수** — 3개월 뒤 같은 고민을 하지 않기 위해
+- 3일 이상 "🔨 진행중"이면 쪼개라 (태스크가 너무 큰 것이다)
 
 ### 작업 완료 후
 1. QA 실행 → `/qa` 커맨드
-2. QA 통과 시:
-   - Monday.com에 QA 결과 기록 → `log_qa_result()`
-   - 프로젝트 상태 "완료"로 업데이트
-   - 산출물 기록 → `log_project_deliverables()`
-   - Slack에 결과 알림
-   - 커밋 + push
-3. QA 실패 시:
-   - `/qa-fix`로 자동 수정 시도 (최대 3회)
-   - Monday.com에 실패 결과 기록, 상태 "차단됨"
+2. QA 통과 시 **통합 보고** (한번에 태스크+의사결정+기술레퍼런스):
+   ```python
+   report_completion(
+       task_name="태스크명",
+       status="✅ 완료",
+       summary="QA PASS, 결과 요약",
+       project_name="프로젝트명",  # ← 필수! 하위 항목에 자동 전파
+       decisions=[{"title": "...", "category": "기술선택", "decision": "...", "rationale": "...", "alternatives": "..."}],
+       tech_refs=[{"title": "...", "category": "코드패턴", "tags": ["Python"], "content": "..."}],
+       new_tasks=[{"task_name": "후속 태스크", "priority": "🟡 P1", "done_criteria": "완료 조건"}],
+   )
+   ```
+3. Slack 알림은 모든 보고에 자동 포함
+4. 커밋 + push
+5. QA 실패 시: `/qa-fix`로 자동 수정 시도 (최대 3회)
+
+### 노션 상태값 규칙
+- 태스크: `⏳ 진행 전` → `🔨 진행중` → `👀 리뷰` → `✅ 완료` / `⏸ 중단됨`
+- 프로젝트: `🔵 탐색` → `🟡 진행중` → `🟢 완료`
+- 우선순위: `🔴 P0` (긴급) / `🟡 P1` (일반) / `🟢 P2` (낮음)
+- 의사결정 카테고리: `기술선택` / `아키텍처` / `데이터` / `비즈니스` / `프로세스` / `인프라`
+- 기술 레퍼런스 카테고리: `기술스택` / `아키텍처패턴` / `코드패턴` / `데이터소스` / `프롬프트` / `인프라` / `컨벤션` / `도메인지식`
 
 ---
 
@@ -242,8 +301,8 @@ ai-dev-team/
 ├── .claude/              ← 에이전트 설정, 커맨드, 템플릿
 ├── projects/             ← 모든 개발 프로젝트 (하위 폴더로 자동 생성)
 ├── integrations/         ← 외부 서비스 연동
+│   ├── notion/           ← **Notion 자동 보고 (reporter.py)**
 │   ├── slack/            ← Slack 웹훅 알림
-│   ├── monday/           ← Monday.com 올인원 보드
 │   └── shared/           ← 공용 포맷팅 유틸
 ├── tasks/                ← 글로벌 태스크 관리
 ├── scripts/              ← 공용 스크립트

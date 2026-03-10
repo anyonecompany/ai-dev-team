@@ -1,0 +1,1988 @@
+2026-03-05 17:34:24,802 [INFO] __main__: 데이터 로드: /Users/danghyeonsong/ai-dev-team/projects/lapaz-crawl-20260305170615/data/players_all.json
+2026-03-05 17:34:24,803 [INFO] __main__: 선수 수: 40
+2026-03-05 17:34:24,803 [INFO] src.processors.play_style_enricher: [1/40] 보강 시작: 오나나 (André Onana)
+2026-03-05 17:34:24,803 [INFO] src.crawlers.namuwiki_v2: 크롤링 시도: 오나나 -> https://namu.wiki/w/%EC%98%A4%EB%82%98%EB%82%98
+2026-03-05 17:34:25,379 [INFO] src.crawlers.namuwiki_v2: 크롤링 성공: 오나나 (play_style: 2423자)
+2026-03-05 17:34:25,379 [INFO] src.processors.play_style_enricher: 나무위키 성공: 오나나
+2026-03-05 17:34:25,379 [INFO] src.processors.play_style_enricher: [2/40] 보강 시작: 마즈라위 (Noussair Mazraoui)
+2026-03-05 17:34:25,379 [INFO] src.crawlers.namuwiki_v2: 크롤링 시도: 마즈라위 -> https://namu.wiki/w/%EB%A7%88%EC%A6%88%EB%9D%BC%EC%9C%84
+2026-03-05 17:34:28,393 [INFO] src.crawlers.namuwiki_v2: 크롤링 성공: 마즈라위 (play_style: 1073자)
+2026-03-05 17:34:28,393 [INFO] src.processors.play_style_enricher: 나무위키 성공: 마즈라위
+2026-03-05 17:34:28,393 [INFO] src.processors.play_style_enricher: [3/40] 보강 시작: 데 리흐트 (Matthijs de Ligt)
+2026-03-05 17:34:28,393 [INFO] src.crawlers.namuwiki_v2: 크롤링 시도: 데 리흐트 -> https://namu.wiki/w/%EB%8D%B0%20%EB%A6%AC%ED%9D%90%ED%8A%B8
+2026-03-05 17:34:31,034 [WARNING] src.crawlers.namuwiki_v2: HTTP 404: https://namu.wiki/w/%EB%8D%B0%20%EB%A6%AC%ED%9D%90%ED%8A%B8
+2026-03-05 17:34:31,034 [INFO] src.processors.play_style_enricher: 나무위키 실패, LLM fallback: 데 리흐트
+2026-03-05 17:34:32,078 [INFO] httpx: HTTP Request: POST https://api.anthropic.com/v1/messages "HTTP/1.1 400 Bad Request"
+2026-03-05 17:34:32,080 [ERROR] src.processors.play_style_enricher: LLM 생성 실패: 데 리흐트 - Error code: 400 - {'type': 'error', 'error': {'type': 'invalid_request_error', 'message': 'Your credit balance is too low to access the Anthropic API. Please go to Plans & Billing to upgrade or purchase credits.'}, 'request_id': 'req_011CYjdFXgHjMn7ezxDTcr6b'}
+2026-03-05 17:34:32,081 [WARNING] src.processors.play_style_enricher: 보강 실패: 데 리흐트
+2026-03-05 17:34:32,081 [INFO] src.processors.play_style_enricher: [4/40] 보강 시작: 리산드로 마르티네스 (Lisandro Martínez)
+2026-03-05 17:34:32,081 [INFO] src.crawlers.namuwiki_v2: 크롤링 시도: 리산드로 마르티네스 -> https://namu.wiki/w/%EB%A6%AC%EC%82%B0%EB%93%9C%EB%A1%9C%20%EB%A7%88%EB%A5%B4%ED%8B%B0%EB%84%A4%EC%8A%A4
+2026-03-05 17:34:33,919 [INFO] src.crawlers.namuwiki_v2: 하위 문서 크롤링: https://namu.wiki/w/%EB%A6%AC%EC%82%B0%EB%93%9C%EB%A1%9C%20%EB%A7%88%EB%A5%B4%ED%8B%B0%EB%84%A4%EC%8A%A4/%ED%94%8C%EB%A0%88%EC%9D%B4%20%EC%8A%A4%ED%83%80%EC%9D%BC
+2026-03-05 17:34:36,685 [INFO] src.crawlers.namuwiki_v2: 크롤링 성공: 리산드로 마르티네스 (play_style: 3896자)
+2026-03-05 17:34:36,685 [INFO] src.processors.play_style_enricher: 나무위키 성공: 리산드로 마르티네스
+2026-03-05 17:34:36,685 [INFO] src.processors.play_style_enricher: [5/40] 보강 시작: 달로 (Diogo Dalot)
+2026-03-05 17:34:36,685 [INFO] src.crawlers.namuwiki_v2: 크롤링 시도: 달로 -> https://namu.wiki/w/%EB%8B%AC%EB%A1%9C
+2026-03-05 17:34:39,503 [WARNING] src.crawlers.namuwiki_v2: 플레이스타일 콘텐츠 부족: 달로
+2026-03-05 17:34:39,503 [INFO] src.processors.play_style_enricher: 나무위키 실패, LLM fallback: 달로
+2026-03-05 17:34:39,843 [INFO] httpx: HTTP Request: POST https://api.anthropic.com/v1/messages "HTTP/1.1 400 Bad Request"
+2026-03-05 17:34:39,844 [ERROR] src.processors.play_style_enricher: LLM 생성 실패: 달로 - Error code: 400 - {'type': 'error', 'error': {'type': 'invalid_request_error', 'message': 'Your credit balance is too low to access the Anthropic API. Please go to Plans & Billing to upgrade or purchase credits.'}, 'request_id': 'req_011CYjdG7PKhWoZGMWS9bTzJ'}
+2026-03-05 17:34:39,844 [WARNING] src.processors.play_style_enricher: 보강 실패: 달로
+2026-03-05 17:34:39,844 [INFO] src.processors.play_style_enricher: [6/40] 보강 시작: 에반스 (Jonny Evans)
+2026-03-05 17:34:39,844 [INFO] src.crawlers.namuwiki_v2: 크롤링 시도: 에반스 -> https://namu.wiki/w/%EC%97%90%EB%B0%98%EC%8A%A4
+2026-03-05 17:34:42,255 [WARNING] src.crawlers.namuwiki_v2: 플레이스타일 콘텐츠 부족: 에반스
+2026-03-05 17:34:42,256 [INFO] src.processors.play_style_enricher: 나무위키 실패, LLM fallback: 에반스
+2026-03-05 17:34:42,569 [INFO] httpx: HTTP Request: POST https://api.anthropic.com/v1/messages "HTTP/1.1 400 Bad Request"
+2026-03-05 17:34:42,569 [ERROR] src.processors.play_style_enricher: LLM 생성 실패: 에반스 - Error code: 400 - {'type': 'error', 'error': {'type': 'invalid_request_error', 'message': 'Your credit balance is too low to access the Anthropic API. Please go to Plans & Billing to upgrade or purchase credits.'}, 'request_id': 'req_011CYjdGJkCS3ZwNPRoyM6rY'}
+2026-03-05 17:34:42,569 [WARNING] src.processors.play_style_enricher: 보강 실패: 에반스
+2026-03-05 17:34:42,569 [INFO] src.processors.play_style_enricher: [7/40] 보강 시작: 유로 (Leny Yoro)
+2026-03-05 17:34:42,569 [INFO] src.crawlers.namuwiki_v2: 크롤링 시도: 유로 -> https://namu.wiki/w/%EC%9C%A0%EB%A1%9C
+2026-03-05 17:34:45,994 [WARNING] src.crawlers.namuwiki_v2: 플레이스타일 콘텐츠 부족: 유로
+2026-03-05 17:34:45,994 [INFO] src.processors.play_style_enricher: 나무위키 실패, LLM fallback: 유로
+2026-03-05 17:34:46,229 [INFO] httpx: HTTP Request: POST https://api.anthropic.com/v1/messages "HTTP/1.1 400 Bad Request"
+2026-03-05 17:34:46,229 [ERROR] src.processors.play_style_enricher: LLM 생성 실패: 유로 - Error code: 400 - {'type': 'error', 'error': {'type': 'invalid_request_error', 'message': 'Your credit balance is too low to access the Anthropic API. Please go to Plans & Billing to upgrade or purchase credits.'}, 'request_id': 'req_011CYjdGahduNDmXjewytFmi'}
+2026-03-05 17:34:46,229 [WARNING] src.processors.play_style_enricher: 보강 실패: 유로
+2026-03-05 17:34:46,229 [INFO] src.processors.play_style_enricher: [8/40] 보강 시작: 카세미루 (Casemiro)
+2026-03-05 17:34:46,229 [INFO] src.crawlers.namuwiki_v2: 크롤링 시도: 카세미루 -> https://namu.wiki/w/%EC%B9%B4%EC%84%B8%EB%AF%B8%EB%A3%A8
+2026-03-05 17:34:48,466 [INFO] src.crawlers.namuwiki_v2: 크롤링 성공: 카세미루 (play_style: 2700자)
+2026-03-05 17:34:48,466 [INFO] src.processors.play_style_enricher: 나무위키 성공: 카세미루
+2026-03-05 17:34:48,466 [INFO] src.processors.play_style_enricher: [9/40] 보강 시작: 메이누 (Kobbie Mainoo)
+2026-03-05 17:34:48,466 [INFO] src.crawlers.namuwiki_v2: 크롤링 시도: 메이누 -> https://namu.wiki/w/%EB%A9%94%EC%9D%B4%EB%88%84
+2026-03-05 17:34:51,261 [INFO] src.crawlers.namuwiki_v2: 하위 문서 크롤링: https://namu.wiki/w/%EC%BD%94%EB%B9%84%20%EB%A7%88%EC%9D%B4%EB%88%84/%ED%94%8C%EB%A0%88%EC%9D%B4%20%EC%8A%A4%ED%83%80%EC%9D%BC
+2026-03-05 17:34:54,526 [INFO] src.crawlers.namuwiki_v2: 크롤링 성공: 메이누 (play_style: 3603자)
+2026-03-05 17:34:54,526 [INFO] src.processors.play_style_enricher: 나무위키 성공: 메이누
+2026-03-05 17:34:54,526 [INFO] src.processors.play_style_enricher: [10/40] 보강 시작: 브루노 페르난데스 (Bruno Fernandes)
+2026-03-05 17:34:54,526 [INFO] src.crawlers.namuwiki_v2: 크롤링 시도: 브루노 페르난데스 -> https://namu.wiki/w/%EB%B8%8C%EB%A3%A8%EB%85%B8%20%ED%8E%98%EB%A5%B4%EB%82%9C%EB%8D%B0%EC%8A%A4
+2026-03-05 17:34:57,707 [INFO] src.crawlers.namuwiki_v2: 하위 문서 크롤링: https://namu.wiki/w/%EB%B8%8C%EB%A3%A8%EB%85%B8%20%ED%8E%98%EB%A5%B4%EB%82%9C%EB%8D%B0%EC%8A%A4/%ED%94%8C%EB%A0%88%EC%9D%B4%20%EC%8A%A4%ED%83%80%EC%9D%BC
+2026-03-05 17:35:00,745 [INFO] src.crawlers.namuwiki_v2: 크롤링 성공: 브루노 페르난데스 (play_style: 4778자)
+2026-03-05 17:35:00,745 [INFO] src.processors.play_style_enricher: 나무위키 성공: 브루노 페르난데스
+2026-03-05 17:35:00,745 [INFO] src.processors.play_style_enricher: [11/40] 보강 시작: 마운트 (Mason Mount)
+2026-03-05 17:35:00,745 [INFO] src.crawlers.namuwiki_v2: 크롤링 시도: 마운트 -> https://namu.wiki/w/%EB%A7%88%EC%9A%B4%ED%8A%B8
+2026-03-05 17:35:03,484 [WARNING] src.crawlers.namuwiki_v2: 플레이스타일 콘텐츠 부족: 마운트
+2026-03-05 17:35:03,484 [INFO] src.processors.play_style_enricher: 나무위키 실패, LLM fallback: 마운트
+2026-03-05 17:35:03,853 [INFO] httpx: HTTP Request: POST https://api.anthropic.com/v1/messages "HTTP/1.1 400 Bad Request"
+2026-03-05 17:35:03,853 [ERROR] src.processors.play_style_enricher: LLM 생성 실패: 마운트 - Error code: 400 - {'type': 'error', 'error': {'type': 'invalid_request_error', 'message': 'Your credit balance is too low to access the Anthropic API. Please go to Plans & Billing to upgrade or purchase credits.'}, 'request_id': 'req_011CYjdHt5Bpc8Ma57JjbUna'}
+2026-03-05 17:35:03,853 [WARNING] src.processors.play_style_enricher: 보강 실패: 마운트
+2026-03-05 17:35:03,853 [INFO] src.processors.play_style_enricher: [12/40] 보강 시작: 에릭센 (Christian Eriksen)
+2026-03-05 17:35:03,853 [INFO] src.crawlers.namuwiki_v2: 크롤링 시도: 에릭센 -> https://namu.wiki/w/%EC%97%90%EB%A6%AD%EC%84%BC
+2026-03-05 17:35:06,502 [INFO] src.crawlers.namuwiki_v2: 크롤링 성공: 에릭센 (play_style: 1864자)
+2026-03-05 17:35:06,502 [INFO] src.processors.play_style_enricher: 나무위키 성공: 에릭센
+2026-03-05 17:35:06,502 [INFO] src.processors.play_style_enricher: [13/40] 보강 시작: 우가르테 (Manuel Ugarte)
+2026-03-05 17:35:06,502 [INFO] src.crawlers.namuwiki_v2: 크롤링 시도: 우가르테 -> https://namu.wiki/w/%EC%9A%B0%EA%B0%80%EB%A5%B4%ED%85%8C
+2026-03-05 17:35:09,409 [INFO] src.crawlers.namuwiki_v2: 크롤링 성공: 우가르테 (play_style: 1262자)
+2026-03-05 17:35:09,409 [INFO] src.processors.play_style_enricher: 나무위키 성공: 우가르테
+2026-03-05 17:35:09,409 [INFO] src.processors.play_style_enricher: [14/40] 보강 시작: 콜리어 (Toby Collyer)
+2026-03-05 17:35:09,409 [INFO] src.crawlers.namuwiki_v2: 크롤링 시도: 콜리어 -> https://namu.wiki/w/%EC%BD%9C%EB%A6%AC%EC%96%B4
+2026-03-05 17:35:12,020 [WARNING] src.crawlers.namuwiki_v2: 플레이스타일 콘텐츠 부족: 콜리어
+2026-03-05 17:35:12,020 [INFO] src.processors.play_style_enricher: 나무위키 실패, LLM fallback: 콜리어
+2026-03-05 17:35:12,340 [INFO] httpx: HTTP Request: POST https://api.anthropic.com/v1/messages "HTTP/1.1 400 Bad Request"
+2026-03-05 17:35:12,340 [ERROR] src.processors.play_style_enricher: LLM 생성 실패: 콜리어 - Error code: 400 - {'type': 'error', 'error': {'type': 'invalid_request_error', 'message': 'Your credit balance is too low to access the Anthropic API. Please go to Plans & Billing to upgrade or purchase credits.'}, 'request_id': 'req_011CYjdJWMkgKYaXV3eiHkQk'}
+2026-03-05 17:35:12,340 [WARNING] src.processors.play_style_enricher: 보강 실패: 콜리어
+2026-03-05 17:35:12,340 [INFO] src.processors.play_style_enricher: [15/40] 보강 시작: 호일룬 (Rasmus Højlund)
+2026-03-05 17:35:12,340 [INFO] src.crawlers.namuwiki_v2: 크롤링 시도: 호일룬 -> https://namu.wiki/w/%ED%98%B8%EC%9D%BC%EB%A3%AC
+2026-03-05 17:35:15,065 [INFO] src.crawlers.namuwiki_v2: 크롤링 성공: 호일룬 (play_style: 3282자)
+2026-03-05 17:35:15,066 [INFO] src.processors.play_style_enricher: 나무위키 성공: 호일룬
+2026-03-05 17:35:15,066 [INFO] src.processors.play_style_enricher: [16/40] 보강 시작: 가르나초 (Alejandro Garnacho)
+2026-03-05 17:35:15,066 [INFO] src.crawlers.namuwiki_v2: 크롤링 시도: 가르나초 -> https://namu.wiki/w/%EA%B0%80%EB%A5%B4%EB%82%98%EC%B4%88
+2026-03-05 17:35:17,940 [INFO] src.crawlers.namuwiki_v2: 크롤링 성공: 가르나초 (play_style: 2213자)
+2026-03-05 17:35:17,940 [INFO] src.processors.play_style_enricher: 나무위키 성공: 가르나초
+2026-03-05 17:35:17,940 [INFO] src.processors.play_style_enricher: [17/40] 보강 시작: 아마드 디알로 (Amad Diallo)
+2026-03-05 17:35:17,940 [INFO] src.crawlers.namuwiki_v2: 크롤링 시도: 아마드 디알로 -> https://namu.wiki/w/%EC%95%84%EB%A7%88%EB%93%9C%20%EB%94%94%EC%95%8C%EB%A1%9C
+2026-03-05 17:35:20,714 [INFO] src.crawlers.namuwiki_v2: 크롤링 성공: 아마드 디알로 (play_style: 1178자)
+2026-03-05 17:35:20,714 [INFO] src.processors.play_style_enricher: 나무위키 성공: 아마드 디알로
+2026-03-05 17:35:20,714 [INFO] src.processors.play_style_enricher: [18/40] 보강 시작: 안토니 (Antony)
+2026-03-05 17:35:20,715 [INFO] src.crawlers.namuwiki_v2: 크롤링 시도: 안토니 -> https://namu.wiki/w/%EC%95%88%ED%86%A0%EB%8B%88
+2026-03-05 17:35:23,480 [WARNING] src.crawlers.namuwiki_v2: 플레이스타일 콘텐츠 부족: 안토니
+2026-03-05 17:35:23,483 [INFO] src.processors.play_style_enricher: 나무위키 실패, LLM fallback: 안토니
+2026-03-05 17:35:23,796 [INFO] httpx: HTTP Request: POST https://api.anthropic.com/v1/messages "HTTP/1.1 400 Bad Request"
+2026-03-05 17:35:23,797 [ERROR] src.processors.play_style_enricher: LLM 생성 실패: 안토니 - Error code: 400 - {'type': 'error', 'error': {'type': 'invalid_request_error', 'message': 'Your credit balance is too low to access the Anthropic API. Please go to Plans & Billing to upgrade or purchase credits.'}, 'request_id': 'req_011CYjdKMHaCaZX4HmtCkmZY'}
+2026-03-05 17:35:23,797 [WARNING] src.processors.play_style_enricher: 보강 실패: 안토니
+2026-03-05 17:35:23,797 [INFO] src.processors.play_style_enricher: [19/40] 보강 시작: 지르크제 (Joshua Zirkzee)
+2026-03-05 17:35:23,797 [INFO] src.crawlers.namuwiki_v2: 크롤링 시도: 지르크제 -> https://namu.wiki/w/%EC%A7%80%EB%A5%B4%ED%81%AC%EC%A0%9C
+2026-03-05 17:35:26,441 [INFO] src.crawlers.namuwiki_v2: 크롤링 성공: 지르크제 (play_style: 1283자)
+2026-03-05 17:35:26,441 [INFO] src.processors.play_style_enricher: 나무위키 성공: 지르크제
+2026-03-05 17:35:26,441 [INFO] src.processors.play_style_enricher: [20/40] 보강 시작: 래시포드 (Marcus Rashford)
+2026-03-05 17:35:26,441 [INFO] src.crawlers.namuwiki_v2: 크롤링 시도: 래시포드 -> https://namu.wiki/w/%EB%9E%98%EC%8B%9C%ED%8F%AC%EB%93%9C
+2026-03-05 17:35:29,544 [INFO] src.crawlers.namuwiki_v2: 크롤링 성공: 래시포드 (play_style: 3181자)
+2026-03-05 17:35:29,544 [INFO] src.processors.play_style_enricher: 나무위키 성공: 래시포드
+2026-03-05 17:35:29,544 [INFO] src.processors.play_style_enricher: [21/40] 보강 시작: 에밀리아노 마르티네스 (Emiliano Martínez)
+2026-03-05 17:35:29,544 [INFO] src.crawlers.namuwiki_v2: 크롤링 시도: 에밀리아노 마르티네스 -> https://namu.wiki/w/%EC%97%90%EB%B0%80%EB%A6%AC%EC%95%84%EB%85%B8%20%EB%A7%88%EB%A5%B4%ED%8B%B0%EB%84%A4%EC%8A%A4
+2026-03-05 17:35:32,483 [INFO] src.crawlers.namuwiki_v2: 하위 문서 크롤링: https://namu.wiki/w/%EC%97%90%EB%B0%80%EB%A6%AC%EC%95%84%EB%85%B8%20%EB%A7%88%EB%A5%B4%ED%8B%B0%EB%84%A4%EC%8A%A4/%ED%94%8C%EB%A0%88%EC%9D%B4%20%EC%8A%A4%ED%83%80%EC%9D%BC
+2026-03-05 17:35:35,045 [INFO] src.crawlers.namuwiki_v2: 크롤링 성공: 에밀리아노 마르티네스 (play_style: 4449자)
+2026-03-05 17:35:35,045 [INFO] src.processors.play_style_enricher: 나무위키 성공: 에밀리아노 마르티네스
+2026-03-05 17:35:35,045 [INFO] src.processors.play_style_enricher: [22/40] 보강 시작: 올센 (Robin Olsen)
+2026-03-05 17:35:35,045 [INFO] src.crawlers.namuwiki_v2: 크롤링 시도: 올센 -> https://namu.wiki/w/%EC%98%AC%EC%84%BC
+2026-03-05 17:35:37,926 [INFO] src.crawlers.namuwiki_v2: 크롤링 성공: 올센 (play_style: 766자)
+2026-03-05 17:35:37,926 [INFO] src.processors.play_style_enricher: 나무위키 성공: 올센
+2026-03-05 17:35:37,926 [INFO] src.processors.play_style_enricher: [23/40] 보강 시작: 캐시 (Matty Cash)
+2026-03-05 17:35:37,926 [INFO] src.crawlers.namuwiki_v2: 크롤링 시도: 캐시 -> https://namu.wiki/w/%EC%BA%90%EC%8B%9C
+2026-03-05 17:35:40,682 [WARNING] src.crawlers.namuwiki_v2: 플레이스타일 콘텐츠 부족: 캐시
+2026-03-05 17:35:40,684 [INFO] src.processors.play_style_enricher: 나무위키 실패, LLM fallback: 캐시
+2026-03-05 17:35:41,172 [INFO] httpx: HTTP Request: POST https://api.anthropic.com/v1/messages "HTTP/1.1 400 Bad Request"
+2026-03-05 17:35:41,172 [ERROR] src.processors.play_style_enricher: LLM 생성 실패: 캐시 - Error code: 400 - {'type': 'error', 'error': {'type': 'invalid_request_error', 'message': 'Your credit balance is too low to access the Anthropic API. Please go to Plans & Billing to upgrade or purchase credits.'}, 'request_id': 'req_011CYjdLdfbU5EQKf4ikXWJL'}
+2026-03-05 17:35:41,172 [WARNING] src.processors.play_style_enricher: 보강 실패: 캐시
+2026-03-05 17:35:41,172 [INFO] src.processors.play_style_enricher: [24/40] 보강 시작: 콘사 (Ezri Konsa)
+2026-03-05 17:35:41,172 [INFO] src.crawlers.namuwiki_v2: 크롤링 시도: 콘사 -> https://namu.wiki/w/%EC%BD%98%EC%82%AC
+2026-03-05 17:35:43,513 [INFO] src.crawlers.namuwiki_v2: 크롤링 성공: 콘사 (play_style: 1243자)
+2026-03-05 17:35:43,513 [INFO] src.processors.play_style_enricher: 나무위키 성공: 콘사
+2026-03-05 17:35:43,513 [INFO] src.processors.play_style_enricher: [25/40] 보강 시작: 토레스 (Pau Torres)
+2026-03-05 17:35:43,514 [INFO] src.crawlers.namuwiki_v2: 크롤링 시도: 토레스 -> https://namu.wiki/w/%ED%86%A0%EB%A0%88%EC%8A%A4
+2026-03-05 17:35:46,219 [WARNING] src.crawlers.namuwiki_v2: 플레이스타일 콘텐츠 부족: 토레스
+2026-03-05 17:35:46,220 [INFO] src.processors.play_style_enricher: 나무위키 실패, LLM fallback: 토레스
+2026-03-05 17:35:46,714 [INFO] httpx: HTTP Request: POST https://api.anthropic.com/v1/messages "HTTP/1.1 400 Bad Request"
+2026-03-05 17:35:46,715 [ERROR] src.processors.play_style_enricher: LLM 생성 실패: 토레스 - Error code: 400 - {'type': 'error', 'error': {'type': 'invalid_request_error', 'message': 'Your credit balance is too low to access the Anthropic API. Please go to Plans & Billing to upgrade or purchase credits.'}, 'request_id': 'req_011CYjdM36jzEZeWGwg7zd8L'}
+2026-03-05 17:35:46,715 [WARNING] src.processors.play_style_enricher: 보강 실패: 토레스
+2026-03-05 17:35:46,715 [INFO] src.processors.play_style_enricher: [26/40] 보강 시작: 딘뉴 (Lucas Digne)
+2026-03-05 17:35:46,715 [INFO] src.crawlers.namuwiki_v2: 크롤링 시도: 딘뉴 -> https://namu.wiki/w/%EB%94%98%EB%89%B4
+2026-03-05 17:35:48,818 [WARNING] src.crawlers.namuwiki_v2: HTTP 404: https://namu.wiki/w/%EB%94%98%EB%89%B4
+2026-03-05 17:35:48,818 [INFO] src.processors.play_style_enricher: 나무위키 실패, LLM fallback: 딘뉴
+2026-03-05 17:35:49,039 [INFO] httpx: HTTP Request: POST https://api.anthropic.com/v1/messages "HTTP/1.1 400 Bad Request"
+2026-03-05 17:35:49,040 [ERROR] src.processors.play_style_enricher: LLM 생성 실패: 딘뉴 - Error code: 400 - {'type': 'error', 'error': {'type': 'invalid_request_error', 'message': 'Your credit balance is too low to access the Anthropic API. Please go to Plans & Billing to upgrade or purchase credits.'}, 'request_id': 'req_011CYjdMDHv95AfrcVS8Hies'}
+2026-03-05 17:35:49,040 [WARNING] src.processors.play_style_enricher: 보강 실패: 딘뉴
+2026-03-05 17:35:49,040 [INFO] src.processors.play_style_enricher: [27/40] 보강 시작: 카를로스 (Diego Carlos)
+2026-03-05 17:35:49,040 [INFO] src.crawlers.namuwiki_v2: 크롤링 시도: 카를로스 -> https://namu.wiki/w/%EC%B9%B4%EB%A5%BC%EB%A1%9C%EC%8A%A4
+2026-03-05 17:35:51,652 [WARNING] src.crawlers.namuwiki_v2: 플레이스타일 콘텐츠 부족: 카를로스
+2026-03-05 17:35:51,652 [INFO] src.processors.play_style_enricher: 나무위키 실패, LLM fallback: 카를로스
+2026-03-05 17:35:51,871 [INFO] httpx: HTTP Request: POST https://api.anthropic.com/v1/messages "HTTP/1.1 400 Bad Request"
+2026-03-05 17:35:51,871 [ERROR] src.processors.play_style_enricher: LLM 생성 실패: 카를로스 - Error code: 400 - {'type': 'error', 'error': {'type': 'invalid_request_error', 'message': 'Your credit balance is too low to access the Anthropic API. Please go to Plans & Billing to upgrade or purchase credits.'}, 'request_id': 'req_011CYjdMRPgoPCBQBXibpHe7'}
+2026-03-05 17:35:51,872 [WARNING] src.processors.play_style_enricher: 보강 실패: 카를로스
+2026-03-05 17:35:51,872 [INFO] src.processors.play_style_enricher: [28/40] 보강 시작: 밍스 (Tyrone Mings)
+2026-03-05 17:35:51,872 [INFO] src.crawlers.namuwiki_v2: 크롤링 시도: 밍스 -> https://namu.wiki/w/%EB%B0%8D%EC%8A%A4
+2026-03-05 17:35:54,422 [WARNING] src.crawlers.namuwiki_v2: 플레이스타일 콘텐츠 부족: 밍스
+2026-03-05 17:35:54,422 [INFO] src.processors.play_style_enricher: 나무위키 실패, LLM fallback: 밍스
+2026-03-05 17:35:54,680 [INFO] httpx: HTTP Request: POST https://api.anthropic.com/v1/messages "HTTP/1.1 400 Bad Request"
+2026-03-05 17:35:54,681 [ERROR] src.processors.play_style_enricher: LLM 생성 실패: 밍스 - Error code: 400 - {'type': 'error', 'error': {'type': 'invalid_request_error', 'message': 'Your credit balance is too low to access the Anthropic API. Please go to Plans & Billing to upgrade or purchase credits.'}, 'request_id': 'req_011CYjdMdEpxpp4o9LrZbo5Z'}
+2026-03-05 17:35:54,681 [WARNING] src.processors.play_style_enricher: 보강 실패: 밍스
+2026-03-05 17:35:54,681 [INFO] src.processors.play_style_enricher: [29/40] 보강 시작: 카마라 (Boubacar Kamara)
+2026-03-05 17:35:54,681 [INFO] src.crawlers.namuwiki_v2: 크롤링 시도: 카마라 -> https://namu.wiki/w/%EC%B9%B4%EB%A7%88%EB%9D%BC
+2026-03-05 17:35:57,144 [WARNING] src.crawlers.namuwiki_v2: 플레이스타일 콘텐츠 부족: 카마라
+2026-03-05 17:35:57,144 [INFO] src.processors.play_style_enricher: 나무위키 실패, LLM fallback: 카마라
+2026-03-05 17:35:57,538 [INFO] httpx: HTTP Request: POST https://api.anthropic.com/v1/messages "HTTP/1.1 400 Bad Request"
+2026-03-05 17:35:57,538 [ERROR] src.processors.play_style_enricher: LLM 생성 실패: 카마라 - Error code: 400 - {'type': 'error', 'error': {'type': 'invalid_request_error', 'message': 'Your credit balance is too low to access the Anthropic API. Please go to Plans & Billing to upgrade or purchase credits.'}, 'request_id': 'req_011CYjdMpvY4V4pQDFue25cf'}
+2026-03-05 17:35:57,538 [WARNING] src.processors.play_style_enricher: 보강 실패: 카마라
+2026-03-05 17:35:57,538 [INFO] src.processors.play_style_enricher: [30/40] 보강 시작: 티엘레만스 (Youri Tielemans)
+2026-03-05 17:35:57,538 [INFO] src.crawlers.namuwiki_v2: 크롤링 시도: 티엘레만스 -> https://namu.wiki/w/%ED%8B%B0%EC%97%98%EB%A0%88%EB%A7%8C%EC%8A%A4
+2026-03-05 17:35:59,721 [WARNING] src.crawlers.namuwiki_v2: HTTP 404: https://namu.wiki/w/%ED%8B%B0%EC%97%98%EB%A0%88%EB%A7%8C%EC%8A%A4
+2026-03-05 17:35:59,721 [INFO] src.processors.play_style_enricher: 나무위키 실패, LLM fallback: 티엘레만스
+2026-03-05 17:36:00,162 [INFO] httpx: HTTP Request: POST https://api.anthropic.com/v1/messages "HTTP/1.1 400 Bad Request"
+2026-03-05 17:36:00,162 [ERROR] src.processors.play_style_enricher: LLM 생성 실패: 티엘레만스 - Error code: 400 - {'type': 'error', 'error': {'type': 'invalid_request_error', 'message': 'Your credit balance is too low to access the Anthropic API. Please go to Plans & Billing to upgrade or purchase credits.'}, 'request_id': 'req_011CYjdN1y4X8dfMU9QFpu9c'}
+2026-03-05 17:36:00,162 [WARNING] src.processors.play_style_enricher: 보강 실패: 티엘레만스
+2026-03-05 17:36:00,162 [INFO] src.processors.play_style_enricher: [31/40] 보강 시작: 맥긴 (John McGinn)
+2026-03-05 17:36:00,162 [INFO] src.crawlers.namuwiki_v2: 크롤링 시도: 맥긴 -> https://namu.wiki/w/%EB%A7%A5%EA%B8%B4
+2026-03-05 17:36:02,738 [INFO] src.crawlers.namuwiki_v2: 크롤링 성공: 맥긴 (play_style: 1031자)
+2026-03-05 17:36:02,738 [INFO] src.processors.play_style_enricher: 나무위키 성공: 맥긴
+2026-03-05 17:36:02,738 [INFO] src.processors.play_style_enricher: [32/40] 보강 시작: 로저스 (Morgan Rogers)
+2026-03-05 17:36:02,738 [INFO] src.crawlers.namuwiki_v2: 크롤링 시도: 로저스 -> https://namu.wiki/w/%EB%A1%9C%EC%A0%80%EC%8A%A4
+2026-03-05 17:36:05,422 [WARNING] src.crawlers.namuwiki_v2: 플레이스타일 콘텐츠 부족: 로저스
+2026-03-05 17:36:05,422 [INFO] src.processors.play_style_enricher: 나무위키 실패, LLM fallback: 로저스
+2026-03-05 17:36:05,744 [INFO] httpx: HTTP Request: POST https://api.anthropic.com/v1/messages "HTTP/1.1 400 Bad Request"
+2026-03-05 17:36:05,745 [ERROR] src.processors.play_style_enricher: LLM 생성 실패: 로저스 - Error code: 400 - {'type': 'error', 'error': {'type': 'invalid_request_error', 'message': 'Your credit balance is too low to access the Anthropic API. Please go to Plans & Billing to upgrade or purchase credits.'}, 'request_id': 'req_011CYjdNSgc5NTNqckHqfAm4'}
+2026-03-05 17:36:05,745 [WARNING] src.processors.play_style_enricher: 보강 실패: 로저스
+2026-03-05 17:36:05,745 [INFO] src.processors.play_style_enricher: [33/40] 보강 시작: 오나나 (Amadou Onana)
+2026-03-05 17:36:05,745 [INFO] src.crawlers.namuwiki_v2: 크롤링 시도: 오나나 -> https://namu.wiki/w/%EC%98%A4%EB%82%98%EB%82%98
+2026-03-05 17:36:08,395 [INFO] src.crawlers.namuwiki_v2: 크롤링 성공: 오나나 (play_style: 2423자)
+2026-03-05 17:36:08,395 [INFO] src.processors.play_style_enricher: 나무위키 성공: 오나나
+2026-03-05 17:36:08,395 [INFO] src.processors.play_style_enricher: [34/40] 보강 시작: 램지 (Jacob Ramsey)
+2026-03-05 17:36:08,395 [INFO] src.crawlers.namuwiki_v2: 크롤링 시도: 램지 -> https://namu.wiki/w/%EB%9E%A8%EC%A7%80
+2026-03-05 17:36:10,997 [WARNING] src.crawlers.namuwiki_v2: 플레이스타일 콘텐츠 부족: 램지
+2026-03-05 17:36:10,997 [INFO] src.processors.play_style_enricher: 나무위키 실패, LLM fallback: 램지
+2026-03-05 17:36:11,385 [INFO] httpx: HTTP Request: POST https://api.anthropic.com/v1/messages "HTTP/1.1 400 Bad Request"
+2026-03-05 17:36:11,387 [ERROR] src.processors.play_style_enricher: LLM 생성 실패: 램지 - Error code: 400 - {'type': 'error', 'error': {'type': 'invalid_request_error', 'message': 'Your credit balance is too low to access the Anthropic API. Please go to Plans & Billing to upgrade or purchase credits.'}, 'request_id': 'req_011CYjdNrpuwNMagabEDt6aS'}
+2026-03-05 17:36:11,387 [WARNING] src.processors.play_style_enricher: 보강 실패: 램지
+2026-03-05 17:36:11,387 [INFO] src.processors.play_style_enricher: [35/40] 보강 시작: 바클리 (Ross Barkley)
+2026-03-05 17:36:11,387 [INFO] src.crawlers.namuwiki_v2: 크롤링 시도: 바클리 -> https://namu.wiki/w/%EB%B0%94%ED%81%B4%EB%A6%AC
+2026-03-05 17:36:13,809 [WARNING] src.crawlers.namuwiki_v2: 플레이스타일 콘텐츠 부족: 바클리
+2026-03-05 17:36:13,809 [INFO] src.processors.play_style_enricher: 나무위키 실패, LLM fallback: 바클리
+2026-03-05 17:36:14,088 [INFO] httpx: HTTP Request: POST https://api.anthropic.com/v1/messages "HTTP/1.1 400 Bad Request"
+2026-03-05 17:36:14,088 [ERROR] src.processors.play_style_enricher: LLM 생성 실패: 바클리 - Error code: 400 - {'type': 'error', 'error': {'type': 'invalid_request_error', 'message': 'Your credit balance is too low to access the Anthropic API. Please go to Plans & Billing to upgrade or purchase credits.'}, 'request_id': 'req_011CYjdP47pLgDpJQz6cozDv'}
+2026-03-05 17:36:14,088 [WARNING] src.processors.play_style_enricher: 보강 실패: 바클리
+2026-03-05 17:36:14,088 [INFO] src.processors.play_style_enricher: [36/40] 보강 시작: 왓킨스 (Ollie Watkins)
+2026-03-05 17:36:14,088 [INFO] src.crawlers.namuwiki_v2: 크롤링 시도: 왓킨스 -> https://namu.wiki/w/%EC%99%93%ED%82%A8%EC%8A%A4
+2026-03-05 17:36:16,510 [WARNING] src.crawlers.namuwiki_v2: 플레이스타일 콘텐츠 부족: 왓킨스
+2026-03-05 17:36:16,510 [INFO] src.processors.play_style_enricher: 나무위키 실패, LLM fallback: 왓킨스
+2026-03-05 17:36:16,731 [INFO] httpx: HTTP Request: POST https://api.anthropic.com/v1/messages "HTTP/1.1 400 Bad Request"
+2026-03-05 17:36:16,731 [ERROR] src.processors.play_style_enricher: LLM 생성 실패: 왓킨스 - Error code: 400 - {'type': 'error', 'error': {'type': 'invalid_request_error', 'message': 'Your credit balance is too low to access the Anthropic API. Please go to Plans & Billing to upgrade or purchase credits.'}, 'request_id': 'req_011CYjdPFfrC4b522sCCkqnM'}
+2026-03-05 17:36:16,731 [WARNING] src.processors.play_style_enricher: 보강 실패: 왓킨스
+2026-03-05 17:36:16,731 [INFO] src.processors.play_style_enricher: [37/40] 보강 시작: 베일리 (Leon Bailey)
+2026-03-05 17:36:16,731 [INFO] src.crawlers.namuwiki_v2: 크롤링 시도: 베일리 -> https://namu.wiki/w/%EB%B2%A0%EC%9D%BC%EB%A6%AC
+2026-03-05 17:36:19,227 [WARNING] src.crawlers.namuwiki_v2: 플레이스타일 콘텐츠 부족: 베일리
+2026-03-05 17:36:19,227 [INFO] src.processors.play_style_enricher: 나무위키 실패, LLM fallback: 베일리
+2026-03-05 17:36:19,562 [INFO] httpx: HTTP Request: POST https://api.anthropic.com/v1/messages "HTTP/1.1 400 Bad Request"
+2026-03-05 17:36:19,563 [ERROR] src.processors.play_style_enricher: LLM 생성 실패: 베일리 - Error code: 400 - {'type': 'error', 'error': {'type': 'invalid_request_error', 'message': 'Your credit balance is too low to access the Anthropic API. Please go to Plans & Billing to upgrade or purchase credits.'}, 'request_id': 'req_011CYjdPTHbPc1ZzpXZaiKLF'}
+2026-03-05 17:36:19,563 [WARNING] src.processors.play_style_enricher: 보강 실패: 베일리
+2026-03-05 17:36:19,563 [INFO] src.processors.play_style_enricher: [38/40] 보강 시작: 듀란 (Jhon Durán)
+2026-03-05 17:36:19,563 [INFO] src.crawlers.namuwiki_v2: 크롤링 시도: 듀란 -> https://namu.wiki/w/%EB%93%80%EB%9E%80
+2026-03-05 17:36:21,950 [WARNING] src.crawlers.namuwiki_v2: 플레이스타일 콘텐츠 부족: 듀란
+2026-03-05 17:36:21,951 [INFO] src.processors.play_style_enricher: 나무위키 실패, LLM fallback: 듀란
+2026-03-05 17:36:22,260 [INFO] httpx: HTTP Request: POST https://api.anthropic.com/v1/messages "HTTP/1.1 400 Bad Request"
+2026-03-05 17:36:22,261 [ERROR] src.processors.play_style_enricher: LLM 생성 실패: 듀란 - Error code: 400 - {'type': 'error', 'error': {'type': 'invalid_request_error', 'message': 'Your credit balance is too low to access the Anthropic API. Please go to Plans & Billing to upgrade or purchase credits.'}, 'request_id': 'req_011CYjdPf32Yvub66Ab17j9e'}
+2026-03-05 17:36:22,261 [WARNING] src.processors.play_style_enricher: 보강 실패: 듀란
+2026-03-05 17:36:22,261 [INFO] src.processors.play_style_enricher: [39/40] 보강 시작: 필로제 (Jaden Philogene)
+2026-03-05 17:36:22,261 [INFO] src.crawlers.namuwiki_v2: 크롤링 시도: 필로제 -> https://namu.wiki/w/%ED%95%84%EB%A1%9C%EC%A0%9C
+2026-03-05 17:36:24,842 [WARNING] src.crawlers.namuwiki_v2: 플레이스타일 콘텐츠 부족: 필로제
+2026-03-05 17:36:24,843 [INFO] src.processors.play_style_enricher: 나무위키 실패, LLM fallback: 필로제
+2026-03-05 17:36:25,177 [INFO] httpx: HTTP Request: POST https://api.anthropic.com/v1/messages "HTTP/1.1 400 Bad Request"
+2026-03-05 17:36:25,178 [ERROR] src.processors.play_style_enricher: LLM 생성 실패: 필로제 - Error code: 400 - {'type': 'error', 'error': {'type': 'invalid_request_error', 'message': 'Your credit balance is too low to access the Anthropic API. Please go to Plans & Billing to upgrade or purchase credits.'}, 'request_id': 'req_011CYjdPsoEezAnzeQnDETBv'}
+2026-03-05 17:36:25,178 [WARNING] src.processors.play_style_enricher: 보강 실패: 필로제
+2026-03-05 17:36:25,178 [INFO] src.processors.play_style_enricher: [40/40] 보강 시작: 타운센드 (Andros Townsend)
+2026-03-05 17:36:25,178 [INFO] src.crawlers.namuwiki_v2: 크롤링 시도: 타운센드 -> https://namu.wiki/w/%ED%83%80%EC%9A%B4%EC%84%BC%EB%93%9C
+2026-03-05 17:36:27,591 [WARNING] src.crawlers.namuwiki_v2: 플레이스타일 콘텐츠 부족: 타운센드
+2026-03-05 17:36:27,591 [INFO] src.processors.play_style_enricher: 나무위키 실패, LLM fallback: 타운센드
+2026-03-05 17:36:27,805 [INFO] httpx: HTTP Request: POST https://api.anthropic.com/v1/messages "HTTP/1.1 400 Bad Request"
+2026-03-05 17:36:27,805 [ERROR] src.processors.play_style_enricher: LLM 생성 실패: 타운센드 - Error code: 400 - {'type': 'error', 'error': {'type': 'invalid_request_error', 'message': 'Your credit balance is too low to access the Anthropic API. Please go to Plans & Billing to upgrade or purchase credits.'}, 'request_id': 'req_011CYjdQ53AJLGEnovmB2Uuk'}
+2026-03-05 17:36:27,806 [WARNING] src.processors.play_style_enricher: 보강 실패: 타운센드
+2026-03-05 17:36:27,806 [INFO] src.processors.play_style_enricher: 보강 완료: namuwiki=18, llm=0, failed=22
+2026-03-05 17:36:27,808 [INFO] __main__: 저장 완료: /Users/danghyeonsong/ai-dev-team/projects/lapaz-crawl-20260305170615/data/players_all.json
+2026-03-05 17:36:27,808 [INFO] __main__: 결과 요약: {'namuwiki': 18, 'failed': 22}
+2026-03-05 18:11:20,197 [INFO] __main__: 백업 생성: /Users/danghyeonsong/ai-dev-team/projects/lapaz-crawl-20260305170615/data/players_all_backup.json
+2026-03-05 18:11:20,199 [INFO] __main__: 데이터 로드: /Users/danghyeonsong/ai-dev-team/projects/lapaz-crawl-20260305170615/data/players_all.json
+2026-03-05 18:11:20,200 [INFO] __main__: 선수 수: 40
+2026-03-05 18:11:20,200 [INFO] __main__: 보강 필요 선수: 22명
+2026-03-05 18:11:20,200 [INFO] src.processors.play_style_enricher: [1/40] 스킵: 오나나 (이미 보강됨)
+2026-03-05 18:11:20,200 [INFO] src.processors.play_style_enricher: [2/40] 스킵: 마즈라위 (이미 보강됨)
+2026-03-05 18:11:20,200 [INFO] src.processors.play_style_enricher: [3/40] 보강 시작: 데 리흐트 (Matthijs de Ligt)
+2026-03-05 18:11:56,992 [INFO] src.processors.play_style_enricher: 나무위키 실패, LLM fallback: 데 리흐트
+2026-03-05 18:11:58,567 [INFO] httpx: HTTP Request: POST https://api.anthropic.com/v1/messages "HTTP/1.1 400 Bad Request"
+2026-03-05 18:11:58,569 [ERROR] src.processors.play_style_enricher: LLM 생성 실패: 데 리흐트 - Error code: 400 - {'type': 'error', 'error': {'type': 'invalid_request_error', 'message': 'Your credit balance is too low to access the Anthropic API. Please go to Plans & Billing to upgrade or purchase credits.'}, 'request_id': 'req_011CYjg78mmVbGRtNebBoNu1'}
+2026-03-05 18:11:58,569 [WARNING] src.processors.play_style_enricher: 보강 실패: 데 리흐트
+2026-03-05 18:11:58,569 [INFO] src.processors.play_style_enricher: [4/40] 스킵: 리산드로 마르티네스 (이미 보강됨)
+2026-03-05 18:11:58,569 [INFO] src.processors.play_style_enricher: [5/40] 보강 시작: 달로 (Diogo Dalot)
+2026-03-05 19:00:00,736 [INFO] __main__: 백업 생성: /Users/danghyeonsong/ai-dev-team/projects/lapaz-crawl-20260305170615/data/players_all_backup.json
+2026-03-05 19:00:00,739 [INFO] __main__: 데이터 로드: /Users/danghyeonsong/ai-dev-team/projects/lapaz-crawl-20260305170615/data/players_all.json
+2026-03-05 19:00:00,740 [INFO] __main__: 선수 수: 40
+2026-03-05 19:00:00,740 [INFO] __main__: 보강 필요 선수: 22명
+2026-03-05 19:00:00,740 [INFO] src.processors.play_style_enricher: [1/40] 스킵: 오나나 (이미 보강됨)
+2026-03-05 19:00:00,740 [INFO] src.processors.play_style_enricher: [2/40] 스킵: 마즈라위 (이미 보강됨)
+2026-03-05 19:00:00,740 [INFO] src.processors.play_style_enricher: [3/40] 보강 시작: 데 리흐트 (Matthijs de Ligt)
+2026-03-05 19:01:16,073 [INFO] src.crawlers.namuwiki_selenium: 성공: 데 리흐트 (문서명: 마테이스 더 리흐트)
+2026-03-05 19:01:16,075 [INFO] src.processors.play_style_enricher: 나무위키 성공: 데 리흐트
+2026-03-05 19:01:16,075 [INFO] src.processors.play_style_enricher: [4/40] 스킵: 리산드로 마르티네스 (이미 보강됨)
+2026-03-05 19:01:16,075 [INFO] src.processors.play_style_enricher: [5/40] 보강 시작: 달로 (Diogo Dalot)
+2026-03-05 19:01:53,227 [INFO] src.crawlers.namuwiki_selenium: 성공: 달로 (문서명: 디오구 달로트)
+2026-03-05 19:01:53,228 [INFO] src.processors.play_style_enricher: 나무위키 성공: 달로
+2026-03-05 19:01:53,228 [INFO] src.processors.play_style_enricher: [6/40] 보강 시작: 에반스 (Jonny Evans)
+2026-03-05 19:02:29,573 [INFO] src.crawlers.namuwiki_selenium: 성공: 에반스 (문서명: 조니 에반스)
+2026-03-05 19:02:29,574 [INFO] src.processors.play_style_enricher: 나무위키 성공: 에반스
+2026-03-05 19:02:29,574 [INFO] src.processors.play_style_enricher: [7/40] 보강 시작: 유로 (Leny Yoro)
+2026-03-05 19:03:08,009 [INFO] src.crawlers.namuwiki_selenium: 성공: 유로 (문서명: 레니 요로)
+2026-03-05 19:03:08,011 [INFO] src.processors.play_style_enricher: 나무위키 성공: 유로
+2026-03-05 19:03:08,011 [INFO] src.processors.play_style_enricher: [8/40] 스킵: 카세미루 (이미 보강됨)
+2026-03-05 19:03:08,011 [INFO] src.processors.play_style_enricher: [9/40] 스킵: 메이누 (이미 보강됨)
+2026-03-05 19:03:08,011 [INFO] src.processors.play_style_enricher: [10/40] 스킵: 브루노 페르난데스 (이미 보강됨)
+2026-03-05 19:03:08,012 [INFO] src.processors.play_style_enricher: [11/40] 보강 시작: 마운트 (Mason Mount)
+2026-03-05 19:03:39,440 [INFO] src.crawlers.namuwiki_selenium: 성공: 마운트 (문서명: 메이슨 마운트)
+2026-03-05 19:03:39,441 [INFO] src.processors.play_style_enricher: 나무위키 성공: 마운트
+2026-03-05 19:03:39,441 [INFO] src.processors.play_style_enricher: [12/40] 스킵: 에릭센 (이미 보강됨)
+2026-03-05 19:03:39,441 [INFO] src.processors.play_style_enricher: [13/40] 스킵: 우가르테 (이미 보강됨)
+2026-03-05 19:03:39,441 [INFO] src.processors.play_style_enricher: [14/40] 보강 시작: 콜리어 (Toby Collyer)
+2026-03-05 19:04:13,077 [INFO] src.crawlers.namuwiki_selenium: 성공: 콜리어 (문서명: 토비 콜리어)
+2026-03-05 19:04:13,078 [INFO] src.processors.play_style_enricher: 나무위키 성공: 콜리어
+2026-03-05 19:04:13,078 [INFO] src.processors.play_style_enricher: [15/40] 스킵: 호일룬 (이미 보강됨)
+2026-03-05 19:04:13,078 [INFO] src.processors.play_style_enricher: [16/40] 스킵: 가르나초 (이미 보강됨)
+2026-03-05 19:04:13,078 [INFO] src.processors.play_style_enricher: [17/40] 스킵: 아마드 디알로 (이미 보강됨)
+2026-03-05 19:04:13,078 [INFO] src.processors.play_style_enricher: [18/40] 보강 시작: 안토니 (Antony)
+2026-03-05 19:04:29,597 [INFO] src.crawlers.namuwiki_selenium: 시도 실패: 안토니 -> 안토니(축구 선수)
+2026-03-05 19:04:43,015 [INFO] src.crawlers.namuwiki_selenium: 시도 실패: 안토니 -> 안토니 산투스
+2026-03-05 19:05:18,939 [INFO] src.crawlers.namuwiki_selenium: 성공: 안토니 (문서명: 안토니)
+2026-03-05 19:05:18,940 [INFO] src.processors.play_style_enricher: 나무위키 성공: 안토니
+2026-03-05 19:05:18,940 [INFO] src.processors.play_style_enricher: [19/40] 스킵: 지르크제 (이미 보강됨)
+2026-03-05 19:05:18,940 [INFO] src.processors.play_style_enricher: [20/40] 스킵: 래시포드 (이미 보강됨)
+2026-03-05 19:05:18,941 [INFO] src.processors.play_style_enricher: [21/40] 스킵: 에밀리아노 마르티네스 (이미 보강됨)
+2026-03-05 19:05:18,941 [INFO] src.processors.play_style_enricher: [22/40] 스킵: 올센 (이미 보강됨)
+2026-03-05 19:05:18,941 [INFO] src.processors.play_style_enricher: [23/40] 보강 시작: 캐시 (Matty Cash)
+2026-03-05 19:05:55,925 [INFO] src.crawlers.namuwiki_selenium: 성공: 캐시 (문서명: 매티 캐시)
+2026-03-05 19:05:55,926 [INFO] src.processors.play_style_enricher: 나무위키 성공: 캐시
+2026-03-05 19:05:55,926 [INFO] src.processors.play_style_enricher: [24/40] 스킵: 콘사 (이미 보강됨)
+2026-03-05 19:05:55,926 [INFO] src.processors.play_style_enricher: [25/40] 보강 시작: 토레스 (Pau Torres)
+2026-03-05 19:06:40,606 [INFO] src.crawlers.namuwiki_selenium: 성공: 토레스 (문서명: 파우 토레스)
+2026-03-05 19:06:40,608 [INFO] src.processors.play_style_enricher: 나무위키 성공: 토레스
+2026-03-05 19:06:40,608 [INFO] src.processors.play_style_enricher: [26/40] 보강 시작: 딘뉴 (Lucas Digne)
+2026-03-05 19:07:37,387 [INFO] src.crawlers.namuwiki_selenium: 성공: 딘뉴 (문서명: 뤼카 디뉴)
+2026-03-05 19:07:37,389 [INFO] src.processors.play_style_enricher: 나무위키 성공: 딘뉴
+2026-03-05 19:07:37,389 [INFO] src.processors.play_style_enricher: [27/40] 보강 시작: 카를로스 (Diego Carlos)
+2026-03-05 19:08:12,303 [WARNING] src.crawlers.namuwiki_selenium: 크롤링 오류: 디에고 카를로스 (attempt 1): Message: invalid session id: session deleted as the browser has closed the connection
+from disconnected: Unable to receive message from renderer
+  (Session info: chrome=145.0.7632.119); For documentation on this error, please visit: https://www.selenium.dev/documentation/webdriver/troubleshooting/errors#invalidsessionidexception
+Stacktrace:
+0   chromedriver                        0x0000000104e196b4 cxxbridge1$str$ptr + 3127600
+1   chromedriver                        0x0000000104e11a50 cxxbridge1$str$ptr + 3095756
+2   chromedriver                        0x00000001048ee56c _RNvCsdExgN8vFLbb_7___rustc35___rust_no_alloc_shim_is_unstable_v2 + 75432
+3   chromedriver                        0x00000001048d88c4 cxxbridge1$string$len + 4160
+4   chromedriver                        0x00000001048d85e4 cxxbridge1$string$len + 3424
+5   chromedriver                        0x00000001048d61a8 chromedriver + 221608
+6   chromedriver                        0x00000001048d6d9c chromedriver + 224668
+7   chromedriver                        0x00000001048e4768 _RNvCsdExgN8vFLbb_7___rustc35___rust_no_alloc_shim_is_unstable_v2 + 34980
+8   chromedriver                        0x00000001048fb240 _RNvCsdExgN8vFLbb_7___rustc35___rust_no_alloc_shim_is_unstable_v2 + 127868
+9   chromedriver                        0x00000001048d7408 chromedriver + 226312
+10  chromedriver                        0x00000001048fabd8 _RNvCsdExgN8vFLbb_7___rustc35___rust_no_alloc_shim_is_unstable_v2 + 126228
+11  chromedriver                        0x00000001049768e0 _RNvCsdExgN8vFLbb_7___rustc35___rust_no_alloc_shim_is_unstable_v2 + 633372
+12  chromedriver                        0x000000010492bb9c _RNvCsdExgN8vFLbb_7___rustc35___rust_no_alloc_shim_is_unstable_v2 + 326872
+13  chromedriver                        0x0000000104dd8680 cxxbridge1$str$ptr + 2861308
+14  chromedriver                        0x0000000104ddbdd4 cxxbridge1$str$ptr + 2875472
+15  chromedriver                        0x0000000104dbda7c cxxbridge1$str$ptr + 2751736
+16  chromedriver                        0x0000000104ddc658 cxxbridge1$str$ptr + 2877652
+17  chromedriver                        0x0000000104dadffc cxxbridge1$str$ptr + 2687608
+18  chromedriver                        0x0000000104e00d78 cxxbridge1$str$ptr + 3026932
+19  chromedriver                        0x0000000104e00ef4 cxxbridge1$str$ptr + 3027312
+20  chromedriver                        0x0000000104e116a8 cxxbridge1$str$ptr + 3094820
+21  libsystem_pthread.dylib             0x0000000186ccfc08 _pthread_start + 136
+22  libsystem_pthread.dylib             0x0000000186ccaba8 thread_start + 8
+
+2026-03-05 19:10:06,581 [INFO] src.crawlers.namuwiki_selenium: 성공: 카를로스 (문서명: 디에고 카를로스)
+2026-03-05 19:10:06,583 [INFO] src.processors.play_style_enricher: 나무위키 성공: 카를로스
+2026-03-05 19:10:06,583 [INFO] src.processors.play_style_enricher: [28/40] 보강 시작: 밍스 (Tyrone Mings)
+2026-03-05 19:10:09,336 [WARNING] src.crawlers.namuwiki_selenium: 크롤링 오류: 타이론 밍스 (attempt 1): Message: unknown error: net::ERR_INTERNET_DISCONNECTED
+  (Session info: chrome=145.0.7632.119)
+Stacktrace:
+0   chromedriver                        0x00000001047e56b4 cxxbridge1$str$ptr + 3127600
+1   chromedriver                        0x00000001047dda50 cxxbridge1$str$ptr + 3095756
+2   chromedriver                        0x00000001042ba56c _RNvCsdExgN8vFLbb_7___rustc35___rust_no_alloc_shim_is_unstable_v2 + 75432
+3   chromedriver                        0x00000001042b25a8 _RNvCsdExgN8vFLbb_7___rustc35___rust_no_alloc_shim_is_unstable_v2 + 42724
+4   chromedriver                        0x00000001042a4ca4 cxxbridge1$string$len + 5152
+5   chromedriver                        0x00000001042a67ac cxxbridge1$string$len + 12072
+6   chromedriver                        0x00000001042a5110 cxxbridge1$string$len + 6284
+7   chromedriver                        0x00000001042a48f8 cxxbridge1$string$len + 4212
+8   chromedriver                        0x00000001042a45e4 cxxbridge1$string$len + 3424
+9   chromedriver                        0x00000001042a21a8 chromedriver + 221608
+10  chromedriver                        0x00000001042a2c74 chromedriver + 224372
+11  chromedriver                        0x00000001042bda60 _RNvCsdExgN8vFLbb_7___rustc35___rust_no_alloc_shim_is_unstable_v2 + 88988
+12  chromedriver                        0x00000001043430ec _RNvCsdExgN8vFLbb_7___rustc35___rust_no_alloc_shim_is_unstable_v2 + 635432
+13  chromedriver                        0x0000000104342620 _RNvCsdExgN8vFLbb_7___rustc35___rust_no_alloc_shim_is_unstable_v2 + 632668
+14  chromedriver                        0x00000001042f7b9c _RNvCsdExgN8vFLbb_7___rustc35___rust_no_alloc_shim_is_unstable_v2 + 326872
+15  chromedriver                        0x00000001047a4680 cxxbridge1$str$ptr + 2861308
+16  chromedriver                        0x00000001047a7dd4 cxxbridge1$str$ptr + 2875472
+17  chromedriver                        0x0000000104789a7c cxxbridge1$str$ptr + 2751736
+18  chromedriver                        0x00000001047a8658 cxxbridge1$str$ptr + 2877652
+19  chromedriver                        0x0000000104779ffc cxxbridge1$str$ptr + 2687608
+20  chromedriver                        0x00000001047ccd78 cxxbridge1$str$ptr + 3026932
+21  chromedriver                        0x00000001047ccef4 cxxbridge1$str$ptr + 3027312
+22  chromedriver                        0x00000001047dd6a8 cxxbridge1$str$ptr + 3094820
+23  libsystem_pthread.dylib             0x0000000186ccfc08 _pthread_start + 136
+24  libsystem_pthread.dylib             0x0000000186ccaba8 thread_start + 8
+
+2026-03-05 19:10:20,014 [WARNING] src.crawlers.namuwiki_selenium: 크롤링 오류: 타이론 밍스 (attempt 2): Message: unknown error: net::ERR_INTERNET_DISCONNECTED
+  (Session info: chrome=145.0.7632.119)
+Stacktrace:
+0   chromedriver                        0x00000001049c96b4 cxxbridge1$str$ptr + 3127600
+1   chromedriver                        0x00000001049c1a50 cxxbridge1$str$ptr + 3095756
+2   chromedriver                        0x000000010449e56c _RNvCsdExgN8vFLbb_7___rustc35___rust_no_alloc_shim_is_unstable_v2 + 75432
+3   chromedriver                        0x00000001044965a8 _RNvCsdExgN8vFLbb_7___rustc35___rust_no_alloc_shim_is_unstable_v2 + 42724
+4   chromedriver                        0x0000000104488ca4 cxxbridge1$string$len + 5152
+5   chromedriver                        0x000000010448a7ac cxxbridge1$string$len + 12072
+6   chromedriver                        0x0000000104489110 cxxbridge1$string$len + 6284
+7   chromedriver                        0x00000001044888f8 cxxbridge1$string$len + 4212
+8   chromedriver                        0x00000001044885e4 cxxbridge1$string$len + 3424
+9   chromedriver                        0x00000001044861a8 chromedriver + 221608
+10  chromedriver                        0x0000000104486c74 chromedriver + 224372
+11  chromedriver                        0x00000001044a1a60 _RNvCsdExgN8vFLbb_7___rustc35___rust_no_alloc_shim_is_unstable_v2 + 88988
+12  chromedriver                        0x00000001045270ec _RNvCsdExgN8vFLbb_7___rustc35___rust_no_alloc_shim_is_unstable_v2 + 635432
+13  chromedriver                        0x0000000104526620 _RNvCsdExgN8vFLbb_7___rustc35___rust_no_alloc_shim_is_unstable_v2 + 632668
+14  chromedriver                        0x00000001044dbb9c _RNvCsdExgN8vFLbb_7___rustc35___rust_no_alloc_shim_is_unstable_v2 + 326872
+15  chromedriver                        0x0000000104988680 cxxbridge1$str$ptr + 2861308
+16  chromedriver                        0x000000010498bdd4 cxxbridge1$str$ptr + 2875472
+17  chromedriver                        0x000000010496da7c cxxbridge1$str$ptr + 2751736
+18  chromedriver                        0x000000010498c658 cxxbridge1$str$ptr + 2877652
+19  chromedriver                        0x000000010495dffc cxxbridge1$str$ptr + 2687608
+20  chromedriver                        0x00000001049b0d78 cxxbridge1$str$ptr + 3026932
+21  chromedriver                        0x00000001049b0ef4 cxxbridge1$str$ptr + 3027312
+22  chromedriver                        0x00000001049c16a8 cxxbridge1$str$ptr + 3094820
+23  libsystem_pthread.dylib             0x0000000186ccfc08 _pthread_start + 136
+24  libsystem_pthread.dylib             0x0000000186ccaba8 thread_start + 8
+
+2026-03-05 19:11:55,416 [INFO] src.crawlers.namuwiki_selenium: 시도 실패: 밍스 -> 타이론 밍스
+2026-03-05 19:13:32,475 [INFO] src.crawlers.namuwiki_selenium: 성공: 밍스 (문서명: 밍스)
+2026-03-05 19:13:32,477 [INFO] src.processors.play_style_enricher: 나무위키 성공: 밍스
+2026-03-05 19:13:32,477 [INFO] src.processors.play_style_enricher: [29/40] 보강 시작: 카마라 (Boubacar Kamara)
+2026-03-05 19:13:34,726 [WARNING] src.crawlers.namuwiki_selenium: 크롤링 오류: 부바카르 카마라 (attempt 1): Message: unknown error: net::ERR_INTERNET_DISCONNECTED
+  (Session info: chrome=145.0.7632.119)
+Stacktrace:
+0   chromedriver                        0x00000001031316b4 cxxbridge1$str$ptr + 3127600
+1   chromedriver                        0x0000000103129a50 cxxbridge1$str$ptr + 3095756
+2   chromedriver                        0x0000000102c0656c _RNvCsdExgN8vFLbb_7___rustc35___rust_no_alloc_shim_is_unstable_v2 + 75432
+3   chromedriver                        0x0000000102bfe5a8 _RNvCsdExgN8vFLbb_7___rustc35___rust_no_alloc_shim_is_unstable_v2 + 42724
+4   chromedriver                        0x0000000102bf0ca4 cxxbridge1$string$len + 5152
+5   chromedriver                        0x0000000102bf27ac cxxbridge1$string$len + 12072
+6   chromedriver                        0x0000000102bf1110 cxxbridge1$string$len + 6284
+7   chromedriver                        0x0000000102bf08f8 cxxbridge1$string$len + 4212
+8   chromedriver                        0x0000000102bf05e4 cxxbridge1$string$len + 3424
+9   chromedriver                        0x0000000102bee1a8 chromedriver + 221608
+10  chromedriver                        0x0000000102beec74 chromedriver + 224372
+11  chromedriver                        0x0000000102c09a60 _RNvCsdExgN8vFLbb_7___rustc35___rust_no_alloc_shim_is_unstable_v2 + 88988
+12  chromedriver                        0x0000000102c8f0ec _RNvCsdExgN8vFLbb_7___rustc35___rust_no_alloc_shim_is_unstable_v2 + 635432
+13  chromedriver                        0x0000000102c8e620 _RNvCsdExgN8vFLbb_7___rustc35___rust_no_alloc_shim_is_unstable_v2 + 632668
+14  chromedriver                        0x0000000102c43b9c _RNvCsdExgN8vFLbb_7___rustc35___rust_no_alloc_shim_is_unstable_v2 + 326872
+15  chromedriver                        0x00000001030f0680 cxxbridge1$str$ptr + 2861308
+16  chromedriver                        0x00000001030f3dd4 cxxbridge1$str$ptr + 2875472
+17  chromedriver                        0x00000001030d5a7c cxxbridge1$str$ptr + 2751736
+18  chromedriver                        0x00000001030f4658 cxxbridge1$str$ptr + 2877652
+19  chromedriver                        0x00000001030c5ffc cxxbridge1$str$ptr + 2687608
+20  chromedriver                        0x0000000103118d78 cxxbridge1$str$ptr + 3026932
+21  chromedriver                        0x0000000103118ef4 cxxbridge1$str$ptr + 3027312
+22  chromedriver                        0x00000001031296a8 cxxbridge1$str$ptr + 3094820
+23  libsystem_pthread.dylib             0x0000000186ccfc08 _pthread_start + 136
+24  libsystem_pthread.dylib             0x0000000186ccaba8 thread_start + 8
+
+2026-03-05 19:13:44,875 [WARNING] src.crawlers.namuwiki_selenium: 크롤링 오류: 부바카르 카마라 (attempt 2): Message: unknown error: net::ERR_INTERNET_DISCONNECTED
+  (Session info: chrome=145.0.7632.119)
+Stacktrace:
+0   chromedriver                        0x00000001047516b4 cxxbridge1$str$ptr + 3127600
+1   chromedriver                        0x0000000104749a50 cxxbridge1$str$ptr + 3095756
+2   chromedriver                        0x000000010422656c _RNvCsdExgN8vFLbb_7___rustc35___rust_no_alloc_shim_is_unstable_v2 + 75432
+3   chromedriver                        0x000000010421e5a8 _RNvCsdExgN8vFLbb_7___rustc35___rust_no_alloc_shim_is_unstable_v2 + 42724
+4   chromedriver                        0x0000000104210ca4 cxxbridge1$string$len + 5152
+5   chromedriver                        0x00000001042127ac cxxbridge1$string$len + 12072
+6   chromedriver                        0x0000000104211110 cxxbridge1$string$len + 6284
+7   chromedriver                        0x00000001042108f8 cxxbridge1$string$len + 4212
+8   chromedriver                        0x00000001042105e4 cxxbridge1$string$len + 3424
+9   chromedriver                        0x000000010420e1a8 chromedriver + 221608
+10  chromedriver                        0x000000010420ec74 chromedriver + 224372
+11  chromedriver                        0x0000000104229a60 _RNvCsdExgN8vFLbb_7___rustc35___rust_no_alloc_shim_is_unstable_v2 + 88988
+12  chromedriver                        0x00000001042af0ec _RNvCsdExgN8vFLbb_7___rustc35___rust_no_alloc_shim_is_unstable_v2 + 635432
+13  chromedriver                        0x00000001042ae620 _RNvCsdExgN8vFLbb_7___rustc35___rust_no_alloc_shim_is_unstable_v2 + 632668
+14  chromedriver                        0x0000000104263b9c _RNvCsdExgN8vFLbb_7___rustc35___rust_no_alloc_shim_is_unstable_v2 + 326872
+15  chromedriver                        0x0000000104710680 cxxbridge1$str$ptr + 2861308
+16  chromedriver                        0x0000000104713dd4 cxxbridge1$str$ptr + 2875472
+17  chromedriver                        0x00000001046f5a7c cxxbridge1$str$ptr + 2751736
+18  chromedriver                        0x0000000104714658 cxxbridge1$str$ptr + 2877652
+19  chromedriver                        0x00000001046e5ffc cxxbridge1$str$ptr + 2687608
+20  chromedriver                        0x0000000104738d78 cxxbridge1$str$ptr + 3026932
+21  chromedriver                        0x0000000104738ef4 cxxbridge1$str$ptr + 3027312
+22  chromedriver                        0x00000001047496a8 cxxbridge1$str$ptr + 3094820
+23  libsystem_pthread.dylib             0x0000000186ccfc08 _pthread_start + 136
+24  libsystem_pthread.dylib             0x0000000186ccaba8 thread_start + 8
+
+2026-03-05 19:13:47,959 [INFO] src.crawlers.namuwiki_selenium: 시도 실패: 카마라 -> 부바카르 카마라
+2026-03-05 19:14:27,894 [WARNING] src.crawlers.namuwiki_selenium: 크롤링 오류: 카마라 (attempt 1): Message: unknown error: net::ERR_INTERNET_DISCONNECTED
+  (Session info: chrome=145.0.7632.119)
+Stacktrace:
+0   chromedriver                        0x0000000100e8d6b4 cxxbridge1$str$ptr + 3127600
+1   chromedriver                        0x0000000100e85a50 cxxbridge1$str$ptr + 3095756
+2   chromedriver                        0x000000010096256c _RNvCsdExgN8vFLbb_7___rustc35___rust_no_alloc_shim_is_unstable_v2 + 75432
+3   chromedriver                        0x000000010095a5a8 _RNvCsdExgN8vFLbb_7___rustc35___rust_no_alloc_shim_is_unstable_v2 + 42724
+4   chromedriver                        0x000000010094cca4 cxxbridge1$string$len + 5152
+5   chromedriver                        0x000000010094e7ac cxxbridge1$string$len + 12072
+6   chromedriver                        0x000000010094d110 cxxbridge1$string$len + 6284
+7   chromedriver                        0x000000010094c8f8 cxxbridge1$string$len + 4212
+8   chromedriver                        0x000000010094c5e4 cxxbridge1$string$len + 3424
+9   chromedriver                        0x000000010094a1a8 chromedriver + 221608
+10  chromedriver                        0x000000010094ac74 chromedriver + 224372
+11  chromedriver                        0x0000000100965a60 _RNvCsdExgN8vFLbb_7___rustc35___rust_no_alloc_shim_is_unstable_v2 + 88988
+12  chromedriver                        0x00000001009eb0ec _RNvCsdExgN8vFLbb_7___rustc35___rust_no_alloc_shim_is_unstable_v2 + 635432
+13  chromedriver                        0x00000001009ea620 _RNvCsdExgN8vFLbb_7___rustc35___rust_no_alloc_shim_is_unstable_v2 + 632668
+14  chromedriver                        0x000000010099fb9c _RNvCsdExgN8vFLbb_7___rustc35___rust_no_alloc_shim_is_unstable_v2 + 326872
+15  chromedriver                        0x0000000100e4c680 cxxbridge1$str$ptr + 2861308
+16  chromedriver                        0x0000000100e4fdd4 cxxbridge1$str$ptr + 2875472
+17  chromedriver                        0x0000000100e31a7c cxxbridge1$str$ptr + 2751736
+18  chromedriver                        0x0000000100e50658 cxxbridge1$str$ptr + 2877652
+19  chromedriver                        0x0000000100e21ffc cxxbridge1$str$ptr + 2687608
+20  chromedriver                        0x0000000100e74d78 cxxbridge1$str$ptr + 3026932
+21  chromedriver                        0x0000000100e74ef4 cxxbridge1$str$ptr + 3027312
+22  chromedriver                        0x0000000100e856a8 cxxbridge1$str$ptr + 3094820
+23  libsystem_pthread.dylib             0x0000000186ccfc08 _pthread_start + 136
+24  libsystem_pthread.dylib             0x0000000186ccaba8 thread_start + 8
+
+2026-03-05 19:14:38,012 [WARNING] src.crawlers.namuwiki_selenium: 크롤링 오류: 카마라 (attempt 2): Message: unknown error: net::ERR_INTERNET_DISCONNECTED
+  (Session info: chrome=145.0.7632.119)
+Stacktrace:
+0   chromedriver                        0x00000001026e96b4 cxxbridge1$str$ptr + 3127600
+1   chromedriver                        0x00000001026e1a50 cxxbridge1$str$ptr + 3095756
+2   chromedriver                        0x00000001021be56c _RNvCsdExgN8vFLbb_7___rustc35___rust_no_alloc_shim_is_unstable_v2 + 75432
+3   chromedriver                        0x00000001021b65a8 _RNvCsdExgN8vFLbb_7___rustc35___rust_no_alloc_shim_is_unstable_v2 + 42724
+4   chromedriver                        0x00000001021a8ca4 cxxbridge1$string$len + 5152
+5   chromedriver                        0x00000001021aa7ac cxxbridge1$string$len + 12072
+6   chromedriver                        0x00000001021a9110 cxxbridge1$string$len + 6284
+7   chromedriver                        0x00000001021a88f8 cxxbridge1$string$len + 4212
+8   chromedriver                        0x00000001021a85e4 cxxbridge1$string$len + 3424
+9   chromedriver                        0x00000001021a61a8 chromedriver + 221608
+10  chromedriver                        0x00000001021a6c74 chromedriver + 224372
+11  chromedriver                        0x00000001021c1a60 _RNvCsdExgN8vFLbb_7___rustc35___rust_no_alloc_shim_is_unstable_v2 + 88988
+12  chromedriver                        0x00000001022470ec _RNvCsdExgN8vFLbb_7___rustc35___rust_no_alloc_shim_is_unstable_v2 + 635432
+13  chromedriver                        0x0000000102246620 _RNvCsdExgN8vFLbb_7___rustc35___rust_no_alloc_shim_is_unstable_v2 + 632668
+14  chromedriver                        0x00000001021fbb9c _RNvCsdExgN8vFLbb_7___rustc35___rust_no_alloc_shim_is_unstable_v2 + 326872
+15  chromedriver                        0x00000001026a8680 cxxbridge1$str$ptr + 2861308
+16  chromedriver                        0x00000001026abdd4 cxxbridge1$str$ptr + 2875472
+17  chromedriver                        0x000000010268da7c cxxbridge1$str$ptr + 2751736
+18  chromedriver                        0x00000001026ac658 cxxbridge1$str$ptr + 2877652
+19  chromedriver                        0x000000010267dffc cxxbridge1$str$ptr + 2687608
+20  chromedriver                        0x00000001026d0d78 cxxbridge1$str$ptr + 3026932
+21  chromedriver                        0x00000001026d0ef4 cxxbridge1$str$ptr + 3027312
+22  chromedriver                        0x00000001026e16a8 cxxbridge1$str$ptr + 3094820
+23  libsystem_pthread.dylib             0x0000000186ccfc08 _pthread_start + 136
+24  libsystem_pthread.dylib             0x0000000186ccaba8 thread_start + 8
+
+2026-03-05 19:14:41,104 [INFO] src.crawlers.namuwiki_selenium: 시도 실패: 카마라 -> 카마라
+2026-03-05 19:14:48,017 [WARNING] src.crawlers.namuwiki_selenium: 검색 크롤링 실패: 카마라: Message: unknown error: net::ERR_INTERNET_DISCONNECTED
+  (Session info: chrome=145.0.7632.119)
+Stacktrace:
+0   chromedriver                        0x00000001009516b4 cxxbridge1$str$ptr + 3127600
+1   chromedriver                        0x0000000100949a50 cxxbridge1$str$ptr + 3095756
+2   chromedriver                        0x000000010042656c _RNvCsdExgN8vFLbb_7___rustc35___rust_no_alloc_shim_is_unstable_v2 + 75432
+3   chromedriver                        0x000000010041e5a8 _RNvCsdExgN8vFLbb_7___rustc35___rust_no_alloc_shim_is_unstable_v2 + 42724
+4   chromedriver                        0x0000000100410ca4 cxxbridge1$string$len + 5152
+5   chromedriver                        0x00000001004127ac cxxbridge1$string$len + 12072
+6   chromedriver                        0x0000000100411110 cxxbridge1$string$len + 6284
+7   chromedriver                        0x00000001004108f8 cxxbridge1$string$len + 4212
+8   chromedriver                        0x00000001004105e4 cxxbridge1$string$len + 3424
+9   chromedriver                        0x000000010040e1a8 chromedriver + 221608
+10  chromedriver                        0x000000010040ec74 chromedriver + 224372
+11  chromedriver                        0x0000000100429a60 _RNvCsdExgN8vFLbb_7___rustc35___rust_no_alloc_shim_is_unstable_v2 + 88988
+12  chromedriver                        0x00000001004af0ec _RNvCsdExgN8vFLbb_7___rustc35___rust_no_alloc_shim_is_unstable_v2 + 635432
+13  chromedriver                        0x00000001004ae620 _RNvCsdExgN8vFLbb_7___rustc35___rust_no_alloc_shim_is_unstable_v2 + 632668
+14  chromedriver                        0x0000000100463b9c _RNvCsdExgN8vFLbb_7___rustc35___rust_no_alloc_shim_is_unstable_v2 + 326872
+15  chromedriver                        0x0000000100910680 cxxbridge1$str$ptr + 2861308
+16  chromedriver                        0x0000000100913dd4 cxxbridge1$str$ptr + 2875472
+17  chromedriver                        0x00000001008f5a7c cxxbridge1$str$ptr + 2751736
+18  chromedriver                        0x0000000100914658 cxxbridge1$str$ptr + 2877652
+19  chromedriver                        0x00000001008e5ffc cxxbridge1$str$ptr + 2687608
+20  chromedriver                        0x0000000100938d78 cxxbridge1$str$ptr + 3026932
+21  chromedriver                        0x0000000100938ef4 cxxbridge1$str$ptr + 3027312
+22  chromedriver                        0x00000001009496a8 cxxbridge1$str$ptr + 3094820
+23  libsystem_pthread.dylib             0x0000000186ccfc08 _pthread_start + 136
+24  libsystem_pthread.dylib             0x0000000186ccaba8 thread_start + 8
+
+2026-03-05 19:14:48,094 [INFO] src.processors.play_style_enricher: 나무위키 실패, LLM fallback: 카마라
+2026-03-05 19:14:49,049 [INFO] anthropic._base_client: Retrying request to /v1/messages in 0.482370 seconds
+2026-03-05 19:14:49,546 [INFO] anthropic._base_client: Retrying request to /v1/messages in 0.768670 seconds
+2026-03-05 19:14:50,323 [ERROR] src.processors.play_style_enricher: LLM 생성 실패: 카마라 - Connection error.
+2026-03-05 19:14:50,323 [WARNING] src.processors.play_style_enricher: 보강 실패: 카마라
+2026-03-05 19:14:50,323 [INFO] src.processors.play_style_enricher: [30/40] 보강 시작: 티엘레만스 (Youri Tielemans)
+2026-03-05 19:14:57,359 [WARNING] src.crawlers.namuwiki_selenium: 크롤링 오류: 유리 틸레만스 (attempt 1): Message: unknown error: net::ERR_INTERNET_DISCONNECTED
+  (Session info: chrome=145.0.7632.119)
+Stacktrace:
+0   chromedriver                        0x00000001011ed6b4 cxxbridge1$str$ptr + 3127600
+1   chromedriver                        0x00000001011e5a50 cxxbridge1$str$ptr + 3095756
+2   chromedriver                        0x0000000100cc256c _RNvCsdExgN8vFLbb_7___rustc35___rust_no_alloc_shim_is_unstable_v2 + 75432
+3   chromedriver                        0x0000000100cba5a8 _RNvCsdExgN8vFLbb_7___rustc35___rust_no_alloc_shim_is_unstable_v2 + 42724
+4   chromedriver                        0x0000000100cacca4 cxxbridge1$string$len + 5152
+5   chromedriver                        0x0000000100cae7ac cxxbridge1$string$len + 12072
+6   chromedriver                        0x0000000100cad110 cxxbridge1$string$len + 6284
+7   chromedriver                        0x0000000100cac8f8 cxxbridge1$string$len + 4212
+8   chromedriver                        0x0000000100cac5e4 cxxbridge1$string$len + 3424
+9   chromedriver                        0x0000000100caa1a8 chromedriver + 221608
+10  chromedriver                        0x0000000100caac74 chromedriver + 224372
+11  chromedriver                        0x0000000100cc5a60 _RNvCsdExgN8vFLbb_7___rustc35___rust_no_alloc_shim_is_unstable_v2 + 88988
+12  chromedriver                        0x0000000100d4b0ec _RNvCsdExgN8vFLbb_7___rustc35___rust_no_alloc_shim_is_unstable_v2 + 635432
+13  chromedriver                        0x0000000100d4a620 _RNvCsdExgN8vFLbb_7___rustc35___rust_no_alloc_shim_is_unstable_v2 + 632668
+14  chromedriver                        0x0000000100cffb9c _RNvCsdExgN8vFLbb_7___rustc35___rust_no_alloc_shim_is_unstable_v2 + 326872
+15  chromedriver                        0x00000001011ac680 cxxbridge1$str$ptr + 2861308
+16  chromedriver                        0x00000001011afdd4 cxxbridge1$str$ptr + 2875472
+17  chromedriver                        0x0000000101191a7c cxxbridge1$str$ptr + 2751736
+18  chromedriver                        0x00000001011b0658 cxxbridge1$str$ptr + 2877652
+19  chromedriver                        0x0000000101181ffc cxxbridge1$str$ptr + 2687608
+20  chromedriver                        0x00000001011d4d78 cxxbridge1$str$ptr + 3026932
+21  chromedriver                        0x00000001011d4ef4 cxxbridge1$str$ptr + 3027312
+22  chromedriver                        0x00000001011e56a8 cxxbridge1$str$ptr + 3094820
+23  libsystem_pthread.dylib             0x0000000186ccfc08 _pthread_start + 136
+24  libsystem_pthread.dylib             0x0000000186ccaba8 thread_start + 8
+
+2026-03-05 19:15:07,573 [WARNING] src.crawlers.namuwiki_selenium: 크롤링 오류: 유리 틸레만스 (attempt 2): Message: unknown error: net::ERR_INTERNET_DISCONNECTED
+  (Session info: chrome=145.0.7632.119)
+Stacktrace:
+0   chromedriver                        0x0000000104be96b4 cxxbridge1$str$ptr + 3127600
+1   chromedriver                        0x0000000104be1a50 cxxbridge1$str$ptr + 3095756
+2   chromedriver                        0x00000001046be56c _RNvCsdExgN8vFLbb_7___rustc35___rust_no_alloc_shim_is_unstable_v2 + 75432
+3   chromedriver                        0x00000001046b65a8 _RNvCsdExgN8vFLbb_7___rustc35___rust_no_alloc_shim_is_unstable_v2 + 42724
+4   chromedriver                        0x00000001046a8ca4 cxxbridge1$string$len + 5152
+5   chromedriver                        0x00000001046aa7ac cxxbridge1$string$len + 12072
+6   chromedriver                        0x00000001046a9110 cxxbridge1$string$len + 6284
+7   chromedriver                        0x00000001046a88f8 cxxbridge1$string$len + 4212
+8   chromedriver                        0x00000001046a85e4 cxxbridge1$string$len + 3424
+9   chromedriver                        0x00000001046a61a8 chromedriver + 221608
+10  chromedriver                        0x00000001046a6c74 chromedriver + 224372
+11  chromedriver                        0x00000001046c1a60 _RNvCsdExgN8vFLbb_7___rustc35___rust_no_alloc_shim_is_unstable_v2 + 88988
+12  chromedriver                        0x00000001047470ec _RNvCsdExgN8vFLbb_7___rustc35___rust_no_alloc_shim_is_unstable_v2 + 635432
+13  chromedriver                        0x0000000104746620 _RNvCsdExgN8vFLbb_7___rustc35___rust_no_alloc_shim_is_unstable_v2 + 632668
+14  chromedriver                        0x00000001046fbb9c _RNvCsdExgN8vFLbb_7___rustc35___rust_no_alloc_shim_is_unstable_v2 + 326872
+15  chromedriver                        0x0000000104ba8680 cxxbridge1$str$ptr + 2861308
+16  chromedriver                        0x0000000104babdd4 cxxbridge1$str$ptr + 2875472
+17  chromedriver                        0x0000000104b8da7c cxxbridge1$str$ptr + 2751736
+18  chromedriver                        0x0000000104bac658 cxxbridge1$str$ptr + 2877652
+19  chromedriver                        0x0000000104b7dffc cxxbridge1$str$ptr + 2687608
+20  chromedriver                        0x0000000104bd0d78 cxxbridge1$str$ptr + 3026932
+21  chromedriver                        0x0000000104bd0ef4 cxxbridge1$str$ptr + 3027312
+22  chromedriver                        0x0000000104be16a8 cxxbridge1$str$ptr + 3094820
+23  libsystem_pthread.dylib             0x0000000186ccfc08 _pthread_start + 136
+24  libsystem_pthread.dylib             0x0000000186ccaba8 thread_start + 8
+
+2026-03-05 19:15:10,655 [INFO] src.crawlers.namuwiki_selenium: 시도 실패: 티엘레만스 -> 유리 틸레만스
+2026-03-05 19:15:35,557 [WARNING] src.crawlers.namuwiki_selenium: 크롤링 오류: 유리 틸레만 (attempt 1): Message: unknown error: net::ERR_INTERNET_DISCONNECTED
+  (Session info: chrome=145.0.7632.119)
+Stacktrace:
+0   chromedriver                        0x0000000104d196b4 cxxbridge1$str$ptr + 3127600
+1   chromedriver                        0x0000000104d11a50 cxxbridge1$str$ptr + 3095756
+2   chromedriver                        0x00000001047ee56c _RNvCsdExgN8vFLbb_7___rustc35___rust_no_alloc_shim_is_unstable_v2 + 75432
+3   chromedriver                        0x00000001047e65a8 _RNvCsdExgN8vFLbb_7___rustc35___rust_no_alloc_shim_is_unstable_v2 + 42724
+4   chromedriver                        0x00000001047d8ca4 cxxbridge1$string$len + 5152
+5   chromedriver                        0x00000001047da7ac cxxbridge1$string$len + 12072
+6   chromedriver                        0x00000001047d9110 cxxbridge1$string$len + 6284
+7   chromedriver                        0x00000001047d88f8 cxxbridge1$string$len + 4212
+8   chromedriver                        0x00000001047d85e4 cxxbridge1$string$len + 3424
+9   chromedriver                        0x00000001047d61a8 chromedriver + 221608
+10  chromedriver                        0x00000001047d6c74 chromedriver + 224372
+11  chromedriver                        0x00000001047f1a60 _RNvCsdExgN8vFLbb_7___rustc35___rust_no_alloc_shim_is_unstable_v2 + 88988
+12  chromedriver                        0x00000001048770ec _RNvCsdExgN8vFLbb_7___rustc35___rust_no_alloc_shim_is_unstable_v2 + 635432
+13  chromedriver                        0x0000000104876620 _RNvCsdExgN8vFLbb_7___rustc35___rust_no_alloc_shim_is_unstable_v2 + 632668
+14  chromedriver                        0x000000010482bb9c _RNvCsdExgN8vFLbb_7___rustc35___rust_no_alloc_shim_is_unstable_v2 + 326872
+15  chromedriver                        0x0000000104cd8680 cxxbridge1$str$ptr + 2861308
+16  chromedriver                        0x0000000104cdbdd4 cxxbridge1$str$ptr + 2875472
+17  chromedriver                        0x0000000104cbda7c cxxbridge1$str$ptr + 2751736
+18  chromedriver                        0x0000000104cdc658 cxxbridge1$str$ptr + 2877652
+19  chromedriver                        0x0000000104cadffc cxxbridge1$str$ptr + 2687608
+20  chromedriver                        0x0000000104d00d78 cxxbridge1$str$ptr + 3026932
+21  chromedriver                        0x0000000104d00ef4 cxxbridge1$str$ptr + 3027312
+22  chromedriver                        0x0000000104d116a8 cxxbridge1$str$ptr + 3094820
+23  libsystem_pthread.dylib             0x0000000186ccfc08 _pthread_start + 136
+24  libsystem_pthread.dylib             0x0000000186ccaba8 thread_start + 8
+
+2026-03-05 19:15:45,579 [WARNING] src.crawlers.namuwiki_selenium: 크롤링 오류: 유리 틸레만 (attempt 2): Message: unknown error: net::ERR_INTERNET_DISCONNECTED
+  (Session info: chrome=145.0.7632.119)
+Stacktrace:
+0   chromedriver                        0x000000010491d6b4 cxxbridge1$str$ptr + 3127600
+1   chromedriver                        0x0000000104915a50 cxxbridge1$str$ptr + 3095756
+2   chromedriver                        0x00000001043f256c _RNvCsdExgN8vFLbb_7___rustc35___rust_no_alloc_shim_is_unstable_v2 + 75432
+3   chromedriver                        0x00000001043ea5a8 _RNvCsdExgN8vFLbb_7___rustc35___rust_no_alloc_shim_is_unstable_v2 + 42724
+4   chromedriver                        0x00000001043dcca4 cxxbridge1$string$len + 5152
+5   chromedriver                        0x00000001043de7ac cxxbridge1$string$len + 12072
+6   chromedriver                        0x00000001043dd110 cxxbridge1$string$len + 6284
+7   chromedriver                        0x00000001043dc8f8 cxxbridge1$string$len + 4212
+8   chromedriver                        0x00000001043dc5e4 cxxbridge1$string$len + 3424
+9   chromedriver                        0x00000001043da1a8 chromedriver + 221608
+10  chromedriver                        0x00000001043dac74 chromedriver + 224372
+11  chromedriver                        0x00000001043f5a60 _RNvCsdExgN8vFLbb_7___rustc35___rust_no_alloc_shim_is_unstable_v2 + 88988
+12  chromedriver                        0x000000010447b0ec _RNvCsdExgN8vFLbb_7___rustc35___rust_no_alloc_shim_is_unstable_v2 + 635432
+13  chromedriver                        0x000000010447a620 _RNvCsdExgN8vFLbb_7___rustc35___rust_no_alloc_shim_is_unstable_v2 + 632668
+14  chromedriver                        0x000000010442fb9c _RNvCsdExgN8vFLbb_7___rustc35___rust_no_alloc_shim_is_unstable_v2 + 326872
+15  chromedriver                        0x00000001048dc680 cxxbridge1$str$ptr + 2861308
+16  chromedriver                        0x00000001048dfdd4 cxxbridge1$str$ptr + 2875472
+17  chromedriver                        0x00000001048c1a7c cxxbridge1$str$ptr + 2751736
+18  chromedriver                        0x00000001048e0658 cxxbridge1$str$ptr + 2877652
+19  chromedriver                        0x00000001048b1ffc cxxbridge1$str$ptr + 2687608
+20  chromedriver                        0x0000000104904d78 cxxbridge1$str$ptr + 3026932
+21  chromedriver                        0x0000000104904ef4 cxxbridge1$str$ptr + 3027312
+22  chromedriver                        0x00000001049156a8 cxxbridge1$str$ptr + 3094820
+23  libsystem_pthread.dylib             0x0000000186ccfc08 _pthread_start + 136
+24  libsystem_pthread.dylib             0x0000000186ccaba8 thread_start + 8
+
+2026-03-05 19:15:48,732 [INFO] src.crawlers.namuwiki_selenium: 시도 실패: 티엘레만스 -> 유리 틸레만
+2026-03-05 19:15:56,013 [WARNING] src.crawlers.namuwiki_selenium: 크롤링 오류: 티엘레만스 (attempt 1): Message: unknown error: net::ERR_INTERNET_DISCONNECTED
+  (Session info: chrome=145.0.7632.119)
+Stacktrace:
+0   chromedriver                        0x0000000100eb56b4 cxxbridge1$str$ptr + 3127600
+1   chromedriver                        0x0000000100eada50 cxxbridge1$str$ptr + 3095756
+2   chromedriver                        0x000000010098a56c _RNvCsdExgN8vFLbb_7___rustc35___rust_no_alloc_shim_is_unstable_v2 + 75432
+3   chromedriver                        0x00000001009825a8 _RNvCsdExgN8vFLbb_7___rustc35___rust_no_alloc_shim_is_unstable_v2 + 42724
+4   chromedriver                        0x0000000100974ca4 cxxbridge1$string$len + 5152
+5   chromedriver                        0x00000001009767ac cxxbridge1$string$len + 12072
+6   chromedriver                        0x0000000100975110 cxxbridge1$string$len + 6284
+7   chromedriver                        0x00000001009748f8 cxxbridge1$string$len + 4212
+8   chromedriver                        0x00000001009745e4 cxxbridge1$string$len + 3424
+9   chromedriver                        0x00000001009721a8 chromedriver + 221608
+10  chromedriver                        0x0000000100972c74 chromedriver + 224372
+11  chromedriver                        0x000000010098da60 _RNvCsdExgN8vFLbb_7___rustc35___rust_no_alloc_shim_is_unstable_v2 + 88988
+12  chromedriver                        0x0000000100a130ec _RNvCsdExgN8vFLbb_7___rustc35___rust_no_alloc_shim_is_unstable_v2 + 635432
+13  chromedriver                        0x0000000100a12620 _RNvCsdExgN8vFLbb_7___rustc35___rust_no_alloc_shim_is_unstable_v2 + 632668
+14  chromedriver                        0x00000001009c7b9c _RNvCsdExgN8vFLbb_7___rustc35___rust_no_alloc_shim_is_unstable_v2 + 326872
+15  chromedriver                        0x0000000100e74680 cxxbridge1$str$ptr + 2861308
+16  chromedriver                        0x0000000100e77dd4 cxxbridge1$str$ptr + 2875472
+17  chromedriver                        0x0000000100e59a7c cxxbridge1$str$ptr + 2751736
+18  chromedriver                        0x0000000100e78658 cxxbridge1$str$ptr + 2877652
+19  chromedriver                        0x0000000100e49ffc cxxbridge1$str$ptr + 2687608
+20  chromedriver                        0x0000000100e9cd78 cxxbridge1$str$ptr + 3026932
+21  chromedriver                        0x0000000100e9cef4 cxxbridge1$str$ptr + 3027312
+22  chromedriver                        0x0000000100ead6a8 cxxbridge1$str$ptr + 3094820
+23  libsystem_pthread.dylib             0x0000000186ccfc08 _pthread_start + 136
+24  libsystem_pthread.dylib             0x0000000186ccaba8 thread_start + 8
+
+2026-03-05 19:16:06,091 [WARNING] src.crawlers.namuwiki_selenium: 크롤링 오류: 티엘레만스 (attempt 2): Message: unknown error: net::ERR_INTERNET_DISCONNECTED
+  (Session info: chrome=145.0.7632.119)
+Stacktrace:
+0   chromedriver                        0x00000001008f56b4 cxxbridge1$str$ptr + 3127600
+1   chromedriver                        0x00000001008eda50 cxxbridge1$str$ptr + 3095756
+2   chromedriver                        0x00000001003ca56c _RNvCsdExgN8vFLbb_7___rustc35___rust_no_alloc_shim_is_unstable_v2 + 75432
+3   chromedriver                        0x00000001003c25a8 _RNvCsdExgN8vFLbb_7___rustc35___rust_no_alloc_shim_is_unstable_v2 + 42724
+4   chromedriver                        0x00000001003b4ca4 cxxbridge1$string$len + 5152
+5   chromedriver                        0x00000001003b67ac cxxbridge1$string$len + 12072
+6   chromedriver                        0x00000001003b5110 cxxbridge1$string$len + 6284
+7   chromedriver                        0x00000001003b48f8 cxxbridge1$string$len + 4212
+8   chromedriver                        0x00000001003b45e4 cxxbridge1$string$len + 3424
+9   chromedriver                        0x00000001003b21a8 chromedriver + 221608
+10  chromedriver                        0x00000001003b2c74 chromedriver + 224372
+11  chromedriver                        0x00000001003cda60 _RNvCsdExgN8vFLbb_7___rustc35___rust_no_alloc_shim_is_unstable_v2 + 88988
+12  chromedriver                        0x00000001004530ec _RNvCsdExgN8vFLbb_7___rustc35___rust_no_alloc_shim_is_unstable_v2 + 635432
+13  chromedriver                        0x0000000100452620 _RNvCsdExgN8vFLbb_7___rustc35___rust_no_alloc_shim_is_unstable_v2 + 632668
+14  chromedriver                        0x0000000100407b9c _RNvCsdExgN8vFLbb_7___rustc35___rust_no_alloc_shim_is_unstable_v2 + 326872
+15  chromedriver                        0x00000001008b4680 cxxbridge1$str$ptr + 2861308
+16  chromedriver                        0x00000001008b7dd4 cxxbridge1$str$ptr + 2875472
+17  chromedriver                        0x0000000100899a7c cxxbridge1$str$ptr + 2751736
+18  chromedriver                        0x00000001008b8658 cxxbridge1$str$ptr + 2877652
+19  chromedriver                        0x0000000100889ffc cxxbridge1$str$ptr + 2687608
+20  chromedriver                        0x00000001008dcd78 cxxbridge1$str$ptr + 3026932
+21  chromedriver                        0x00000001008dcef4 cxxbridge1$str$ptr + 3027312
+22  chromedriver                        0x00000001008ed6a8 cxxbridge1$str$ptr + 3094820
+23  libsystem_pthread.dylib             0x0000000186ccfc08 _pthread_start + 136
+24  libsystem_pthread.dylib             0x0000000186ccaba8 thread_start + 8
+
+2026-03-05 19:16:09,178 [INFO] src.crawlers.namuwiki_selenium: 시도 실패: 티엘레만스 -> 티엘레만스
+2026-03-05 19:16:16,230 [WARNING] src.crawlers.namuwiki_selenium: 검색 크롤링 실패: 티엘레만스: Message: unknown error: net::ERR_INTERNET_DISCONNECTED
+  (Session info: chrome=145.0.7632.119)
+Stacktrace:
+0   chromedriver                        0x000000010137d6b4 cxxbridge1$str$ptr + 3127600
+1   chromedriver                        0x0000000101375a50 cxxbridge1$str$ptr + 3095756
+2   chromedriver                        0x0000000100e5256c _RNvCsdExgN8vFLbb_7___rustc35___rust_no_alloc_shim_is_unstable_v2 + 75432
+3   chromedriver                        0x0000000100e4a5a8 _RNvCsdExgN8vFLbb_7___rustc35___rust_no_alloc_shim_is_unstable_v2 + 42724
+4   chromedriver                        0x0000000100e3cca4 cxxbridge1$string$len + 5152
+5   chromedriver                        0x0000000100e3e7ac cxxbridge1$string$len + 12072
+6   chromedriver                        0x0000000100e3d110 cxxbridge1$string$len + 6284
+7   chromedriver                        0x0000000100e3c8f8 cxxbridge1$string$len + 4212
+8   chromedriver                        0x0000000100e3c5e4 cxxbridge1$string$len + 3424
+9   chromedriver                        0x0000000100e3a1a8 chromedriver + 221608
+10  chromedriver                        0x0000000100e3ac74 chromedriver + 224372
+11  chromedriver                        0x0000000100e55a60 _RNvCsdExgN8vFLbb_7___rustc35___rust_no_alloc_shim_is_unstable_v2 + 88988
+12  chromedriver                        0x0000000100edb0ec _RNvCsdExgN8vFLbb_7___rustc35___rust_no_alloc_shim_is_unstable_v2 + 635432
+13  chromedriver                        0x0000000100eda620 _RNvCsdExgN8vFLbb_7___rustc35___rust_no_alloc_shim_is_unstable_v2 + 632668
+14  chromedriver                        0x0000000100e8fb9c _RNvCsdExgN8vFLbb_7___rustc35___rust_no_alloc_shim_is_unstable_v2 + 326872
+15  chromedriver                        0x000000010133c680 cxxbridge1$str$ptr + 2861308
+16  chromedriver                        0x000000010133fdd4 cxxbridge1$str$ptr + 2875472
+17  chromedriver                        0x0000000101321a7c cxxbridge1$str$ptr + 2751736
+18  chromedriver                        0x0000000101340658 cxxbridge1$str$ptr + 2877652
+19  chromedriver                        0x0000000101311ffc cxxbridge1$str$ptr + 2687608
+20  chromedriver                        0x0000000101364d78 cxxbridge1$str$ptr + 3026932
+21  chromedriver                        0x0000000101364ef4 cxxbridge1$str$ptr + 3027312
+22  chromedriver                        0x00000001013756a8 cxxbridge1$str$ptr + 3094820
+23  libsystem_pthread.dylib             0x0000000186ccfc08 _pthread_start + 136
+24  libsystem_pthread.dylib             0x0000000186ccaba8 thread_start + 8
+
+2026-03-05 19:16:16,310 [INFO] src.processors.play_style_enricher: 나무위키 실패, LLM fallback: 티엘레만스
+2026-03-05 19:16:16,314 [INFO] anthropic._base_client: Retrying request to /v1/messages in 0.441834 seconds
+2026-03-05 19:16:16,769 [INFO] anthropic._base_client: Retrying request to /v1/messages in 0.930042 seconds
+2026-03-05 19:16:17,712 [ERROR] src.processors.play_style_enricher: LLM 생성 실패: 티엘레만스 - Connection error.
+2026-03-05 19:16:17,712 [WARNING] src.processors.play_style_enricher: 보강 실패: 티엘레만스
+2026-03-05 19:16:17,712 [INFO] src.processors.play_style_enricher: [31/40] 스킵: 맥긴 (이미 보강됨)
+2026-03-05 19:16:17,712 [INFO] src.processors.play_style_enricher: [32/40] 보강 시작: 로저스 (Morgan Rogers)
+2026-03-05 19:16:24,620 [WARNING] src.crawlers.namuwiki_selenium: 크롤링 오류: 모건 로저스 (attempt 1): Message: unknown error: net::ERR_INTERNET_DISCONNECTED
+  (Session info: chrome=145.0.7632.119)
+Stacktrace:
+0   chromedriver                        0x00000001050596b4 cxxbridge1$str$ptr + 3127600
+1   chromedriver                        0x0000000105051a50 cxxbridge1$str$ptr + 3095756
+2   chromedriver                        0x0000000104b2e56c _RNvCsdExgN8vFLbb_7___rustc35___rust_no_alloc_shim_is_unstable_v2 + 75432
+3   chromedriver                        0x0000000104b265a8 _RNvCsdExgN8vFLbb_7___rustc35___rust_no_alloc_shim_is_unstable_v2 + 42724
+4   chromedriver                        0x0000000104b18ca4 cxxbridge1$string$len + 5152
+5   chromedriver                        0x0000000104b1a7ac cxxbridge1$string$len + 12072
+6   chromedriver                        0x0000000104b19110 cxxbridge1$string$len + 6284
+7   chromedriver                        0x0000000104b188f8 cxxbridge1$string$len + 4212
+8   chromedriver                        0x0000000104b185e4 cxxbridge1$string$len + 3424
+9   chromedriver                        0x0000000104b161a8 chromedriver + 221608
+10  chromedriver                        0x0000000104b16c74 chromedriver + 224372
+11  chromedriver                        0x0000000104b31a60 _RNvCsdExgN8vFLbb_7___rustc35___rust_no_alloc_shim_is_unstable_v2 + 88988
+12  chromedriver                        0x0000000104bb70ec _RNvCsdExgN8vFLbb_7___rustc35___rust_no_alloc_shim_is_unstable_v2 + 635432
+13  chromedriver                        0x0000000104bb6620 _RNvCsdExgN8vFLbb_7___rustc35___rust_no_alloc_shim_is_unstable_v2 + 632668
+14  chromedriver                        0x0000000104b6bb9c _RNvCsdExgN8vFLbb_7___rustc35___rust_no_alloc_shim_is_unstable_v2 + 326872
+15  chromedriver                        0x0000000105018680 cxxbridge1$str$ptr + 2861308
+16  chromedriver                        0x000000010501bdd4 cxxbridge1$str$ptr + 2875472
+17  chromedriver                        0x0000000104ffda7c cxxbridge1$str$ptr + 2751736
+18  chromedriver                        0x000000010501c658 cxxbridge1$str$ptr + 2877652
+19  chromedriver                        0x0000000104fedffc cxxbridge1$str$ptr + 2687608
+20  chromedriver                        0x0000000105040d78 cxxbridge1$str$ptr + 3026932
+21  chromedriver                        0x0000000105040ef4 cxxbridge1$str$ptr + 3027312
+22  chromedriver                        0x00000001050516a8 cxxbridge1$str$ptr + 3094820
+23  libsystem_pthread.dylib             0x0000000186ccfc08 _pthread_start + 136
+24  libsystem_pthread.dylib             0x0000000186ccaba8 thread_start + 8
+
+2026-03-05 20:27:38,485 [WARNING] selenium.webdriver.common.selenium_manager: There was an error managing chromedriver (error sending request for url (https://googlechromelabs.github.io/chrome-for-testing/known-good-versions-with-downloads.json)); using driver found in the cache
+2026-03-05 20:27:38,493 [WARNING] selenium.webdriver.common.selenium_manager: Error sending stats to Plausible: error sending request for url (https://plausible.io/api/event)
+2026-03-05 20:29:03,305 [WARNING] src.crawlers.namuwiki_selenium: 크롤링 오류: 모건 로저스 (attempt 2): Message: timeout: Timed out receiving message from renderer: 59.412
+  (Session info: chrome=145.0.7632.119)
+Stacktrace:
+0   chromedriver                        0x00000001045b56b4 cxxbridge1$str$ptr + 3127600
+1   chromedriver                        0x00000001045ada50 cxxbridge1$str$ptr + 3095756
+2   chromedriver                        0x000000010408a56c _RNvCsdExgN8vFLbb_7___rustc35___rust_no_alloc_shim_is_unstable_v2 + 75432
+3   chromedriver                        0x00000001040748c4 cxxbridge1$string$len + 4160
+4   chromedriver                        0x00000001040745e4 cxxbridge1$string$len + 3424
+5   chromedriver                        0x00000001040721a8 chromedriver + 221608
+6   chromedriver                        0x0000000104072d9c chromedriver + 224668
+7   chromedriver                        0x0000000104080768 _RNvCsdExgN8vFLbb_7___rustc35___rust_no_alloc_shim_is_unstable_v2 + 34980
+8   chromedriver                        0x0000000104097240 _RNvCsdExgN8vFLbb_7___rustc35___rust_no_alloc_shim_is_unstable_v2 + 127868
+9   chromedriver                        0x0000000104073408 chromedriver + 226312
+10  chromedriver                        0x000000010409703c _RNvCsdExgN8vFLbb_7___rustc35___rust_no_alloc_shim_is_unstable_v2 + 127352
+11  chromedriver                        0x00000001041128e0 _RNvCsdExgN8vFLbb_7___rustc35___rust_no_alloc_shim_is_unstable_v2 + 633372
+12  chromedriver                        0x00000001040c7b9c _RNvCsdExgN8vFLbb_7___rustc35___rust_no_alloc_shim_is_unstable_v2 + 326872
+13  chromedriver                        0x0000000104574680 cxxbridge1$str$ptr + 2861308
+14  chromedriver                        0x0000000104577dd4 cxxbridge1$str$ptr + 2875472
+15  chromedriver                        0x0000000104559a7c cxxbridge1$str$ptr + 2751736
+16  chromedriver                        0x0000000104578658 cxxbridge1$str$ptr + 2877652
+17  chromedriver                        0x0000000104549ffc cxxbridge1$str$ptr + 2687608
+18  chromedriver                        0x000000010459cd78 cxxbridge1$str$ptr + 3026932
+19  chromedriver                        0x000000010459cef4 cxxbridge1$str$ptr + 3027312
+20  chromedriver                        0x00000001045ad6a8 cxxbridge1$str$ptr + 3094820
+21  libsystem_pthread.dylib             0x0000000186ccfc08 _pthread_start + 136
+22  libsystem_pthread.dylib             0x0000000186ccaba8 thread_start + 8
+
+2026-03-05 20:29:06,466 [INFO] src.crawlers.namuwiki_selenium: 시도 실패: 로저스 -> 모건 로저스
+2026-03-05 20:30:17,402 [WARNING] src.crawlers.namuwiki_selenium: 크롤링 오류: 로저스 (attempt 1): Message: timeout: Timed out receiving message from renderer: 59.304
+  (Session info: chrome=145.0.7632.119)
+Stacktrace:
+0   chromedriver                        0x00000001031356b4 cxxbridge1$str$ptr + 3127600
+1   chromedriver                        0x000000010312da50 cxxbridge1$str$ptr + 3095756
+2   chromedriver                        0x0000000102c0a56c _RNvCsdExgN8vFLbb_7___rustc35___rust_no_alloc_shim_is_unstable_v2 + 75432
+3   chromedriver                        0x0000000102bf48c4 cxxbridge1$string$len + 4160
+4   chromedriver                        0x0000000102bf45e4 cxxbridge1$string$len + 3424
+5   chromedriver                        0x0000000102bf21a8 chromedriver + 221608
+6   chromedriver                        0x0000000102bf2d9c chromedriver + 224668
+7   chromedriver                        0x0000000102c00768 _RNvCsdExgN8vFLbb_7___rustc35___rust_no_alloc_shim_is_unstable_v2 + 34980
+8   chromedriver                        0x0000000102c17240 _RNvCsdExgN8vFLbb_7___rustc35___rust_no_alloc_shim_is_unstable_v2 + 127868
+9   chromedriver                        0x0000000102bf3408 chromedriver + 226312
+10  chromedriver                        0x0000000102c1703c _RNvCsdExgN8vFLbb_7___rustc35___rust_no_alloc_shim_is_unstable_v2 + 127352
+11  chromedriver                        0x0000000102c928e0 _RNvCsdExgN8vFLbb_7___rustc35___rust_no_alloc_shim_is_unstable_v2 + 633372
+12  chromedriver                        0x0000000102c47b9c _RNvCsdExgN8vFLbb_7___rustc35___rust_no_alloc_shim_is_unstable_v2 + 326872
+13  chromedriver                        0x00000001030f4680 cxxbridge1$str$ptr + 2861308
+14  chromedriver                        0x00000001030f7dd4 cxxbridge1$str$ptr + 2875472
+15  chromedriver                        0x00000001030d9a7c cxxbridge1$str$ptr + 2751736
+16  chromedriver                        0x00000001030f8658 cxxbridge1$str$ptr + 2877652
+17  chromedriver                        0x00000001030c9ffc cxxbridge1$str$ptr + 2687608
+18  chromedriver                        0x000000010311cd78 cxxbridge1$str$ptr + 3026932
+19  chromedriver                        0x000000010311cef4 cxxbridge1$str$ptr + 3027312
+20  chromedriver                        0x000000010312d6a8 cxxbridge1$str$ptr + 3094820
+21  libsystem_pthread.dylib             0x0000000186ccfc08 _pthread_start + 136
+22  libsystem_pthread.dylib             0x0000000186ccaba8 thread_start + 8
+
+2026-03-05 20:31:28,713 [WARNING] src.crawlers.namuwiki_selenium: 크롤링 오류: 로저스 (attempt 2): Message: timeout: Timed out receiving message from renderer: 59.631
+  (Session info: chrome=145.0.7632.119)
+Stacktrace:
+0   chromedriver                        0x00000001010a96b4 cxxbridge1$str$ptr + 3127600
+1   chromedriver                        0x00000001010a1a50 cxxbridge1$str$ptr + 3095756
+2   chromedriver                        0x0000000100b7e56c _RNvCsdExgN8vFLbb_7___rustc35___rust_no_alloc_shim_is_unstable_v2 + 75432
+3   chromedriver                        0x0000000100b688c4 cxxbridge1$string$len + 4160
+4   chromedriver                        0x0000000100b685e4 cxxbridge1$string$len + 3424
+5   chromedriver                        0x0000000100b661a8 chromedriver + 221608
+6   chromedriver                        0x0000000100b66d9c chromedriver + 224668
+7   chromedriver                        0x0000000100b74768 _RNvCsdExgN8vFLbb_7___rustc35___rust_no_alloc_shim_is_unstable_v2 + 34980
+8   chromedriver                        0x0000000100b8b240 _RNvCsdExgN8vFLbb_7___rustc35___rust_no_alloc_shim_is_unstable_v2 + 127868
+9   chromedriver                        0x0000000100b67408 chromedriver + 226312
+10  chromedriver                        0x0000000100b8b03c _RNvCsdExgN8vFLbb_7___rustc35___rust_no_alloc_shim_is_unstable_v2 + 127352
+11  chromedriver                        0x0000000100c068e0 _RNvCsdExgN8vFLbb_7___rustc35___rust_no_alloc_shim_is_unstable_v2 + 633372
+12  chromedriver                        0x0000000100bbbb9c _RNvCsdExgN8vFLbb_7___rustc35___rust_no_alloc_shim_is_unstable_v2 + 326872
+13  chromedriver                        0x0000000101068680 cxxbridge1$str$ptr + 2861308
+14  chromedriver                        0x000000010106bdd4 cxxbridge1$str$ptr + 2875472
+15  chromedriver                        0x000000010104da7c cxxbridge1$str$ptr + 2751736
+16  chromedriver                        0x000000010106c658 cxxbridge1$str$ptr + 2877652
+17  chromedriver                        0x000000010103dffc cxxbridge1$str$ptr + 2687608
+18  chromedriver                        0x0000000101090d78 cxxbridge1$str$ptr + 3026932
+19  chromedriver                        0x0000000101090ef4 cxxbridge1$str$ptr + 3027312
+20  chromedriver                        0x00000001010a16a8 cxxbridge1$str$ptr + 3094820
+21  libsystem_pthread.dylib             0x0000000186ccfc08 _pthread_start + 136
+22  libsystem_pthread.dylib             0x0000000186ccaba8 thread_start + 8
+
+2026-03-05 20:31:31,883 [INFO] src.crawlers.namuwiki_selenium: 시도 실패: 로저스 -> 로저스
+2026-03-05 20:32:38,581 [WARNING] src.crawlers.namuwiki_selenium: 검색 크롤링 실패: 로저스: Message: timeout: Timed out receiving message from renderer: 59.464
+  (Session info: chrome=145.0.7632.119)
+Stacktrace:
+0   chromedriver                        0x0000000104c016b4 cxxbridge1$str$ptr + 3127600
+1   chromedriver                        0x0000000104bf9a50 cxxbridge1$str$ptr + 3095756
+2   chromedriver                        0x00000001046d656c _RNvCsdExgN8vFLbb_7___rustc35___rust_no_alloc_shim_is_unstable_v2 + 75432
+3   chromedriver                        0x00000001046c08c4 cxxbridge1$string$len + 4160
+4   chromedriver                        0x00000001046c05e4 cxxbridge1$string$len + 3424
+5   chromedriver                        0x00000001046be1a8 chromedriver + 221608
+6   chromedriver                        0x00000001046bed9c chromedriver + 224668
+7   chromedriver                        0x00000001046cc768 _RNvCsdExgN8vFLbb_7___rustc35___rust_no_alloc_shim_is_unstable_v2 + 34980
+8   chromedriver                        0x00000001046e3240 _RNvCsdExgN8vFLbb_7___rustc35___rust_no_alloc_shim_is_unstable_v2 + 127868
+9   chromedriver                        0x00000001046bf408 chromedriver + 226312
+10  chromedriver                        0x00000001046e303c _RNvCsdExgN8vFLbb_7___rustc35___rust_no_alloc_shim_is_unstable_v2 + 127352
+11  chromedriver                        0x000000010475e8e0 _RNvCsdExgN8vFLbb_7___rustc35___rust_no_alloc_shim_is_unstable_v2 + 633372
+12  chromedriver                        0x0000000104713b9c _RNvCsdExgN8vFLbb_7___rustc35___rust_no_alloc_shim_is_unstable_v2 + 326872
+13  chromedriver                        0x0000000104bc0680 cxxbridge1$str$ptr + 2861308
+14  chromedriver                        0x0000000104bc3dd4 cxxbridge1$str$ptr + 2875472
+15  chromedriver                        0x0000000104ba5a7c cxxbridge1$str$ptr + 2751736
+16  chromedriver                        0x0000000104bc4658 cxxbridge1$str$ptr + 2877652
+17  chromedriver                        0x0000000104b95ffc cxxbridge1$str$ptr + 2687608
+18  chromedriver                        0x0000000104be8d78 cxxbridge1$str$ptr + 3026932
+19  chromedriver                        0x0000000104be8ef4 cxxbridge1$str$ptr + 3027312
+20  chromedriver                        0x0000000104bf96a8 cxxbridge1$str$ptr + 3094820
+21  libsystem_pthread.dylib             0x0000000186ccfc08 _pthread_start + 136
+22  libsystem_pthread.dylib             0x0000000186ccaba8 thread_start + 8
+
+2026-03-05 20:32:38,759 [INFO] src.processors.play_style_enricher: 나무위키 실패, LLM fallback: 로저스
+2026-03-05 20:32:39,328 [INFO] httpx: HTTP Request: POST https://api.anthropic.com/v1/messages "HTTP/1.1 400 Bad Request"
+2026-03-05 20:32:39,333 [ERROR] src.processors.play_style_enricher: LLM 생성 실패: 로저스 - Error code: 400 - {'type': 'error', 'error': {'type': 'invalid_request_error', 'message': 'Your credit balance is too low to access the Anthropic API. Please go to Plans & Billing to upgrade or purchase credits.'}, 'request_id': 'req_011CYjrqLKsm5SHrjivHDHz3'}
+2026-03-05 20:32:39,333 [WARNING] src.processors.play_style_enricher: 보강 실패: 로저스
+2026-03-05 20:32:39,333 [INFO] src.processors.play_style_enricher: [33/40] 스킵: 오나나 (이미 보강됨)
+2026-03-05 20:32:39,333 [INFO] src.processors.play_style_enricher: [34/40] 보강 시작: 램지 (Jacob Ramsey)
+2026-03-05 20:33:46,698 [WARNING] src.crawlers.namuwiki_selenium: 크롤링 오류: 제이컵 램지 (attempt 1): Message: timeout: Timed out receiving message from renderer: 59.457
+  (Session info: chrome=145.0.7632.119)
+Stacktrace:
+0   chromedriver                        0x00000001006316b4 cxxbridge1$str$ptr + 3127600
+1   chromedriver                        0x0000000100629a50 cxxbridge1$str$ptr + 3095756
+2   chromedriver                        0x000000010010656c _RNvCsdExgN8vFLbb_7___rustc35___rust_no_alloc_shim_is_unstable_v2 + 75432
+3   chromedriver                        0x00000001000f08c4 cxxbridge1$string$len + 4160
+4   chromedriver                        0x00000001000f05e4 cxxbridge1$string$len + 3424
+5   chromedriver                        0x00000001000ee1a8 chromedriver + 221608
+6   chromedriver                        0x00000001000eed9c chromedriver + 224668
+7   chromedriver                        0x00000001000fc768 _RNvCsdExgN8vFLbb_7___rustc35___rust_no_alloc_shim_is_unstable_v2 + 34980
+8   chromedriver                        0x0000000100113240 _RNvCsdExgN8vFLbb_7___rustc35___rust_no_alloc_shim_is_unstable_v2 + 127868
+9   chromedriver                        0x00000001000ef408 chromedriver + 226312
+10  chromedriver                        0x000000010011303c _RNvCsdExgN8vFLbb_7___rustc35___rust_no_alloc_shim_is_unstable_v2 + 127352
+11  chromedriver                        0x000000010018e8e0 _RNvCsdExgN8vFLbb_7___rustc35___rust_no_alloc_shim_is_unstable_v2 + 633372
+12  chromedriver                        0x0000000100143b9c _RNvCsdExgN8vFLbb_7___rustc35___rust_no_alloc_shim_is_unstable_v2 + 326872
+13  chromedriver                        0x00000001005f0680 cxxbridge1$str$ptr + 2861308
+14  chromedriver                        0x00000001005f3dd4 cxxbridge1$str$ptr + 2875472
+15  chromedriver                        0x00000001005d5a7c cxxbridge1$str$ptr + 2751736
+16  chromedriver                        0x00000001005f4658 cxxbridge1$str$ptr + 2877652
+17  chromedriver                        0x00000001005c5ffc cxxbridge1$str$ptr + 2687608
+18  chromedriver                        0x0000000100618d78 cxxbridge1$str$ptr + 3026932
+19  chromedriver                        0x0000000100618ef4 cxxbridge1$str$ptr + 3027312
+20  chromedriver                        0x00000001006296a8 cxxbridge1$str$ptr + 3094820
+21  libsystem_pthread.dylib             0x0000000186ccfc08 _pthread_start + 136
+22  libsystem_pthread.dylib             0x0000000186ccaba8 thread_start + 8
+
+2026-03-05 20:34:59,071 [WARNING] src.crawlers.namuwiki_selenium: 크롤링 오류: 제이컵 램지 (attempt 2): Message: timeout: Timed out receiving message from renderer: 59.443
+  (Session info: chrome=145.0.7632.119)
+Stacktrace:
+0   chromedriver                        0x0000000102cb16b4 cxxbridge1$str$ptr + 3127600
+1   chromedriver                        0x0000000102ca9a50 cxxbridge1$str$ptr + 3095756
+2   chromedriver                        0x000000010278656c _RNvCsdExgN8vFLbb_7___rustc35___rust_no_alloc_shim_is_unstable_v2 + 75432
+3   chromedriver                        0x00000001027708c4 cxxbridge1$string$len + 4160
+4   chromedriver                        0x00000001027705e4 cxxbridge1$string$len + 3424
+5   chromedriver                        0x000000010276e1a8 chromedriver + 221608
+6   chromedriver                        0x000000010276ed9c chromedriver + 224668
+7   chromedriver                        0x000000010277c768 _RNvCsdExgN8vFLbb_7___rustc35___rust_no_alloc_shim_is_unstable_v2 + 34980
+8   chromedriver                        0x0000000102793240 _RNvCsdExgN8vFLbb_7___rustc35___rust_no_alloc_shim_is_unstable_v2 + 127868
+9   chromedriver                        0x000000010276f408 chromedriver + 226312
+10  chromedriver                        0x000000010279303c _RNvCsdExgN8vFLbb_7___rustc35___rust_no_alloc_shim_is_unstable_v2 + 127352
+11  chromedriver                        0x000000010280e8e0 _RNvCsdExgN8vFLbb_7___rustc35___rust_no_alloc_shim_is_unstable_v2 + 633372
+12  chromedriver                        0x00000001027c3b9c _RNvCsdExgN8vFLbb_7___rustc35___rust_no_alloc_shim_is_unstable_v2 + 326872
+13  chromedriver                        0x0000000102c70680 cxxbridge1$str$ptr + 2861308
+14  chromedriver                        0x0000000102c73dd4 cxxbridge1$str$ptr + 2875472
+15  chromedriver                        0x0000000102c55a7c cxxbridge1$str$ptr + 2751736
+16  chromedriver                        0x0000000102c74658 cxxbridge1$str$ptr + 2877652
+17  chromedriver                        0x0000000102c45ffc cxxbridge1$str$ptr + 2687608
+18  chromedriver                        0x0000000102c98d78 cxxbridge1$str$ptr + 3026932
+19  chromedriver                        0x0000000102c98ef4 cxxbridge1$str$ptr + 3027312
+20  chromedriver                        0x0000000102ca96a8 cxxbridge1$str$ptr + 3094820
+21  libsystem_pthread.dylib             0x0000000186ccfc08 _pthread_start + 136
+22  libsystem_pthread.dylib             0x0000000186ccaba8 thread_start + 8
+
+2026-03-05 20:35:02,285 [INFO] src.crawlers.namuwiki_selenium: 시도 실패: 램지 -> 제이컵 램지
+2026-03-05 20:36:13,097 [WARNING] src.crawlers.namuwiki_selenium: 크롤링 오류: 제이콥 램지 (attempt 1): Message: timeout: Timed out receiving message from renderer: 59.567
+  (Session info: chrome=145.0.7632.119)
+Stacktrace:
+0   chromedriver                        0x00000001052016b4 cxxbridge1$str$ptr + 3127600
+1   chromedriver                        0x00000001051f9a50 cxxbridge1$str$ptr + 3095756
+2   chromedriver                        0x0000000104cd656c _RNvCsdExgN8vFLbb_7___rustc35___rust_no_alloc_shim_is_unstable_v2 + 75432
+3   chromedriver                        0x0000000104cc08c4 cxxbridge1$string$len + 4160
+4   chromedriver                        0x0000000104cc05e4 cxxbridge1$string$len + 3424
+5   chromedriver                        0x0000000104cbe1a8 chromedriver + 221608
+6   chromedriver                        0x0000000104cbed9c chromedriver + 224668
+7   chromedriver                        0x0000000104ccc768 _RNvCsdExgN8vFLbb_7___rustc35___rust_no_alloc_shim_is_unstable_v2 + 34980
+8   chromedriver                        0x0000000104ce3240 _RNvCsdExgN8vFLbb_7___rustc35___rust_no_alloc_shim_is_unstable_v2 + 127868
+9   chromedriver                        0x0000000104cbf408 chromedriver + 226312
+10  chromedriver                        0x0000000104ce303c _RNvCsdExgN8vFLbb_7___rustc35___rust_no_alloc_shim_is_unstable_v2 + 127352
+11  chromedriver                        0x0000000104d5e8e0 _RNvCsdExgN8vFLbb_7___rustc35___rust_no_alloc_shim_is_unstable_v2 + 633372
+12  chromedriver                        0x0000000104d13b9c _RNvCsdExgN8vFLbb_7___rustc35___rust_no_alloc_shim_is_unstable_v2 + 326872
+13  chromedriver                        0x00000001051c0680 cxxbridge1$str$ptr + 2861308
+14  chromedriver                        0x00000001051c3dd4 cxxbridge1$str$ptr + 2875472
+15  chromedriver                        0x00000001051a5a7c cxxbridge1$str$ptr + 2751736
+16  chromedriver                        0x00000001051c4658 cxxbridge1$str$ptr + 2877652
+17  chromedriver                        0x0000000105195ffc cxxbridge1$str$ptr + 2687608
+18  chromedriver                        0x00000001051e8d78 cxxbridge1$str$ptr + 3026932
+19  chromedriver                        0x00000001051e8ef4 cxxbridge1$str$ptr + 3027312
+20  chromedriver                        0x00000001051f96a8 cxxbridge1$str$ptr + 3094820
+21  libsystem_pthread.dylib             0x0000000186ccfc08 _pthread_start + 136
+22  libsystem_pthread.dylib             0x0000000186ccaba8 thread_start + 8
+
+2026-03-05 20:37:32,627 [WARNING] src.crawlers.namuwiki_selenium: 크롤링 오류: 제이콥 램지 (attempt 2): Message: timeout: Timed out receiving message from renderer: 59.531
+  (Session info: chrome=145.0.7632.119)
+Stacktrace:
+0   chromedriver                        0x0000000104e316b4 cxxbridge1$str$ptr + 3127600
+1   chromedriver                        0x0000000104e29a50 cxxbridge1$str$ptr + 3095756
+2   chromedriver                        0x000000010490656c _RNvCsdExgN8vFLbb_7___rustc35___rust_no_alloc_shim_is_unstable_v2 + 75432
+3   chromedriver                        0x00000001048f08c4 cxxbridge1$string$len + 4160
+4   chromedriver                        0x00000001048f05e4 cxxbridge1$string$len + 3424
+5   chromedriver                        0x00000001048ee1a8 chromedriver + 221608
+6   chromedriver                        0x00000001048eed9c chromedriver + 224668
+7   chromedriver                        0x00000001048fc768 _RNvCsdExgN8vFLbb_7___rustc35___rust_no_alloc_shim_is_unstable_v2 + 34980
+8   chromedriver                        0x0000000104913240 _RNvCsdExgN8vFLbb_7___rustc35___rust_no_alloc_shim_is_unstable_v2 + 127868
+9   chromedriver                        0x00000001048ef408 chromedriver + 226312
+10  chromedriver                        0x000000010491303c _RNvCsdExgN8vFLbb_7___rustc35___rust_no_alloc_shim_is_unstable_v2 + 127352
+11  chromedriver                        0x000000010498e8e0 _RNvCsdExgN8vFLbb_7___rustc35___rust_no_alloc_shim_is_unstable_v2 + 633372
+12  chromedriver                        0x0000000104943b9c _RNvCsdExgN8vFLbb_7___rustc35___rust_no_alloc_shim_is_unstable_v2 + 326872
+13  chromedriver                        0x0000000104df0680 cxxbridge1$str$ptr + 2861308
+14  chromedriver                        0x0000000104df3dd4 cxxbridge1$str$ptr + 2875472
+15  chromedriver                        0x0000000104dd5a7c cxxbridge1$str$ptr + 2751736
+16  chromedriver                        0x0000000104df4658 cxxbridge1$str$ptr + 2877652
+17  chromedriver                        0x0000000104dc5ffc cxxbridge1$str$ptr + 2687608
+18  chromedriver                        0x0000000104e18d78 cxxbridge1$str$ptr + 3026932
+19  chromedriver                        0x0000000104e18ef4 cxxbridge1$str$ptr + 3027312
+20  chromedriver                        0x0000000104e296a8 cxxbridge1$str$ptr + 3094820
+21  libsystem_pthread.dylib             0x0000000186ccfc08 _pthread_start + 136
+22  libsystem_pthread.dylib             0x0000000186ccaba8 thread_start + 8
+
+2026-03-05 20:37:35,830 [INFO] src.crawlers.namuwiki_selenium: 시도 실패: 램지 -> 제이콥 램지
+2026-03-05 20:38:44,666 [WARNING] src.crawlers.namuwiki_selenium: 크롤링 오류: 램지 (attempt 1): Message: timeout: Timed out receiving message from renderer: 59.657
+  (Session info: chrome=145.0.7632.119)
+Stacktrace:
+0   chromedriver                        0x0000000104e496b4 cxxbridge1$str$ptr + 3127600
+1   chromedriver                        0x0000000104e41a50 cxxbridge1$str$ptr + 3095756
+2   chromedriver                        0x000000010491e56c _RNvCsdExgN8vFLbb_7___rustc35___rust_no_alloc_shim_is_unstable_v2 + 75432
+3   chromedriver                        0x00000001049088c4 cxxbridge1$string$len + 4160
+4   chromedriver                        0x00000001049085e4 cxxbridge1$string$len + 3424
+5   chromedriver                        0x00000001049061a8 chromedriver + 221608
+6   chromedriver                        0x0000000104906d9c chromedriver + 224668
+7   chromedriver                        0x0000000104914768 _RNvCsdExgN8vFLbb_7___rustc35___rust_no_alloc_shim_is_unstable_v2 + 34980
+8   chromedriver                        0x000000010492b240 _RNvCsdExgN8vFLbb_7___rustc35___rust_no_alloc_shim_is_unstable_v2 + 127868
+9   chromedriver                        0x0000000104907408 chromedriver + 226312
+10  chromedriver                        0x000000010492b03c _RNvCsdExgN8vFLbb_7___rustc35___rust_no_alloc_shim_is_unstable_v2 + 127352
+11  chromedriver                        0x00000001049a68e0 _RNvCsdExgN8vFLbb_7___rustc35___rust_no_alloc_shim_is_unstable_v2 + 633372
+12  chromedriver                        0x000000010495bb9c _RNvCsdExgN8vFLbb_7___rustc35___rust_no_alloc_shim_is_unstable_v2 + 326872
+13  chromedriver                        0x0000000104e08680 cxxbridge1$str$ptr + 2861308
+14  chromedriver                        0x0000000104e0bdd4 cxxbridge1$str$ptr + 2875472
+15  chromedriver                        0x0000000104deda7c cxxbridge1$str$ptr + 2751736
+16  chromedriver                        0x0000000104e0c658 cxxbridge1$str$ptr + 2877652
+17  chromedriver                        0x0000000104dddffc cxxbridge1$str$ptr + 2687608
+18  chromedriver                        0x0000000104e30d78 cxxbridge1$str$ptr + 3026932
+19  chromedriver                        0x0000000104e30ef4 cxxbridge1$str$ptr + 3027312
+20  chromedriver                        0x0000000104e416a8 cxxbridge1$str$ptr + 3094820
+21  libsystem_pthread.dylib             0x0000000186ccfc08 _pthread_start + 136
+22  libsystem_pthread.dylib             0x0000000186ccaba8 thread_start + 8
+
+2026-03-05 20:40:01,960 [WARNING] src.crawlers.namuwiki_selenium: 크롤링 오류: 램지 (attempt 2): Message: timeout: Timed out receiving message from renderer: 59.514
+  (Session info: chrome=145.0.7632.119)
+Stacktrace:
+0   chromedriver                        0x0000000104a916b4 cxxbridge1$str$ptr + 3127600
+1   chromedriver                        0x0000000104a89a50 cxxbridge1$str$ptr + 3095756
+2   chromedriver                        0x000000010456656c _RNvCsdExgN8vFLbb_7___rustc35___rust_no_alloc_shim_is_unstable_v2 + 75432
+3   chromedriver                        0x00000001045508c4 cxxbridge1$string$len + 4160
+4   chromedriver                        0x00000001045505e4 cxxbridge1$string$len + 3424
+5   chromedriver                        0x000000010454e1a8 chromedriver + 221608
+6   chromedriver                        0x000000010454ed9c chromedriver + 224668
+7   chromedriver                        0x000000010455c768 _RNvCsdExgN8vFLbb_7___rustc35___rust_no_alloc_shim_is_unstable_v2 + 34980
+8   chromedriver                        0x0000000104573240 _RNvCsdExgN8vFLbb_7___rustc35___rust_no_alloc_shim_is_unstable_v2 + 127868
+9   chromedriver                        0x000000010454f408 chromedriver + 226312
+10  chromedriver                        0x000000010457303c _RNvCsdExgN8vFLbb_7___rustc35___rust_no_alloc_shim_is_unstable_v2 + 127352
+11  chromedriver                        0x00000001045ee8e0 _RNvCsdExgN8vFLbb_7___rustc35___rust_no_alloc_shim_is_unstable_v2 + 633372
+12  chromedriver                        0x00000001045a3b9c _RNvCsdExgN8vFLbb_7___rustc35___rust_no_alloc_shim_is_unstable_v2 + 326872
+13  chromedriver                        0x0000000104a50680 cxxbridge1$str$ptr + 2861308
+14  chromedriver                        0x0000000104a53dd4 cxxbridge1$str$ptr + 2875472
+15  chromedriver                        0x0000000104a35a7c cxxbridge1$str$ptr + 2751736
+16  chromedriver                        0x0000000104a54658 cxxbridge1$str$ptr + 2877652
+17  chromedriver                        0x0000000104a25ffc cxxbridge1$str$ptr + 2687608
+18  chromedriver                        0x0000000104a78d78 cxxbridge1$str$ptr + 3026932
+19  chromedriver                        0x0000000104a78ef4 cxxbridge1$str$ptr + 3027312
+20  chromedriver                        0x0000000104a896a8 cxxbridge1$str$ptr + 3094820
+21  libsystem_pthread.dylib             0x0000000186ccfc08 _pthread_start + 136
+22  libsystem_pthread.dylib             0x0000000186ccaba8 thread_start + 8
+
+2026-03-05 20:40:05,330 [INFO] src.crawlers.namuwiki_selenium: 시도 실패: 램지 -> 램지
+2026-03-05 20:41:14,946 [WARNING] src.crawlers.namuwiki_selenium: 검색 크롤링 실패: 램지: Message: timeout: Timed out receiving message from renderer: 59.461
+  (Session info: chrome=145.0.7632.119)
+Stacktrace:
+0   chromedriver                        0x0000000104d216b4 cxxbridge1$str$ptr + 3127600
+1   chromedriver                        0x0000000104d19a50 cxxbridge1$str$ptr + 3095756
+2   chromedriver                        0x00000001047f656c _RNvCsdExgN8vFLbb_7___rustc35___rust_no_alloc_shim_is_unstable_v2 + 75432
+3   chromedriver                        0x00000001047e08c4 cxxbridge1$string$len + 4160
+4   chromedriver                        0x00000001047e05e4 cxxbridge1$string$len + 3424
+5   chromedriver                        0x00000001047de1a8 chromedriver + 221608
+6   chromedriver                        0x00000001047ded9c chromedriver + 224668
+7   chromedriver                        0x00000001047ec768 _RNvCsdExgN8vFLbb_7___rustc35___rust_no_alloc_shim_is_unstable_v2 + 34980
+8   chromedriver                        0x0000000104803240 _RNvCsdExgN8vFLbb_7___rustc35___rust_no_alloc_shim_is_unstable_v2 + 127868
+9   chromedriver                        0x00000001047df408 chromedriver + 226312
+10  chromedriver                        0x000000010480303c _RNvCsdExgN8vFLbb_7___rustc35___rust_no_alloc_shim_is_unstable_v2 + 127352
+11  chromedriver                        0x000000010487e8e0 _RNvCsdExgN8vFLbb_7___rustc35___rust_no_alloc_shim_is_unstable_v2 + 633372
+12  chromedriver                        0x0000000104833b9c _RNvCsdExgN8vFLbb_7___rustc35___rust_no_alloc_shim_is_unstable_v2 + 326872
+13  chromedriver                        0x0000000104ce0680 cxxbridge1$str$ptr + 2861308
+14  chromedriver                        0x0000000104ce3dd4 cxxbridge1$str$ptr + 2875472
+15  chromedriver                        0x0000000104cc5a7c cxxbridge1$str$ptr + 2751736
+16  chromedriver                        0x0000000104ce4658 cxxbridge1$str$ptr + 2877652
+17  chromedriver                        0x0000000104cb5ffc cxxbridge1$str$ptr + 2687608
+18  chromedriver                        0x0000000104d08d78 cxxbridge1$str$ptr + 3026932
+19  chromedriver                        0x0000000104d08ef4 cxxbridge1$str$ptr + 3027312
+20  chromedriver                        0x0000000104d196a8 cxxbridge1$str$ptr + 3094820
+21  libsystem_pthread.dylib             0x0000000186ccfc08 _pthread_start + 136
+22  libsystem_pthread.dylib             0x0000000186ccaba8 thread_start + 8
+
+2026-03-05 20:41:15,184 [INFO] src.processors.play_style_enricher: 나무위키 실패, LLM fallback: 램지
+2026-03-05 20:41:15,885 [INFO] httpx: HTTP Request: POST https://api.anthropic.com/v1/messages "HTTP/1.1 400 Bad Request"
+2026-03-05 20:41:15,888 [ERROR] src.processors.play_style_enricher: LLM 생성 실패: 램지 - Error code: 400 - {'type': 'error', 'error': {'type': 'invalid_request_error', 'message': 'Your credit balance is too low to access the Anthropic API. Please go to Plans & Billing to upgrade or purchase credits.'}, 'request_id': 'req_011CYjsVQDr1guELfQUZV5gP'}
+2026-03-05 20:41:15,888 [WARNING] src.processors.play_style_enricher: 보강 실패: 램지
+2026-03-05 20:41:15,888 [INFO] src.processors.play_style_enricher: [35/40] 보강 시작: 바클리 (Ross Barkley)
+2026-03-05 20:42:24,872 [WARNING] src.crawlers.namuwiki_selenium: 크롤링 오류: 로스 바클리 (attempt 1): Message: timeout: Timed out receiving message from renderer: 59.500
+  (Session info: chrome=145.0.7632.119)
+Stacktrace:
+0   chromedriver                        0x0000000104e6d6b4 cxxbridge1$str$ptr + 3127600
+1   chromedriver                        0x0000000104e65a50 cxxbridge1$str$ptr + 3095756
+2   chromedriver                        0x000000010494256c _RNvCsdExgN8vFLbb_7___rustc35___rust_no_alloc_shim_is_unstable_v2 + 75432
+3   chromedriver                        0x000000010492c8c4 cxxbridge1$string$len + 4160
+4   chromedriver                        0x000000010492c5e4 cxxbridge1$string$len + 3424
+5   chromedriver                        0x000000010492a1a8 chromedriver + 221608
+6   chromedriver                        0x000000010492ad9c chromedriver + 224668
+7   chromedriver                        0x0000000104938768 _RNvCsdExgN8vFLbb_7___rustc35___rust_no_alloc_shim_is_unstable_v2 + 34980
+8   chromedriver                        0x000000010494f240 _RNvCsdExgN8vFLbb_7___rustc35___rust_no_alloc_shim_is_unstable_v2 + 127868
+9   chromedriver                        0x000000010492b408 chromedriver + 226312
+10  chromedriver                        0x000000010494f03c _RNvCsdExgN8vFLbb_7___rustc35___rust_no_alloc_shim_is_unstable_v2 + 127352
+11  chromedriver                        0x00000001049ca8e0 _RNvCsdExgN8vFLbb_7___rustc35___rust_no_alloc_shim_is_unstable_v2 + 633372
+12  chromedriver                        0x000000010497fb9c _RNvCsdExgN8vFLbb_7___rustc35___rust_no_alloc_shim_is_unstable_v2 + 326872
+13  chromedriver                        0x0000000104e2c680 cxxbridge1$str$ptr + 2861308
+14  chromedriver                        0x0000000104e2fdd4 cxxbridge1$str$ptr + 2875472
+15  chromedriver                        0x0000000104e11a7c cxxbridge1$str$ptr + 2751736
+16  chromedriver                        0x0000000104e30658 cxxbridge1$str$ptr + 2877652
+17  chromedriver                        0x0000000104e01ffc cxxbridge1$str$ptr + 2687608
+18  chromedriver                        0x0000000104e54d78 cxxbridge1$str$ptr + 3026932
+19  chromedriver                        0x0000000104e54ef4 cxxbridge1$str$ptr + 3027312
+20  chromedriver                        0x0000000104e656a8 cxxbridge1$str$ptr + 3094820
+21  libsystem_pthread.dylib             0x0000000186ccfc08 _pthread_start + 136
+22  libsystem_pthread.dylib             0x0000000186ccaba8 thread_start + 8
+
+2026-03-05 20:44:01,333 [WARNING] src.crawlers.namuwiki_selenium: 크롤링 오류: 로스 바클리 (attempt 2): Message: unknown error: net::ERR_NAME_NOT_RESOLVED
+  (Session info: chrome=145.0.7632.119)
+Stacktrace:
+0   chromedriver                        0x0000000102a416b4 cxxbridge1$str$ptr + 3127600
+1   chromedriver                        0x0000000102a39a50 cxxbridge1$str$ptr + 3095756
+2   chromedriver                        0x000000010251656c _RNvCsdExgN8vFLbb_7___rustc35___rust_no_alloc_shim_is_unstable_v2 + 75432
+3   chromedriver                        0x000000010250e5a8 _RNvCsdExgN8vFLbb_7___rustc35___rust_no_alloc_shim_is_unstable_v2 + 42724
+4   chromedriver                        0x0000000102500ca4 cxxbridge1$string$len + 5152
+5   chromedriver                        0x00000001025027ac cxxbridge1$string$len + 12072
+6   chromedriver                        0x0000000102501110 cxxbridge1$string$len + 6284
+7   chromedriver                        0x00000001025008f8 cxxbridge1$string$len + 4212
+8   chromedriver                        0x00000001025005e4 cxxbridge1$string$len + 3424
+9   chromedriver                        0x00000001024fe1a8 chromedriver + 221608
+10  chromedriver                        0x00000001024fec74 chromedriver + 224372
+11  chromedriver                        0x0000000102519a60 _RNvCsdExgN8vFLbb_7___rustc35___rust_no_alloc_shim_is_unstable_v2 + 88988
+12  chromedriver                        0x000000010259f0ec _RNvCsdExgN8vFLbb_7___rustc35___rust_no_alloc_shim_is_unstable_v2 + 635432
+13  chromedriver                        0x000000010259e620 _RNvCsdExgN8vFLbb_7___rustc35___rust_no_alloc_shim_is_unstable_v2 + 632668
+14  chromedriver                        0x0000000102553b9c _RNvCsdExgN8vFLbb_7___rustc35___rust_no_alloc_shim_is_unstable_v2 + 326872
+15  chromedriver                        0x0000000102a00680 cxxbridge1$str$ptr + 2861308
+16  chromedriver                        0x0000000102a03dd4 cxxbridge1$str$ptr + 2875472
+17  chromedriver                        0x00000001029e5a7c cxxbridge1$str$ptr + 2751736
+18  chromedriver                        0x0000000102a04658 cxxbridge1$str$ptr + 2877652
+19  chromedriver                        0x00000001029d5ffc cxxbridge1$str$ptr + 2687608
+20  chromedriver                        0x0000000102a28d78 cxxbridge1$str$ptr + 3026932
+21  chromedriver                        0x0000000102a28ef4 cxxbridge1$str$ptr + 3027312
+22  chromedriver                        0x0000000102a396a8 cxxbridge1$str$ptr + 3094820
+23  libsystem_pthread.dylib             0x0000000186ccfc08 _pthread_start + 136
+24  libsystem_pthread.dylib             0x0000000186ccaba8 thread_start + 8
+
+2026-03-05 20:44:04,509 [INFO] src.crawlers.namuwiki_selenium: 시도 실패: 바클리 -> 로스 바클리
+2026-03-05 20:44:13,104 [WARNING] src.crawlers.namuwiki_selenium: 크롤링 오류: 바클리 (attempt 1): Message: unknown error: net::ERR_INTERNET_DISCONNECTED
+  (Session info: chrome=145.0.7632.119)
+Stacktrace:
+0   chromedriver                        0x000000010116d6b4 cxxbridge1$str$ptr + 3127600
+1   chromedriver                        0x0000000101165a50 cxxbridge1$str$ptr + 3095756
+2   chromedriver                        0x0000000100c4256c _RNvCsdExgN8vFLbb_7___rustc35___rust_no_alloc_shim_is_unstable_v2 + 75432
+3   chromedriver                        0x0000000100c3a5a8 _RNvCsdExgN8vFLbb_7___rustc35___rust_no_alloc_shim_is_unstable_v2 + 42724
+4   chromedriver                        0x0000000100c2cca4 cxxbridge1$string$len + 5152
+5   chromedriver                        0x0000000100c2e7ac cxxbridge1$string$len + 12072
+6   chromedriver                        0x0000000100c2d110 cxxbridge1$string$len + 6284
+7   chromedriver                        0x0000000100c2c8f8 cxxbridge1$string$len + 4212
+8   chromedriver                        0x0000000100c2c5e4 cxxbridge1$string$len + 3424
+9   chromedriver                        0x0000000100c2a1a8 chromedriver + 221608
+10  chromedriver                        0x0000000100c2ac74 chromedriver + 224372
+11  chromedriver                        0x0000000100c45a60 _RNvCsdExgN8vFLbb_7___rustc35___rust_no_alloc_shim_is_unstable_v2 + 88988
+12  chromedriver                        0x0000000100ccb0ec _RNvCsdExgN8vFLbb_7___rustc35___rust_no_alloc_shim_is_unstable_v2 + 635432
+13  chromedriver                        0x0000000100cca620 _RNvCsdExgN8vFLbb_7___rustc35___rust_no_alloc_shim_is_unstable_v2 + 632668
+14  chromedriver                        0x0000000100c7fb9c _RNvCsdExgN8vFLbb_7___rustc35___rust_no_alloc_shim_is_unstable_v2 + 326872
+15  chromedriver                        0x000000010112c680 cxxbridge1$str$ptr + 2861308
+16  chromedriver                        0x000000010112fdd4 cxxbridge1$str$ptr + 2875472
+17  chromedriver                        0x0000000101111a7c cxxbridge1$str$ptr + 2751736
+18  chromedriver                        0x0000000101130658 cxxbridge1$str$ptr + 2877652
+19  chromedriver                        0x0000000101101ffc cxxbridge1$str$ptr + 2687608
+20  chromedriver                        0x0000000101154d78 cxxbridge1$str$ptr + 3026932
+21  chromedriver                        0x0000000101154ef4 cxxbridge1$str$ptr + 3027312
+22  chromedriver                        0x00000001011656a8 cxxbridge1$str$ptr + 3094820
+23  libsystem_pthread.dylib             0x0000000186ccfc08 _pthread_start + 136
+24  libsystem_pthread.dylib             0x0000000186ccaba8 thread_start + 8
+
+2026-03-05 20:44:23,340 [WARNING] src.crawlers.namuwiki_selenium: 크롤링 오류: 바클리 (attempt 2): Message: unknown error: net::ERR_INTERNET_DISCONNECTED
+  (Session info: chrome=145.0.7632.119)
+Stacktrace:
+0   chromedriver                        0x0000000100a256b4 cxxbridge1$str$ptr + 3127600
+1   chromedriver                        0x0000000100a1da50 cxxbridge1$str$ptr + 3095756
+2   chromedriver                        0x00000001004fa56c _RNvCsdExgN8vFLbb_7___rustc35___rust_no_alloc_shim_is_unstable_v2 + 75432
+3   chromedriver                        0x00000001004f25a8 _RNvCsdExgN8vFLbb_7___rustc35___rust_no_alloc_shim_is_unstable_v2 + 42724
+4   chromedriver                        0x00000001004e4ca4 cxxbridge1$string$len + 5152
+5   chromedriver                        0x00000001004e67ac cxxbridge1$string$len + 12072
+6   chromedriver                        0x00000001004e5110 cxxbridge1$string$len + 6284
+7   chromedriver                        0x00000001004e48f8 cxxbridge1$string$len + 4212
+8   chromedriver                        0x00000001004e45e4 cxxbridge1$string$len + 3424
+9   chromedriver                        0x00000001004e21a8 chromedriver + 221608
+10  chromedriver                        0x00000001004e2c74 chromedriver + 224372
+11  chromedriver                        0x00000001004fda60 _RNvCsdExgN8vFLbb_7___rustc35___rust_no_alloc_shim_is_unstable_v2 + 88988
+12  chromedriver                        0x00000001005830ec _RNvCsdExgN8vFLbb_7___rustc35___rust_no_alloc_shim_is_unstable_v2 + 635432
+13  chromedriver                        0x0000000100582620 _RNvCsdExgN8vFLbb_7___rustc35___rust_no_alloc_shim_is_unstable_v2 + 632668
+14  chromedriver                        0x0000000100537b9c _RNvCsdExgN8vFLbb_7___rustc35___rust_no_alloc_shim_is_unstable_v2 + 326872
+15  chromedriver                        0x00000001009e4680 cxxbridge1$str$ptr + 2861308
+16  chromedriver                        0x00000001009e7dd4 cxxbridge1$str$ptr + 2875472
+17  chromedriver                        0x00000001009c9a7c cxxbridge1$str$ptr + 2751736
+18  chromedriver                        0x00000001009e8658 cxxbridge1$str$ptr + 2877652
+19  chromedriver                        0x00000001009b9ffc cxxbridge1$str$ptr + 2687608
+20  chromedriver                        0x0000000100a0cd78 cxxbridge1$str$ptr + 3026932
+21  chromedriver                        0x0000000100a0cef4 cxxbridge1$str$ptr + 3027312
+22  chromedriver                        0x0000000100a1d6a8 cxxbridge1$str$ptr + 3094820
+23  libsystem_pthread.dylib             0x0000000186ccfc08 _pthread_start + 136
+24  libsystem_pthread.dylib             0x0000000186ccaba8 thread_start + 8
+
+2026-03-05 20:44:26,428 [INFO] src.crawlers.namuwiki_selenium: 시도 실패: 바클리 -> 바클리
+2026-03-05 20:44:33,485 [WARNING] src.crawlers.namuwiki_selenium: 검색 크롤링 실패: 바클리: Message: unknown error: net::ERR_INTERNET_DISCONNECTED
+  (Session info: chrome=145.0.7632.119)
+Stacktrace:
+0   chromedriver                        0x00000001054156b4 cxxbridge1$str$ptr + 3127600
+1   chromedriver                        0x000000010540da50 cxxbridge1$str$ptr + 3095756
+2   chromedriver                        0x0000000104eea56c _RNvCsdExgN8vFLbb_7___rustc35___rust_no_alloc_shim_is_unstable_v2 + 75432
+3   chromedriver                        0x0000000104ee25a8 _RNvCsdExgN8vFLbb_7___rustc35___rust_no_alloc_shim_is_unstable_v2 + 42724
+4   chromedriver                        0x0000000104ed4ca4 cxxbridge1$string$len + 5152
+5   chromedriver                        0x0000000104ed67ac cxxbridge1$string$len + 12072
+6   chromedriver                        0x0000000104ed5110 cxxbridge1$string$len + 6284
+7   chromedriver                        0x0000000104ed48f8 cxxbridge1$string$len + 4212
+8   chromedriver                        0x0000000104ed45e4 cxxbridge1$string$len + 3424
+9   chromedriver                        0x0000000104ed21a8 chromedriver + 221608
+10  chromedriver                        0x0000000104ed2c74 chromedriver + 224372
+11  chromedriver                        0x0000000104eeda60 _RNvCsdExgN8vFLbb_7___rustc35___rust_no_alloc_shim_is_unstable_v2 + 88988
+12  chromedriver                        0x0000000104f730ec _RNvCsdExgN8vFLbb_7___rustc35___rust_no_alloc_shim_is_unstable_v2 + 635432
+13  chromedriver                        0x0000000104f72620 _RNvCsdExgN8vFLbb_7___rustc35___rust_no_alloc_shim_is_unstable_v2 + 632668
+14  chromedriver                        0x0000000104f27b9c _RNvCsdExgN8vFLbb_7___rustc35___rust_no_alloc_shim_is_unstable_v2 + 326872
+15  chromedriver                        0x00000001053d4680 cxxbridge1$str$ptr + 2861308
+16  chromedriver                        0x00000001053d7dd4 cxxbridge1$str$ptr + 2875472
+17  chromedriver                        0x00000001053b9a7c cxxbridge1$str$ptr + 2751736
+18  chromedriver                        0x00000001053d8658 cxxbridge1$str$ptr + 2877652
+19  chromedriver                        0x00000001053a9ffc cxxbridge1$str$ptr + 2687608
+20  chromedriver                        0x00000001053fcd78 cxxbridge1$str$ptr + 3026932
+21  chromedriver                        0x00000001053fcef4 cxxbridge1$str$ptr + 3027312
+22  chromedriver                        0x000000010540d6a8 cxxbridge1$str$ptr + 3094820
+23  libsystem_pthread.dylib             0x0000000186ccfc08 _pthread_start + 136
+24  libsystem_pthread.dylib             0x0000000186ccaba8 thread_start + 8
+
+2026-03-05 20:44:33,564 [INFO] src.processors.play_style_enricher: 나무위키 실패, LLM fallback: 바클리
+2026-03-05 20:44:33,579 [INFO] anthropic._base_client: Retrying request to /v1/messages in 0.478318 seconds
+2026-03-05 20:44:34,069 [INFO] anthropic._base_client: Retrying request to /v1/messages in 0.943417 seconds
+2026-03-05 22:12:33,692 [ERROR] src.processors.play_style_enricher: LLM 생성 실패: 바클리 - Connection error.
+2026-03-05 22:12:33,697 [WARNING] src.processors.play_style_enricher: 보강 실패: 바클리
+2026-03-05 22:12:33,698 [INFO] src.processors.play_style_enricher: [36/40] 보강 시작: 왓킨스 (Ollie Watkins)
+2026-03-05 22:12:35,333 [WARNING] selenium.webdriver.common.selenium_manager: There was an error managing chromedriver (error sending request for url (https://googlechromelabs.github.io/chrome-for-testing/known-good-versions-with-downloads.json)); using driver found in the cache
+2026-03-05 22:12:35,333 [WARNING] selenium.webdriver.common.selenium_manager: Error sending stats to Plausible: error sending request for url (https://plausible.io/api/event)
+2026-03-05 22:12:44,163 [WARNING] src.crawlers.namuwiki_selenium: 크롤링 오류: 올리 왓킨스 (attempt 1): Message: unknown error: net::ERR_INTERNET_DISCONNECTED
+  (Session info: chrome=145.0.7632.119)
+Stacktrace:
+0   chromedriver                        0x0000000100a6d6b4 cxxbridge1$str$ptr + 3127600
+1   chromedriver                        0x0000000100a65a50 cxxbridge1$str$ptr + 3095756
+2   chromedriver                        0x000000010054256c _RNvCsdExgN8vFLbb_7___rustc35___rust_no_alloc_shim_is_unstable_v2 + 75432
+3   chromedriver                        0x000000010053a5a8 _RNvCsdExgN8vFLbb_7___rustc35___rust_no_alloc_shim_is_unstable_v2 + 42724
+4   chromedriver                        0x000000010052cca4 cxxbridge1$string$len + 5152
+5   chromedriver                        0x000000010052e7ac cxxbridge1$string$len + 12072
+6   chromedriver                        0x000000010052d110 cxxbridge1$string$len + 6284
+7   chromedriver                        0x000000010052c8f8 cxxbridge1$string$len + 4212
+8   chromedriver                        0x000000010052c5e4 cxxbridge1$string$len + 3424
+9   chromedriver                        0x000000010052a1a8 chromedriver + 221608
+10  chromedriver                        0x000000010052ac74 chromedriver + 224372
+11  chromedriver                        0x0000000100545a60 _RNvCsdExgN8vFLbb_7___rustc35___rust_no_alloc_shim_is_unstable_v2 + 88988
+12  chromedriver                        0x00000001005cb0ec _RNvCsdExgN8vFLbb_7___rustc35___rust_no_alloc_shim_is_unstable_v2 + 635432
+13  chromedriver                        0x00000001005ca620 _RNvCsdExgN8vFLbb_7___rustc35___rust_no_alloc_shim_is_unstable_v2 + 632668
+14  chromedriver                        0x000000010057fb9c _RNvCsdExgN8vFLbb_7___rustc35___rust_no_alloc_shim_is_unstable_v2 + 326872
+15  chromedriver                        0x0000000100a2c680 cxxbridge1$str$ptr + 2861308
+16  chromedriver                        0x0000000100a2fdd4 cxxbridge1$str$ptr + 2875472
+17  chromedriver                        0x0000000100a11a7c cxxbridge1$str$ptr + 2751736
+18  chromedriver                        0x0000000100a30658 cxxbridge1$str$ptr + 2877652
+19  chromedriver                        0x0000000100a01ffc cxxbridge1$str$ptr + 2687608
+20  chromedriver                        0x0000000100a54d78 cxxbridge1$str$ptr + 3026932
+21  chromedriver                        0x0000000100a54ef4 cxxbridge1$str$ptr + 3027312
+22  chromedriver                        0x0000000100a656a8 cxxbridge1$str$ptr + 3094820
+23  libsystem_pthread.dylib             0x0000000186ccfc08 _pthread_start + 136
+24  libsystem_pthread.dylib             0x0000000186ccaba8 thread_start + 8
+
+2026-03-05 22:12:48,061 [WARNING] selenium.webdriver.common.selenium_manager: There was an error managing chromedriver (error sending request for url (https://googlechromelabs.github.io/chrome-for-testing/known-good-versions-with-downloads.json)); using driver found in the cache
+2026-03-05 22:12:54,684 [WARNING] src.crawlers.namuwiki_selenium: 크롤링 오류: 올리 왓킨스 (attempt 2): Message: unknown error: net::ERR_INTERNET_DISCONNECTED
+  (Session info: chrome=145.0.7632.119)
+Stacktrace:
+0   chromedriver                        0x00000001048d56b4 cxxbridge1$str$ptr + 3127600
+1   chromedriver                        0x00000001048cda50 cxxbridge1$str$ptr + 3095756
+2   chromedriver                        0x00000001043aa56c _RNvCsdExgN8vFLbb_7___rustc35___rust_no_alloc_shim_is_unstable_v2 + 75432
+3   chromedriver                        0x00000001043a25a8 _RNvCsdExgN8vFLbb_7___rustc35___rust_no_alloc_shim_is_unstable_v2 + 42724
+4   chromedriver                        0x0000000104394ca4 cxxbridge1$string$len + 5152
+5   chromedriver                        0x00000001043967ac cxxbridge1$string$len + 12072
+6   chromedriver                        0x0000000104395110 cxxbridge1$string$len + 6284
+7   chromedriver                        0x00000001043948f8 cxxbridge1$string$len + 4212
+8   chromedriver                        0x00000001043945e4 cxxbridge1$string$len + 3424
+9   chromedriver                        0x00000001043921a8 chromedriver + 221608
+10  chromedriver                        0x0000000104392c74 chromedriver + 224372
+11  chromedriver                        0x00000001043ada60 _RNvCsdExgN8vFLbb_7___rustc35___rust_no_alloc_shim_is_unstable_v2 + 88988
+12  chromedriver                        0x00000001044330ec _RNvCsdExgN8vFLbb_7___rustc35___rust_no_alloc_shim_is_unstable_v2 + 635432
+13  chromedriver                        0x0000000104432620 _RNvCsdExgN8vFLbb_7___rustc35___rust_no_alloc_shim_is_unstable_v2 + 632668
+14  chromedriver                        0x00000001043e7b9c _RNvCsdExgN8vFLbb_7___rustc35___rust_no_alloc_shim_is_unstable_v2 + 326872
+15  chromedriver                        0x0000000104894680 cxxbridge1$str$ptr + 2861308
+16  chromedriver                        0x0000000104897dd4 cxxbridge1$str$ptr + 2875472
+17  chromedriver                        0x0000000104879a7c cxxbridge1$str$ptr + 2751736
+18  chromedriver                        0x0000000104898658 cxxbridge1$str$ptr + 2877652
+19  chromedriver                        0x0000000104869ffc cxxbridge1$str$ptr + 2687608
+20  chromedriver                        0x00000001048bcd78 cxxbridge1$str$ptr + 3026932
+21  chromedriver                        0x00000001048bcef4 cxxbridge1$str$ptr + 3027312
+22  chromedriver                        0x00000001048cd6a8 cxxbridge1$str$ptr + 3094820
+23  libsystem_pthread.dylib             0x0000000186ccfc08 _pthread_start + 136
+24  libsystem_pthread.dylib             0x0000000186ccaba8 thread_start + 8
+
+2026-03-05 22:12:57,775 [INFO] src.crawlers.namuwiki_selenium: 시도 실패: 왓킨스 -> 올리 왓킨스
+2026-03-05 22:12:58,292 [WARNING] selenium.webdriver.common.selenium_manager: There was an error managing chromedriver (error sending request for url (https://googlechromelabs.github.io/chrome-for-testing/known-good-versions-with-downloads.json)); using driver found in the cache
+2026-03-05 22:13:04,681 [WARNING] src.crawlers.namuwiki_selenium: 크롤링 오류: 왓킨스 (attempt 1): Message: unknown error: net::ERR_INTERNET_DISCONNECTED
+  (Session info: chrome=145.0.7632.119)
+Stacktrace:
+0   chromedriver                        0x0000000102fa56b4 cxxbridge1$str$ptr + 3127600
+1   chromedriver                        0x0000000102f9da50 cxxbridge1$str$ptr + 3095756
+2   chromedriver                        0x0000000102a7a56c _RNvCsdExgN8vFLbb_7___rustc35___rust_no_alloc_shim_is_unstable_v2 + 75432
+3   chromedriver                        0x0000000102a725a8 _RNvCsdExgN8vFLbb_7___rustc35___rust_no_alloc_shim_is_unstable_v2 + 42724
+4   chromedriver                        0x0000000102a64ca4 cxxbridge1$string$len + 5152
+5   chromedriver                        0x0000000102a667ac cxxbridge1$string$len + 12072
+6   chromedriver                        0x0000000102a65110 cxxbridge1$string$len + 6284
+7   chromedriver                        0x0000000102a648f8 cxxbridge1$string$len + 4212
+8   chromedriver                        0x0000000102a645e4 cxxbridge1$string$len + 3424
+9   chromedriver                        0x0000000102a621a8 chromedriver + 221608
+10  chromedriver                        0x0000000102a62c74 chromedriver + 224372
+11  chromedriver                        0x0000000102a7da60 _RNvCsdExgN8vFLbb_7___rustc35___rust_no_alloc_shim_is_unstable_v2 + 88988
+12  chromedriver                        0x0000000102b030ec _RNvCsdExgN8vFLbb_7___rustc35___rust_no_alloc_shim_is_unstable_v2 + 635432
+13  chromedriver                        0x0000000102b02620 _RNvCsdExgN8vFLbb_7___rustc35___rust_no_alloc_shim_is_unstable_v2 + 632668
+14  chromedriver                        0x0000000102ab7b9c _RNvCsdExgN8vFLbb_7___rustc35___rust_no_alloc_shim_is_unstable_v2 + 326872
+15  chromedriver                        0x0000000102f64680 cxxbridge1$str$ptr + 2861308
+16  chromedriver                        0x0000000102f67dd4 cxxbridge1$str$ptr + 2875472
+17  chromedriver                        0x0000000102f49a7c cxxbridge1$str$ptr + 2751736
+18  chromedriver                        0x0000000102f68658 cxxbridge1$str$ptr + 2877652
+19  chromedriver                        0x0000000102f39ffc cxxbridge1$str$ptr + 2687608
+20  chromedriver                        0x0000000102f8cd78 cxxbridge1$str$ptr + 3026932
+21  chromedriver                        0x0000000102f8cef4 cxxbridge1$str$ptr + 3027312
+22  chromedriver                        0x0000000102f9d6a8 cxxbridge1$str$ptr + 3094820
+23  libsystem_pthread.dylib             0x0000000186ccfc08 _pthread_start + 136
+24  libsystem_pthread.dylib             0x0000000186ccaba8 thread_start + 8
+
+2026-03-05 22:13:08,269 [WARNING] selenium.webdriver.common.selenium_manager: There was an error managing chromedriver (error sending request for url (https://googlechromelabs.github.io/chrome-for-testing/known-good-versions-with-downloads.json)); using driver found in the cache
+2026-03-05 22:13:14,676 [WARNING] src.crawlers.namuwiki_selenium: 크롤링 오류: 왓킨스 (attempt 2): Message: unknown error: net::ERR_INTERNET_DISCONNECTED
+  (Session info: chrome=145.0.7632.119)
+Stacktrace:
+0   chromedriver                        0x00000001046556b4 cxxbridge1$str$ptr + 3127600
+1   chromedriver                        0x000000010464da50 cxxbridge1$str$ptr + 3095756
+2   chromedriver                        0x000000010412a56c _RNvCsdExgN8vFLbb_7___rustc35___rust_no_alloc_shim_is_unstable_v2 + 75432
+3   chromedriver                        0x00000001041225a8 _RNvCsdExgN8vFLbb_7___rustc35___rust_no_alloc_shim_is_unstable_v2 + 42724
+4   chromedriver                        0x0000000104114ca4 cxxbridge1$string$len + 5152
+5   chromedriver                        0x00000001041167ac cxxbridge1$string$len + 12072
+6   chromedriver                        0x0000000104115110 cxxbridge1$string$len + 6284
+7   chromedriver                        0x00000001041148f8 cxxbridge1$string$len + 4212
+8   chromedriver                        0x00000001041145e4 cxxbridge1$string$len + 3424
+9   chromedriver                        0x00000001041121a8 chromedriver + 221608
+10  chromedriver                        0x0000000104112c74 chromedriver + 224372
+11  chromedriver                        0x000000010412da60 _RNvCsdExgN8vFLbb_7___rustc35___rust_no_alloc_shim_is_unstable_v2 + 88988
+12  chromedriver                        0x00000001041b30ec _RNvCsdExgN8vFLbb_7___rustc35___rust_no_alloc_shim_is_unstable_v2 + 635432
+13  chromedriver                        0x00000001041b2620 _RNvCsdExgN8vFLbb_7___rustc35___rust_no_alloc_shim_is_unstable_v2 + 632668
+14  chromedriver                        0x0000000104167b9c _RNvCsdExgN8vFLbb_7___rustc35___rust_no_alloc_shim_is_unstable_v2 + 326872
+15  chromedriver                        0x0000000104614680 cxxbridge1$str$ptr + 2861308
+16  chromedriver                        0x0000000104617dd4 cxxbridge1$str$ptr + 2875472
+17  chromedriver                        0x00000001045f9a7c cxxbridge1$str$ptr + 2751736
+18  chromedriver                        0x0000000104618658 cxxbridge1$str$ptr + 2877652
+19  chromedriver                        0x00000001045e9ffc cxxbridge1$str$ptr + 2687608
+20  chromedriver                        0x000000010463cd78 cxxbridge1$str$ptr + 3026932
+21  chromedriver                        0x000000010463cef4 cxxbridge1$str$ptr + 3027312
+22  chromedriver                        0x000000010464d6a8 cxxbridge1$str$ptr + 3094820
+23  libsystem_pthread.dylib             0x0000000186ccfc08 _pthread_start + 136
+24  libsystem_pthread.dylib             0x0000000186ccaba8 thread_start + 8
+
+2026-03-05 22:13:17,762 [INFO] src.crawlers.namuwiki_selenium: 시도 실패: 왓킨스 -> 왓킨스
+2026-03-05 22:13:18,244 [WARNING] selenium.webdriver.common.selenium_manager: There was an error managing chromedriver (error sending request for url (https://googlechromelabs.github.io/chrome-for-testing/known-good-versions-with-downloads.json)); using driver found in the cache
+2026-03-05 22:43:33,010 [WARNING] src.crawlers.namuwiki_selenium: 검색 크롤링 실패: 왓킨스: Message: unknown error: net::ERR_INTERNET_DISCONNECTED
+  (Session info: chrome=145.0.7632.119)
+Stacktrace:
+0   chromedriver                        0x00000001027356b4 cxxbridge1$str$ptr + 3127600
+1   chromedriver                        0x000000010272da50 cxxbridge1$str$ptr + 3095756
+2   chromedriver                        0x000000010220a56c _RNvCsdExgN8vFLbb_7___rustc35___rust_no_alloc_shim_is_unstable_v2 + 75432
+3   chromedriver                        0x00000001022025a8 _RNvCsdExgN8vFLbb_7___rustc35___rust_no_alloc_shim_is_unstable_v2 + 42724
+4   chromedriver                        0x00000001021f4ca4 cxxbridge1$string$len + 5152
+5   chromedriver                        0x00000001021f67ac cxxbridge1$string$len + 12072
+6   chromedriver                        0x00000001021f5110 cxxbridge1$string$len + 6284
+7   chromedriver                        0x00000001021f48f8 cxxbridge1$string$len + 4212
+8   chromedriver                        0x00000001021f45e4 cxxbridge1$string$len + 3424
+9   chromedriver                        0x00000001021f21a8 chromedriver + 221608
+10  chromedriver                        0x00000001021f2c74 chromedriver + 224372
+11  chromedriver                        0x000000010220da60 _RNvCsdExgN8vFLbb_7___rustc35___rust_no_alloc_shim_is_unstable_v2 + 88988
+12  chromedriver                        0x00000001022930ec _RNvCsdExgN8vFLbb_7___rustc35___rust_no_alloc_shim_is_unstable_v2 + 635432
+13  chromedriver                        0x0000000102292620 _RNvCsdExgN8vFLbb_7___rustc35___rust_no_alloc_shim_is_unstable_v2 + 632668
+14  chromedriver                        0x0000000102247b9c _RNvCsdExgN8vFLbb_7___rustc35___rust_no_alloc_shim_is_unstable_v2 + 326872
+15  chromedriver                        0x00000001026f4680 cxxbridge1$str$ptr + 2861308
+16  chromedriver                        0x00000001026f7dd4 cxxbridge1$str$ptr + 2875472
+17  chromedriver                        0x00000001026d9a7c cxxbridge1$str$ptr + 2751736
+18  chromedriver                        0x00000001026f8658 cxxbridge1$str$ptr + 2877652
+19  chromedriver                        0x00000001026c9ffc cxxbridge1$str$ptr + 2687608
+20  chromedriver                        0x000000010271cd78 cxxbridge1$str$ptr + 3026932
+21  chromedriver                        0x000000010271cef4 cxxbridge1$str$ptr + 3027312
+22  chromedriver                        0x000000010272d6a8 cxxbridge1$str$ptr + 3094820
+23  libsystem_pthread.dylib             0x0000000186ccfc08 _pthread_start + 136
+24  libsystem_pthread.dylib             0x0000000186ccaba8 thread_start + 8
+
+2026-03-05 22:43:33,094 [INFO] src.processors.play_style_enricher: 나무위키 실패, LLM fallback: 왓킨스
+2026-03-05 22:43:33,101 [INFO] anthropic._base_client: Retrying request to /v1/messages in 0.455112 seconds
+2026-03-05 22:43:33,565 [INFO] anthropic._base_client: Retrying request to /v1/messages in 0.912596 seconds
+2026-03-05 22:43:34,486 [ERROR] src.processors.play_style_enricher: LLM 생성 실패: 왓킨스 - Connection error.
+2026-03-05 22:43:34,486 [WARNING] src.processors.play_style_enricher: 보강 실패: 왓킨스
+2026-03-05 22:43:34,486 [INFO] src.processors.play_style_enricher: [37/40] 보강 시작: 베일리 (Leon Bailey)
+2026-03-05 22:43:34,960 [WARNING] selenium.webdriver.common.selenium_manager: There was an error managing chromedriver (error sending request for url (https://googlechromelabs.github.io/chrome-for-testing/known-good-versions-with-downloads.json)); using driver found in the cache
+2026-03-05 22:43:42,885 [WARNING] src.crawlers.namuwiki_selenium: 크롤링 오류: 레온 베일리 (attempt 1): Message: unknown error: net::ERR_INTERNET_DISCONNECTED
+  (Session info: chrome=145.0.7632.119)
+Stacktrace:
+0   chromedriver                        0x0000000100e3d6b4 cxxbridge1$str$ptr + 3127600
+1   chromedriver                        0x0000000100e35a50 cxxbridge1$str$ptr + 3095756
+2   chromedriver                        0x000000010091256c _RNvCsdExgN8vFLbb_7___rustc35___rust_no_alloc_shim_is_unstable_v2 + 75432
+3   chromedriver                        0x000000010090a5a8 _RNvCsdExgN8vFLbb_7___rustc35___rust_no_alloc_shim_is_unstable_v2 + 42724
+4   chromedriver                        0x00000001008fcca4 cxxbridge1$string$len + 5152
+5   chromedriver                        0x00000001008fe7ac cxxbridge1$string$len + 12072
+6   chromedriver                        0x00000001008fd110 cxxbridge1$string$len + 6284
+7   chromedriver                        0x00000001008fc8f8 cxxbridge1$string$len + 4212
+8   chromedriver                        0x00000001008fc5e4 cxxbridge1$string$len + 3424
+9   chromedriver                        0x00000001008fa1a8 chromedriver + 221608
+10  chromedriver                        0x00000001008fac74 chromedriver + 224372
+11  chromedriver                        0x0000000100915a60 _RNvCsdExgN8vFLbb_7___rustc35___rust_no_alloc_shim_is_unstable_v2 + 88988
+12  chromedriver                        0x000000010099b0ec _RNvCsdExgN8vFLbb_7___rustc35___rust_no_alloc_shim_is_unstable_v2 + 635432
+13  chromedriver                        0x000000010099a620 _RNvCsdExgN8vFLbb_7___rustc35___rust_no_alloc_shim_is_unstable_v2 + 632668
+14  chromedriver                        0x000000010094fb9c _RNvCsdExgN8vFLbb_7___rustc35___rust_no_alloc_shim_is_unstable_v2 + 326872
+15  chromedriver                        0x0000000100dfc680 cxxbridge1$str$ptr + 2861308
+16  chromedriver                        0x0000000100dffdd4 cxxbridge1$str$ptr + 2875472
+17  chromedriver                        0x0000000100de1a7c cxxbridge1$str$ptr + 2751736
+18  chromedriver                        0x0000000100e00658 cxxbridge1$str$ptr + 2877652
+19  chromedriver                        0x0000000100dd1ffc cxxbridge1$str$ptr + 2687608
+20  chromedriver                        0x0000000100e24d78 cxxbridge1$str$ptr + 3026932
+21  chromedriver                        0x0000000100e24ef4 cxxbridge1$str$ptr + 3027312
+22  chromedriver                        0x0000000100e356a8 cxxbridge1$str$ptr + 3094820
+23  libsystem_pthread.dylib             0x0000000186ccfc08 _pthread_start + 136
+24  libsystem_pthread.dylib             0x0000000186ccaba8 thread_start + 8
+
+2026-03-05 22:43:46,470 [WARNING] selenium.webdriver.common.selenium_manager: There was an error managing chromedriver (error sending request for url (https://googlechromelabs.github.io/chrome-for-testing/known-good-versions-with-downloads.json)); using driver found in the cache
+2026-03-05 22:43:52,897 [WARNING] src.crawlers.namuwiki_selenium: 크롤링 오류: 레온 베일리 (attempt 2): Message: unknown error: net::ERR_INTERNET_DISCONNECTED
+  (Session info: chrome=145.0.7632.119)
+Stacktrace:
+0   chromedriver                        0x000000010487d6b4 cxxbridge1$str$ptr + 3127600
+1   chromedriver                        0x0000000104875a50 cxxbridge1$str$ptr + 3095756
+2   chromedriver                        0x000000010435256c _RNvCsdExgN8vFLbb_7___rustc35___rust_no_alloc_shim_is_unstable_v2 + 75432
+3   chromedriver                        0x000000010434a5a8 _RNvCsdExgN8vFLbb_7___rustc35___rust_no_alloc_shim_is_unstable_v2 + 42724
+4   chromedriver                        0x000000010433cca4 cxxbridge1$string$len + 5152
+5   chromedriver                        0x000000010433e7ac cxxbridge1$string$len + 12072
+6   chromedriver                        0x000000010433d110 cxxbridge1$string$len + 6284
+7   chromedriver                        0x000000010433c8f8 cxxbridge1$string$len + 4212
+8   chromedriver                        0x000000010433c5e4 cxxbridge1$string$len + 3424
+9   chromedriver                        0x000000010433a1a8 chromedriver + 221608
+10  chromedriver                        0x000000010433ac74 chromedriver + 224372
+11  chromedriver                        0x0000000104355a60 _RNvCsdExgN8vFLbb_7___rustc35___rust_no_alloc_shim_is_unstable_v2 + 88988
+12  chromedriver                        0x00000001043db0ec _RNvCsdExgN8vFLbb_7___rustc35___rust_no_alloc_shim_is_unstable_v2 + 635432
+13  chromedriver                        0x00000001043da620 _RNvCsdExgN8vFLbb_7___rustc35___rust_no_alloc_shim_is_unstable_v2 + 632668
+14  chromedriver                        0x000000010438fb9c _RNvCsdExgN8vFLbb_7___rustc35___rust_no_alloc_shim_is_unstable_v2 + 326872
+15  chromedriver                        0x000000010483c680 cxxbridge1$str$ptr + 2861308
+16  chromedriver                        0x000000010483fdd4 cxxbridge1$str$ptr + 2875472
+17  chromedriver                        0x0000000104821a7c cxxbridge1$str$ptr + 2751736
+18  chromedriver                        0x0000000104840658 cxxbridge1$str$ptr + 2877652
+19  chromedriver                        0x0000000104811ffc cxxbridge1$str$ptr + 2687608
+20  chromedriver                        0x0000000104864d78 cxxbridge1$str$ptr + 3026932
+21  chromedriver                        0x0000000104864ef4 cxxbridge1$str$ptr + 3027312
+22  chromedriver                        0x00000001048756a8 cxxbridge1$str$ptr + 3094820
+23  libsystem_pthread.dylib             0x0000000186ccfc08 _pthread_start + 136
+24  libsystem_pthread.dylib             0x0000000186ccaba8 thread_start + 8
+
+2026-03-05 22:43:55,990 [INFO] src.crawlers.namuwiki_selenium: 시도 실패: 베일리 -> 레온 베일리
+2026-03-05 22:43:56,474 [WARNING] selenium.webdriver.common.selenium_manager: There was an error managing chromedriver (error sending request for url (https://googlechromelabs.github.io/chrome-for-testing/known-good-versions-with-downloads.json)); using driver found in the cache
+2026-03-05 22:44:02,837 [WARNING] src.crawlers.namuwiki_selenium: 크롤링 오류: 베일리 (attempt 1): Message: unknown error: net::ERR_INTERNET_DISCONNECTED
+  (Session info: chrome=145.0.7632.119)
+Stacktrace:
+0   chromedriver                        0x0000000100f496b4 cxxbridge1$str$ptr + 3127600
+1   chromedriver                        0x0000000100f41a50 cxxbridge1$str$ptr + 3095756
+2   chromedriver                        0x0000000100a1e56c _RNvCsdExgN8vFLbb_7___rustc35___rust_no_alloc_shim_is_unstable_v2 + 75432
+3   chromedriver                        0x0000000100a165a8 _RNvCsdExgN8vFLbb_7___rustc35___rust_no_alloc_shim_is_unstable_v2 + 42724
+4   chromedriver                        0x0000000100a08ca4 cxxbridge1$string$len + 5152
+5   chromedriver                        0x0000000100a0a7ac cxxbridge1$string$len + 12072
+6   chromedriver                        0x0000000100a09110 cxxbridge1$string$len + 6284
+7   chromedriver                        0x0000000100a088f8 cxxbridge1$string$len + 4212
+8   chromedriver                        0x0000000100a085e4 cxxbridge1$string$len + 3424
+9   chromedriver                        0x0000000100a061a8 chromedriver + 221608
+10  chromedriver                        0x0000000100a06c74 chromedriver + 224372
+11  chromedriver                        0x0000000100a21a60 _RNvCsdExgN8vFLbb_7___rustc35___rust_no_alloc_shim_is_unstable_v2 + 88988
+12  chromedriver                        0x0000000100aa70ec _RNvCsdExgN8vFLbb_7___rustc35___rust_no_alloc_shim_is_unstable_v2 + 635432
+13  chromedriver                        0x0000000100aa6620 _RNvCsdExgN8vFLbb_7___rustc35___rust_no_alloc_shim_is_unstable_v2 + 632668
+14  chromedriver                        0x0000000100a5bb9c _RNvCsdExgN8vFLbb_7___rustc35___rust_no_alloc_shim_is_unstable_v2 + 326872
+15  chromedriver                        0x0000000100f08680 cxxbridge1$str$ptr + 2861308
+16  chromedriver                        0x0000000100f0bdd4 cxxbridge1$str$ptr + 2875472
+17  chromedriver                        0x0000000100eeda7c cxxbridge1$str$ptr + 2751736
+18  chromedriver                        0x0000000100f0c658 cxxbridge1$str$ptr + 2877652
+19  chromedriver                        0x0000000100eddffc cxxbridge1$str$ptr + 2687608
+20  chromedriver                        0x0000000100f30d78 cxxbridge1$str$ptr + 3026932
+21  chromedriver                        0x0000000100f30ef4 cxxbridge1$str$ptr + 3027312
+22  chromedriver                        0x0000000100f416a8 cxxbridge1$str$ptr + 3094820
+23  libsystem_pthread.dylib             0x0000000186ccfc08 _pthread_start + 136
+24  libsystem_pthread.dylib             0x0000000186ccaba8 thread_start + 8
+
+2026-03-05 22:44:06,420 [WARNING] selenium.webdriver.common.selenium_manager: There was an error managing chromedriver (error sending request for url (https://googlechromelabs.github.io/chrome-for-testing/known-good-versions-with-downloads.json)); using driver found in the cache
+2026-03-05 22:44:12,881 [WARNING] src.crawlers.namuwiki_selenium: 크롤링 오류: 베일리 (attempt 2): Message: unknown error: net::ERR_INTERNET_DISCONNECTED
+  (Session info: chrome=145.0.7632.119)
+Stacktrace:
+0   chromedriver                        0x00000001028f56b4 cxxbridge1$str$ptr + 3127600
+1   chromedriver                        0x00000001028eda50 cxxbridge1$str$ptr + 3095756
+2   chromedriver                        0x00000001023ca56c _RNvCsdExgN8vFLbb_7___rustc35___rust_no_alloc_shim_is_unstable_v2 + 75432
+3   chromedriver                        0x00000001023c25a8 _RNvCsdExgN8vFLbb_7___rustc35___rust_no_alloc_shim_is_unstable_v2 + 42724
+4   chromedriver                        0x00000001023b4ca4 cxxbridge1$string$len + 5152
+5   chromedriver                        0x00000001023b67ac cxxbridge1$string$len + 12072
+6   chromedriver                        0x00000001023b5110 cxxbridge1$string$len + 6284
+7   chromedriver                        0x00000001023b48f8 cxxbridge1$string$len + 4212
+8   chromedriver                        0x00000001023b45e4 cxxbridge1$string$len + 3424
+9   chromedriver                        0x00000001023b21a8 chromedriver + 221608
+10  chromedriver                        0x00000001023b2c74 chromedriver + 224372
+11  chromedriver                        0x00000001023cda60 _RNvCsdExgN8vFLbb_7___rustc35___rust_no_alloc_shim_is_unstable_v2 + 88988
+12  chromedriver                        0x00000001024530ec _RNvCsdExgN8vFLbb_7___rustc35___rust_no_alloc_shim_is_unstable_v2 + 635432
+13  chromedriver                        0x0000000102452620 _RNvCsdExgN8vFLbb_7___rustc35___rust_no_alloc_shim_is_unstable_v2 + 632668
+14  chromedriver                        0x0000000102407b9c _RNvCsdExgN8vFLbb_7___rustc35___rust_no_alloc_shim_is_unstable_v2 + 326872
+15  chromedriver                        0x00000001028b4680 cxxbridge1$str$ptr + 2861308
+16  chromedriver                        0x00000001028b7dd4 cxxbridge1$str$ptr + 2875472
+17  chromedriver                        0x0000000102899a7c cxxbridge1$str$ptr + 2751736
+18  chromedriver                        0x00000001028b8658 cxxbridge1$str$ptr + 2877652
+19  chromedriver                        0x0000000102889ffc cxxbridge1$str$ptr + 2687608
+20  chromedriver                        0x00000001028dcd78 cxxbridge1$str$ptr + 3026932
+21  chromedriver                        0x00000001028dcef4 cxxbridge1$str$ptr + 3027312
+22  chromedriver                        0x00000001028ed6a8 cxxbridge1$str$ptr + 3094820
+23  libsystem_pthread.dylib             0x0000000186ccfc08 _pthread_start + 136
+24  libsystem_pthread.dylib             0x0000000186ccaba8 thread_start + 8
+
+2026-03-05 23:44:29,044 [INFO] src.crawlers.namuwiki_selenium: 시도 실패: 베일리 -> 베일리
+2026-03-05 23:44:29,787 [WARNING] selenium.webdriver.common.selenium_manager: There was an error managing chromedriver (error sending request for url (https://googlechromelabs.github.io/chrome-for-testing/known-good-versions-with-downloads.json)); using driver found in the cache
+2026-03-05 23:44:29,788 [WARNING] selenium.webdriver.common.selenium_manager: Error sending stats to Plausible: error sending request for url (https://plausible.io/api/event)
+2026-03-05 23:44:36,453 [WARNING] src.crawlers.namuwiki_selenium: 검색 크롤링 실패: 베일리: Message: unknown error: net::ERR_INTERNET_DISCONNECTED
+  (Session info: chrome=145.0.7632.119)
+Stacktrace:
+0   chromedriver                        0x00000001045856b4 cxxbridge1$str$ptr + 3127600
+1   chromedriver                        0x000000010457da50 cxxbridge1$str$ptr + 3095756
+2   chromedriver                        0x000000010405a56c _RNvCsdExgN8vFLbb_7___rustc35___rust_no_alloc_shim_is_unstable_v2 + 75432
+3   chromedriver                        0x00000001040525a8 _RNvCsdExgN8vFLbb_7___rustc35___rust_no_alloc_shim_is_unstable_v2 + 42724
+4   chromedriver                        0x0000000104044ca4 cxxbridge1$string$len + 5152
+5   chromedriver                        0x00000001040467ac cxxbridge1$string$len + 12072
+6   chromedriver                        0x0000000104045110 cxxbridge1$string$len + 6284
+7   chromedriver                        0x00000001040448f8 cxxbridge1$string$len + 4212
+8   chromedriver                        0x00000001040445e4 cxxbridge1$string$len + 3424
+9   chromedriver                        0x00000001040421a8 chromedriver + 221608
+10  chromedriver                        0x0000000104042c74 chromedriver + 224372
+11  chromedriver                        0x000000010405da60 _RNvCsdExgN8vFLbb_7___rustc35___rust_no_alloc_shim_is_unstable_v2 + 88988
+12  chromedriver                        0x00000001040e30ec _RNvCsdExgN8vFLbb_7___rustc35___rust_no_alloc_shim_is_unstable_v2 + 635432
+13  chromedriver                        0x00000001040e2620 _RNvCsdExgN8vFLbb_7___rustc35___rust_no_alloc_shim_is_unstable_v2 + 632668
+14  chromedriver                        0x0000000104097b9c _RNvCsdExgN8vFLbb_7___rustc35___rust_no_alloc_shim_is_unstable_v2 + 326872
+15  chromedriver                        0x0000000104544680 cxxbridge1$str$ptr + 2861308
+16  chromedriver                        0x0000000104547dd4 cxxbridge1$str$ptr + 2875472
+17  chromedriver                        0x0000000104529a7c cxxbridge1$str$ptr + 2751736
+18  chromedriver                        0x0000000104548658 cxxbridge1$str$ptr + 2877652
+19  chromedriver                        0x0000000104519ffc cxxbridge1$str$ptr + 2687608
+20  chromedriver                        0x000000010456cd78 cxxbridge1$str$ptr + 3026932
+21  chromedriver                        0x000000010456cef4 cxxbridge1$str$ptr + 3027312
+22  chromedriver                        0x000000010457d6a8 cxxbridge1$str$ptr + 3094820
+23  libsystem_pthread.dylib             0x0000000186ccfc08 _pthread_start + 136
+24  libsystem_pthread.dylib             0x0000000186ccaba8 thread_start + 8
+
+2026-03-05 23:44:36,538 [INFO] src.processors.play_style_enricher: 나무위키 실패, LLM fallback: 베일리
+2026-03-05 23:44:36,541 [INFO] anthropic._base_client: Retrying request to /v1/messages in 0.472479 seconds
+2026-03-05 23:44:37,018 [INFO] anthropic._base_client: Retrying request to /v1/messages in 0.799920 seconds
+2026-03-05 23:44:37,822 [ERROR] src.processors.play_style_enricher: LLM 생성 실패: 베일리 - Connection error.
+2026-03-05 23:44:37,822 [WARNING] src.processors.play_style_enricher: 보강 실패: 베일리
+2026-03-05 23:44:37,822 [INFO] src.processors.play_style_enricher: [38/40] 보강 시작: 듀란 (Jhon Durán)
+2026-03-05 23:44:38,357 [WARNING] selenium.webdriver.common.selenium_manager: There was an error managing chromedriver (error sending request for url (https://googlechromelabs.github.io/chrome-for-testing/known-good-versions-with-downloads.json)); using driver found in the cache
+2026-03-05 23:44:45,220 [WARNING] src.crawlers.namuwiki_selenium: 크롤링 오류: 혼 두란 (attempt 1): Message: unknown error: net::ERR_INTERNET_DISCONNECTED
+  (Session info: chrome=145.0.7632.119)
+Stacktrace:
+0   chromedriver                        0x0000000104e256b4 cxxbridge1$str$ptr + 3127600
+1   chromedriver                        0x0000000104e1da50 cxxbridge1$str$ptr + 3095756
+2   chromedriver                        0x00000001048fa56c _RNvCsdExgN8vFLbb_7___rustc35___rust_no_alloc_shim_is_unstable_v2 + 75432
+3   chromedriver                        0x00000001048f25a8 _RNvCsdExgN8vFLbb_7___rustc35___rust_no_alloc_shim_is_unstable_v2 + 42724
+4   chromedriver                        0x00000001048e4ca4 cxxbridge1$string$len + 5152
+5   chromedriver                        0x00000001048e67ac cxxbridge1$string$len + 12072
+6   chromedriver                        0x00000001048e5110 cxxbridge1$string$len + 6284
+7   chromedriver                        0x00000001048e48f8 cxxbridge1$string$len + 4212
+8   chromedriver                        0x00000001048e45e4 cxxbridge1$string$len + 3424
+9   chromedriver                        0x00000001048e21a8 chromedriver + 221608
+10  chromedriver                        0x00000001048e2c74 chromedriver + 224372
+11  chromedriver                        0x00000001048fda60 _RNvCsdExgN8vFLbb_7___rustc35___rust_no_alloc_shim_is_unstable_v2 + 88988
+12  chromedriver                        0x00000001049830ec _RNvCsdExgN8vFLbb_7___rustc35___rust_no_alloc_shim_is_unstable_v2 + 635432
+13  chromedriver                        0x0000000104982620 _RNvCsdExgN8vFLbb_7___rustc35___rust_no_alloc_shim_is_unstable_v2 + 632668
+14  chromedriver                        0x0000000104937b9c _RNvCsdExgN8vFLbb_7___rustc35___rust_no_alloc_shim_is_unstable_v2 + 326872
+15  chromedriver                        0x0000000104de4680 cxxbridge1$str$ptr + 2861308
+16  chromedriver                        0x0000000104de7dd4 cxxbridge1$str$ptr + 2875472
+17  chromedriver                        0x0000000104dc9a7c cxxbridge1$str$ptr + 2751736
+18  chromedriver                        0x0000000104de8658 cxxbridge1$str$ptr + 2877652
+19  chromedriver                        0x0000000104db9ffc cxxbridge1$str$ptr + 2687608
+20  chromedriver                        0x0000000104e0cd78 cxxbridge1$str$ptr + 3026932
+21  chromedriver                        0x0000000104e0cef4 cxxbridge1$str$ptr + 3027312
+22  chromedriver                        0x0000000104e1d6a8 cxxbridge1$str$ptr + 3094820
+23  libsystem_pthread.dylib             0x0000000186ccfc08 _pthread_start + 136
+24  libsystem_pthread.dylib             0x0000000186ccaba8 thread_start + 8
+
+2026-03-05 23:44:48,781 [WARNING] selenium.webdriver.common.selenium_manager: There was an error managing chromedriver (error sending request for url (https://googlechromelabs.github.io/chrome-for-testing/known-good-versions-with-downloads.json)); using driver found in the cache
+2026-03-05 23:44:55,217 [WARNING] src.crawlers.namuwiki_selenium: 크롤링 오류: 혼 두란 (attempt 2): Message: unknown error: net::ERR_INTERNET_DISCONNECTED
+  (Session info: chrome=145.0.7632.119)
+Stacktrace:
+0   chromedriver                        0x0000000100a0d6b4 cxxbridge1$str$ptr + 3127600
+1   chromedriver                        0x0000000100a05a50 cxxbridge1$str$ptr + 3095756
+2   chromedriver                        0x00000001004e256c _RNvCsdExgN8vFLbb_7___rustc35___rust_no_alloc_shim_is_unstable_v2 + 75432
+3   chromedriver                        0x00000001004da5a8 _RNvCsdExgN8vFLbb_7___rustc35___rust_no_alloc_shim_is_unstable_v2 + 42724
+4   chromedriver                        0x00000001004ccca4 cxxbridge1$string$len + 5152
+5   chromedriver                        0x00000001004ce7ac cxxbridge1$string$len + 12072
+6   chromedriver                        0x00000001004cd110 cxxbridge1$string$len + 6284
+7   chromedriver                        0x00000001004cc8f8 cxxbridge1$string$len + 4212
+8   chromedriver                        0x00000001004cc5e4 cxxbridge1$string$len + 3424
+9   chromedriver                        0x00000001004ca1a8 chromedriver + 221608
+10  chromedriver                        0x00000001004cac74 chromedriver + 224372
+11  chromedriver                        0x00000001004e5a60 _RNvCsdExgN8vFLbb_7___rustc35___rust_no_alloc_shim_is_unstable_v2 + 88988
+12  chromedriver                        0x000000010056b0ec _RNvCsdExgN8vFLbb_7___rustc35___rust_no_alloc_shim_is_unstable_v2 + 635432
+13  chromedriver                        0x000000010056a620 _RNvCsdExgN8vFLbb_7___rustc35___rust_no_alloc_shim_is_unstable_v2 + 632668
+14  chromedriver                        0x000000010051fb9c _RNvCsdExgN8vFLbb_7___rustc35___rust_no_alloc_shim_is_unstable_v2 + 326872
+15  chromedriver                        0x00000001009cc680 cxxbridge1$str$ptr + 2861308
+16  chromedriver                        0x00000001009cfdd4 cxxbridge1$str$ptr + 2875472
+17  chromedriver                        0x00000001009b1a7c cxxbridge1$str$ptr + 2751736
+18  chromedriver                        0x00000001009d0658 cxxbridge1$str$ptr + 2877652
+19  chromedriver                        0x00000001009a1ffc cxxbridge1$str$ptr + 2687608
+20  chromedriver                        0x00000001009f4d78 cxxbridge1$str$ptr + 3026932
+21  chromedriver                        0x00000001009f4ef4 cxxbridge1$str$ptr + 3027312
+22  chromedriver                        0x0000000100a056a8 cxxbridge1$str$ptr + 3094820
+23  libsystem_pthread.dylib             0x0000000186ccfc08 _pthread_start + 136
+24  libsystem_pthread.dylib             0x0000000186ccaba8 thread_start + 8
+
+2026-03-05 23:44:58,304 [INFO] src.crawlers.namuwiki_selenium: 시도 실패: 듀란 -> 혼 두란
+2026-03-05 23:44:58,789 [WARNING] selenium.webdriver.common.selenium_manager: There was an error managing chromedriver (error sending request for url (https://googlechromelabs.github.io/chrome-for-testing/known-good-versions-with-downloads.json)); using driver found in the cache
+2026-03-05 23:45:05,207 [WARNING] src.crawlers.namuwiki_selenium: 크롤링 오류: 존 두란 (attempt 1): Message: unknown error: net::ERR_INTERNET_DISCONNECTED
+  (Session info: chrome=145.0.7632.119)
+Stacktrace:
+0   chromedriver                        0x00000001010396b4 cxxbridge1$str$ptr + 3127600
+1   chromedriver                        0x0000000101031a50 cxxbridge1$str$ptr + 3095756
+2   chromedriver                        0x0000000100b0e56c _RNvCsdExgN8vFLbb_7___rustc35___rust_no_alloc_shim_is_unstable_v2 + 75432
+3   chromedriver                        0x0000000100b065a8 _RNvCsdExgN8vFLbb_7___rustc35___rust_no_alloc_shim_is_unstable_v2 + 42724
+4   chromedriver                        0x0000000100af8ca4 cxxbridge1$string$len + 5152
+5   chromedriver                        0x0000000100afa7ac cxxbridge1$string$len + 12072
+6   chromedriver                        0x0000000100af9110 cxxbridge1$string$len + 6284
+7   chromedriver                        0x0000000100af88f8 cxxbridge1$string$len + 4212
+8   chromedriver                        0x0000000100af85e4 cxxbridge1$string$len + 3424
+9   chromedriver                        0x0000000100af61a8 chromedriver + 221608
+10  chromedriver                        0x0000000100af6c74 chromedriver + 224372
+11  chromedriver                        0x0000000100b11a60 _RNvCsdExgN8vFLbb_7___rustc35___rust_no_alloc_shim_is_unstable_v2 + 88988
+12  chromedriver                        0x0000000100b970ec _RNvCsdExgN8vFLbb_7___rustc35___rust_no_alloc_shim_is_unstable_v2 + 635432
+13  chromedriver                        0x0000000100b96620 _RNvCsdExgN8vFLbb_7___rustc35___rust_no_alloc_shim_is_unstable_v2 + 632668
+14  chromedriver                        0x0000000100b4bb9c _RNvCsdExgN8vFLbb_7___rustc35___rust_no_alloc_shim_is_unstable_v2 + 326872
+15  chromedriver                        0x0000000100ff8680 cxxbridge1$str$ptr + 2861308
+16  chromedriver                        0x0000000100ffbdd4 cxxbridge1$str$ptr + 2875472
+17  chromedriver                        0x0000000100fdda7c cxxbridge1$str$ptr + 2751736
+18  chromedriver                        0x0000000100ffc658 cxxbridge1$str$ptr + 2877652
+19  chromedriver                        0x0000000100fcdffc cxxbridge1$str$ptr + 2687608
+20  chromedriver                        0x0000000101020d78 cxxbridge1$str$ptr + 3026932
+21  chromedriver                        0x0000000101020ef4 cxxbridge1$str$ptr + 3027312
+22  chromedriver                        0x00000001010316a8 cxxbridge1$str$ptr + 3094820
+23  libsystem_pthread.dylib             0x0000000186ccfc08 _pthread_start + 136
+24  libsystem_pthread.dylib             0x0000000186ccaba8 thread_start + 8
+
+2026-03-05 23:45:08,773 [WARNING] selenium.webdriver.common.selenium_manager: There was an error managing chromedriver (error sending request for url (https://googlechromelabs.github.io/chrome-for-testing/known-good-versions-with-downloads.json)); using driver found in the cache
+2026-03-05 23:45:15,155 [WARNING] src.crawlers.namuwiki_selenium: 크롤링 오류: 존 두란 (attempt 2): Message: unknown error: net::ERR_INTERNET_DISCONNECTED
+  (Session info: chrome=145.0.7632.119)
+Stacktrace:
+0   chromedriver                        0x00000001048ed6b4 cxxbridge1$str$ptr + 3127600
+1   chromedriver                        0x00000001048e5a50 cxxbridge1$str$ptr + 3095756
+2   chromedriver                        0x00000001043c256c _RNvCsdExgN8vFLbb_7___rustc35___rust_no_alloc_shim_is_unstable_v2 + 75432
+3   chromedriver                        0x00000001043ba5a8 _RNvCsdExgN8vFLbb_7___rustc35___rust_no_alloc_shim_is_unstable_v2 + 42724
+4   chromedriver                        0x00000001043acca4 cxxbridge1$string$len + 5152
+5   chromedriver                        0x00000001043ae7ac cxxbridge1$string$len + 12072
+6   chromedriver                        0x00000001043ad110 cxxbridge1$string$len + 6284
+7   chromedriver                        0x00000001043ac8f8 cxxbridge1$string$len + 4212
+8   chromedriver                        0x00000001043ac5e4 cxxbridge1$string$len + 3424
+9   chromedriver                        0x00000001043aa1a8 chromedriver + 221608
+10  chromedriver                        0x00000001043aac74 chromedriver + 224372
+11  chromedriver                        0x00000001043c5a60 _RNvCsdExgN8vFLbb_7___rustc35___rust_no_alloc_shim_is_unstable_v2 + 88988
+12  chromedriver                        0x000000010444b0ec _RNvCsdExgN8vFLbb_7___rustc35___rust_no_alloc_shim_is_unstable_v2 + 635432
+13  chromedriver                        0x000000010444a620 _RNvCsdExgN8vFLbb_7___rustc35___rust_no_alloc_shim_is_unstable_v2 + 632668
+14  chromedriver                        0x00000001043ffb9c _RNvCsdExgN8vFLbb_7___rustc35___rust_no_alloc_shim_is_unstable_v2 + 326872
+15  chromedriver                        0x00000001048ac680 cxxbridge1$str$ptr + 2861308
+16  chromedriver                        0x00000001048afdd4 cxxbridge1$str$ptr + 2875472
+17  chromedriver                        0x0000000104891a7c cxxbridge1$str$ptr + 2751736
+18  chromedriver                        0x00000001048b0658 cxxbridge1$str$ptr + 2877652
+19  chromedriver                        0x0000000104881ffc cxxbridge1$str$ptr + 2687608
+20  chromedriver                        0x00000001048d4d78 cxxbridge1$str$ptr + 3026932
+21  chromedriver                        0x00000001048d4ef4 cxxbridge1$str$ptr + 3027312
+22  chromedriver                        0x00000001048e56a8 cxxbridge1$str$ptr + 3094820
+23  libsystem_pthread.dylib             0x0000000186ccfc08 _pthread_start + 136
+24  libsystem_pthread.dylib             0x0000000186ccaba8 thread_start + 8
+
+2026-03-06 00:45:31,348 [INFO] src.crawlers.namuwiki_selenium: 시도 실패: 듀란 -> 존 두란
+2026-03-06 00:45:31,897 [WARNING] selenium.webdriver.common.selenium_manager: There was an error managing chromedriver (error sending request for url (https://googlechromelabs.github.io/chrome-for-testing/known-good-versions-with-downloads.json)); using driver found in the cache
+2026-03-06 00:45:31,898 [WARNING] selenium.webdriver.common.selenium_manager: Error sending stats to Plausible: error sending request for url (https://plausible.io/api/event)
+2026-03-06 00:45:40,067 [WARNING] src.crawlers.namuwiki_selenium: 크롤링 오류: 듀란 (attempt 1): Message: unknown error: net::ERR_INTERNET_DISCONNECTED
+  (Session info: chrome=145.0.7632.119)
+Stacktrace:
+0   chromedriver                        0x00000001027316b4 cxxbridge1$str$ptr + 3127600
+1   chromedriver                        0x0000000102729a50 cxxbridge1$str$ptr + 3095756
+2   chromedriver                        0x000000010220656c _RNvCsdExgN8vFLbb_7___rustc35___rust_no_alloc_shim_is_unstable_v2 + 75432
+3   chromedriver                        0x00000001021fe5a8 _RNvCsdExgN8vFLbb_7___rustc35___rust_no_alloc_shim_is_unstable_v2 + 42724
+4   chromedriver                        0x00000001021f0ca4 cxxbridge1$string$len + 5152
+5   chromedriver                        0x00000001021f27ac cxxbridge1$string$len + 12072
+6   chromedriver                        0x00000001021f1110 cxxbridge1$string$len + 6284
+7   chromedriver                        0x00000001021f08f8 cxxbridge1$string$len + 4212
+8   chromedriver                        0x00000001021f05e4 cxxbridge1$string$len + 3424
+9   chromedriver                        0x00000001021ee1a8 chromedriver + 221608
+10  chromedriver                        0x00000001021eec74 chromedriver + 224372
+11  chromedriver                        0x0000000102209a60 _RNvCsdExgN8vFLbb_7___rustc35___rust_no_alloc_shim_is_unstable_v2 + 88988
+12  chromedriver                        0x000000010228f0ec _RNvCsdExgN8vFLbb_7___rustc35___rust_no_alloc_shim_is_unstable_v2 + 635432
+13  chromedriver                        0x000000010228e620 _RNvCsdExgN8vFLbb_7___rustc35___rust_no_alloc_shim_is_unstable_v2 + 632668
+14  chromedriver                        0x0000000102243b9c _RNvCsdExgN8vFLbb_7___rustc35___rust_no_alloc_shim_is_unstable_v2 + 326872
+15  chromedriver                        0x00000001026f0680 cxxbridge1$str$ptr + 2861308
+16  chromedriver                        0x00000001026f3dd4 cxxbridge1$str$ptr + 2875472
+17  chromedriver                        0x00000001026d5a7c cxxbridge1$str$ptr + 2751736
+18  chromedriver                        0x00000001026f4658 cxxbridge1$str$ptr + 2877652
+19  chromedriver                        0x00000001026c5ffc cxxbridge1$str$ptr + 2687608
+20  chromedriver                        0x0000000102718d78 cxxbridge1$str$ptr + 3026932
+21  chromedriver                        0x0000000102718ef4 cxxbridge1$str$ptr + 3027312
+22  chromedriver                        0x00000001027296a8 cxxbridge1$str$ptr + 3094820
+23  libsystem_pthread.dylib             0x0000000186ccfc08 _pthread_start + 136
+24  libsystem_pthread.dylib             0x0000000186ccaba8 thread_start + 8
+
+2026-03-06 00:45:43,696 [WARNING] selenium.webdriver.common.selenium_manager: There was an error managing chromedriver (error sending request for url (https://googlechromelabs.github.io/chrome-for-testing/known-good-versions-with-downloads.json)); using driver found in the cache
+2026-03-06 00:45:50,092 [WARNING] src.crawlers.namuwiki_selenium: 크롤링 오류: 듀란 (attempt 2): Message: unknown error: net::ERR_INTERNET_DISCONNECTED
+  (Session info: chrome=145.0.7632.119)
+Stacktrace:
+0   chromedriver                        0x00000001007416b4 cxxbridge1$str$ptr + 3127600
+1   chromedriver                        0x0000000100739a50 cxxbridge1$str$ptr + 3095756
+2   chromedriver                        0x000000010021656c _RNvCsdExgN8vFLbb_7___rustc35___rust_no_alloc_shim_is_unstable_v2 + 75432
+3   chromedriver                        0x000000010020e5a8 _RNvCsdExgN8vFLbb_7___rustc35___rust_no_alloc_shim_is_unstable_v2 + 42724
+4   chromedriver                        0x0000000100200ca4 cxxbridge1$string$len + 5152
+5   chromedriver                        0x00000001002027ac cxxbridge1$string$len + 12072
+6   chromedriver                        0x0000000100201110 cxxbridge1$string$len + 6284
+7   chromedriver                        0x00000001002008f8 cxxbridge1$string$len + 4212
+8   chromedriver                        0x00000001002005e4 cxxbridge1$string$len + 3424
+9   chromedriver                        0x00000001001fe1a8 chromedriver + 221608
+10  chromedriver                        0x00000001001fec74 chromedriver + 224372
+11  chromedriver                        0x0000000100219a60 _RNvCsdExgN8vFLbb_7___rustc35___rust_no_alloc_shim_is_unstable_v2 + 88988
+12  chromedriver                        0x000000010029f0ec _RNvCsdExgN8vFLbb_7___rustc35___rust_no_alloc_shim_is_unstable_v2 + 635432
+13  chromedriver                        0x000000010029e620 _RNvCsdExgN8vFLbb_7___rustc35___rust_no_alloc_shim_is_unstable_v2 + 632668
+14  chromedriver                        0x0000000100253b9c _RNvCsdExgN8vFLbb_7___rustc35___rust_no_alloc_shim_is_unstable_v2 + 326872
+15  chromedriver                        0x0000000100700680 cxxbridge1$str$ptr + 2861308
+16  chromedriver                        0x0000000100703dd4 cxxbridge1$str$ptr + 2875472
+17  chromedriver                        0x00000001006e5a7c cxxbridge1$str$ptr + 2751736
+18  chromedriver                        0x0000000100704658 cxxbridge1$str$ptr + 2877652
+19  chromedriver                        0x00000001006d5ffc cxxbridge1$str$ptr + 2687608
+20  chromedriver                        0x0000000100728d78 cxxbridge1$str$ptr + 3026932
+21  chromedriver                        0x0000000100728ef4 cxxbridge1$str$ptr + 3027312
+22  chromedriver                        0x00000001007396a8 cxxbridge1$str$ptr + 3094820
+23  libsystem_pthread.dylib             0x0000000186ccfc08 _pthread_start + 136
+24  libsystem_pthread.dylib             0x0000000186ccaba8 thread_start + 8
+
+2026-03-06 00:45:53,186 [INFO] src.crawlers.namuwiki_selenium: 시도 실패: 듀란 -> 듀란
+2026-03-06 00:45:53,672 [WARNING] selenium.webdriver.common.selenium_manager: There was an error managing chromedriver (error sending request for url (https://googlechromelabs.github.io/chrome-for-testing/known-good-versions-with-downloads.json)); using driver found in the cache
+2026-03-06 00:46:00,167 [WARNING] src.crawlers.namuwiki_selenium: 검색 크롤링 실패: 듀란: Message: unknown error: net::ERR_INTERNET_DISCONNECTED
+  (Session info: chrome=145.0.7632.119)
+Stacktrace:
+0   chromedriver                        0x0000000102ca96b4 cxxbridge1$str$ptr + 3127600
+1   chromedriver                        0x0000000102ca1a50 cxxbridge1$str$ptr + 3095756
+2   chromedriver                        0x000000010277e56c _RNvCsdExgN8vFLbb_7___rustc35___rust_no_alloc_shim_is_unstable_v2 + 75432
+3   chromedriver                        0x00000001027765a8 _RNvCsdExgN8vFLbb_7___rustc35___rust_no_alloc_shim_is_unstable_v2 + 42724
+4   chromedriver                        0x0000000102768ca4 cxxbridge1$string$len + 5152
+5   chromedriver                        0x000000010276a7ac cxxbridge1$string$len + 12072
+6   chromedriver                        0x0000000102769110 cxxbridge1$string$len + 6284
+7   chromedriver                        0x00000001027688f8 cxxbridge1$string$len + 4212
+8   chromedriver                        0x00000001027685e4 cxxbridge1$string$len + 3424
+9   chromedriver                        0x00000001027661a8 chromedriver + 221608
+10  chromedriver                        0x0000000102766c74 chromedriver + 224372
+11  chromedriver                        0x0000000102781a60 _RNvCsdExgN8vFLbb_7___rustc35___rust_no_alloc_shim_is_unstable_v2 + 88988
+12  chromedriver                        0x00000001028070ec _RNvCsdExgN8vFLbb_7___rustc35___rust_no_alloc_shim_is_unstable_v2 + 635432
+13  chromedriver                        0x0000000102806620 _RNvCsdExgN8vFLbb_7___rustc35___rust_no_alloc_shim_is_unstable_v2 + 632668
+14  chromedriver                        0x00000001027bbb9c _RNvCsdExgN8vFLbb_7___rustc35___rust_no_alloc_shim_is_unstable_v2 + 326872
+15  chromedriver                        0x0000000102c68680 cxxbridge1$str$ptr + 2861308
+16  chromedriver                        0x0000000102c6bdd4 cxxbridge1$str$ptr + 2875472
+17  chromedriver                        0x0000000102c4da7c cxxbridge1$str$ptr + 2751736
+18  chromedriver                        0x0000000102c6c658 cxxbridge1$str$ptr + 2877652
+19  chromedriver                        0x0000000102c3dffc cxxbridge1$str$ptr + 2687608
+20  chromedriver                        0x0000000102c90d78 cxxbridge1$str$ptr + 3026932
+21  chromedriver                        0x0000000102c90ef4 cxxbridge1$str$ptr + 3027312
+22  chromedriver                        0x0000000102ca16a8 cxxbridge1$str$ptr + 3094820
+23  libsystem_pthread.dylib             0x0000000186ccfc08 _pthread_start + 136
+24  libsystem_pthread.dylib             0x0000000186ccaba8 thread_start + 8
+
+2026-03-06 00:46:00,252 [INFO] src.processors.play_style_enricher: 나무위키 실패, LLM fallback: 듀란
+2026-03-06 00:46:00,258 [INFO] anthropic._base_client: Retrying request to /v1/messages in 0.422098 seconds
+2026-03-06 00:46:00,687 [INFO] anthropic._base_client: Retrying request to /v1/messages in 0.845350 seconds
+2026-03-06 00:46:01,546 [ERROR] src.processors.play_style_enricher: LLM 생성 실패: 듀란 - Connection error.
+2026-03-06 00:46:01,546 [WARNING] src.processors.play_style_enricher: 보강 실패: 듀란
+2026-03-06 00:46:01,546 [INFO] src.processors.play_style_enricher: [39/40] 보강 시작: 필로제 (Jaden Philogene)
+2026-03-06 00:46:02,030 [WARNING] selenium.webdriver.common.selenium_manager: There was an error managing chromedriver (error sending request for url (https://googlechromelabs.github.io/chrome-for-testing/known-good-versions-with-downloads.json)); using driver found in the cache
+2026-03-06 00:46:08,374 [WARNING] src.crawlers.namuwiki_selenium: 크롤링 오류: 제이든 필로전 (attempt 1): Message: unknown error: net::ERR_INTERNET_DISCONNECTED
+  (Session info: chrome=145.0.7632.119)
+Stacktrace:
+0   chromedriver                        0x00000001005d56b4 cxxbridge1$str$ptr + 3127600
+1   chromedriver                        0x00000001005cda50 cxxbridge1$str$ptr + 3095756
+2   chromedriver                        0x00000001000aa56c _RNvCsdExgN8vFLbb_7___rustc35___rust_no_alloc_shim_is_unstable_v2 + 75432
+3   chromedriver                        0x00000001000a25a8 _RNvCsdExgN8vFLbb_7___rustc35___rust_no_alloc_shim_is_unstable_v2 + 42724
+4   chromedriver                        0x0000000100094ca4 cxxbridge1$string$len + 5152
+5   chromedriver                        0x00000001000967ac cxxbridge1$string$len + 12072
+6   chromedriver                        0x0000000100095110 cxxbridge1$string$len + 6284
+7   chromedriver                        0x00000001000948f8 cxxbridge1$string$len + 4212
+8   chromedriver                        0x00000001000945e4 cxxbridge1$string$len + 3424
+9   chromedriver                        0x00000001000921a8 chromedriver + 221608
+10  chromedriver                        0x0000000100092c74 chromedriver + 224372
+11  chromedriver                        0x00000001000ada60 _RNvCsdExgN8vFLbb_7___rustc35___rust_no_alloc_shim_is_unstable_v2 + 88988
+12  chromedriver                        0x00000001001330ec _RNvCsdExgN8vFLbb_7___rustc35___rust_no_alloc_shim_is_unstable_v2 + 635432
+13  chromedriver                        0x0000000100132620 _RNvCsdExgN8vFLbb_7___rustc35___rust_no_alloc_shim_is_unstable_v2 + 632668
+14  chromedriver                        0x00000001000e7b9c _RNvCsdExgN8vFLbb_7___rustc35___rust_no_alloc_shim_is_unstable_v2 + 326872
+15  chromedriver                        0x0000000100594680 cxxbridge1$str$ptr + 2861308
+16  chromedriver                        0x0000000100597dd4 cxxbridge1$str$ptr + 2875472
+17  chromedriver                        0x0000000100579a7c cxxbridge1$str$ptr + 2751736
+18  chromedriver                        0x0000000100598658 cxxbridge1$str$ptr + 2877652
+19  chromedriver                        0x0000000100569ffc cxxbridge1$str$ptr + 2687608
+20  chromedriver                        0x00000001005bcd78 cxxbridge1$str$ptr + 3026932
+21  chromedriver                        0x00000001005bcef4 cxxbridge1$str$ptr + 3027312
+22  chromedriver                        0x00000001005cd6a8 cxxbridge1$str$ptr + 3094820
+23  libsystem_pthread.dylib             0x0000000186ccfc08 _pthread_start + 136
+24  libsystem_pthread.dylib             0x0000000186ccaba8 thread_start + 8
+
+2026-03-06 00:46:11,968 [WARNING] selenium.webdriver.common.selenium_manager: There was an error managing chromedriver (error sending request for url (https://googlechromelabs.github.io/chrome-for-testing/known-good-versions-with-downloads.json)); using driver found in the cache
+2026-03-06 01:14:46,192 [WARNING] src.crawlers.namuwiki_selenium: 크롤링 오류: 제이든 필로전 (attempt 2): Message: unknown error: net::ERR_INTERNET_DISCONNECTED
+  (Session info: chrome=145.0.7632.119)
+Stacktrace:
+0   chromedriver                        0x00000001047fd6b4 cxxbridge1$str$ptr + 3127600
+1   chromedriver                        0x00000001047f5a50 cxxbridge1$str$ptr + 3095756
+2   chromedriver                        0x00000001042d256c _RNvCsdExgN8vFLbb_7___rustc35___rust_no_alloc_shim_is_unstable_v2 + 75432
+3   chromedriver                        0x00000001042ca5a8 _RNvCsdExgN8vFLbb_7___rustc35___rust_no_alloc_shim_is_unstable_v2 + 42724
+4   chromedriver                        0x00000001042bcca4 cxxbridge1$string$len + 5152
+5   chromedriver                        0x00000001042be7ac cxxbridge1$string$len + 12072
+6   chromedriver                        0x00000001042bd110 cxxbridge1$string$len + 6284
+7   chromedriver                        0x00000001042bc8f8 cxxbridge1$string$len + 4212
+8   chromedriver                        0x00000001042bc5e4 cxxbridge1$string$len + 3424
+9   chromedriver                        0x00000001042ba1a8 chromedriver + 221608
+10  chromedriver                        0x00000001042bac74 chromedriver + 224372
+11  chromedriver                        0x00000001042d5a60 _RNvCsdExgN8vFLbb_7___rustc35___rust_no_alloc_shim_is_unstable_v2 + 88988
+12  chromedriver                        0x000000010435b0ec _RNvCsdExgN8vFLbb_7___rustc35___rust_no_alloc_shim_is_unstable_v2 + 635432
+13  chromedriver                        0x000000010435a620 _RNvCsdExgN8vFLbb_7___rustc35___rust_no_alloc_shim_is_unstable_v2 + 632668
+14  chromedriver                        0x000000010430fb9c _RNvCsdExgN8vFLbb_7___rustc35___rust_no_alloc_shim_is_unstable_v2 + 326872
+15  chromedriver                        0x00000001047bc680 cxxbridge1$str$ptr + 2861308
+16  chromedriver                        0x00000001047bfdd4 cxxbridge1$str$ptr + 2875472
+17  chromedriver                        0x00000001047a1a7c cxxbridge1$str$ptr + 2751736
+18  chromedriver                        0x00000001047c0658 cxxbridge1$str$ptr + 2877652
+19  chromedriver                        0x0000000104791ffc cxxbridge1$str$ptr + 2687608
+20  chromedriver                        0x00000001047e4d78 cxxbridge1$str$ptr + 3026932
+21  chromedriver                        0x00000001047e4ef4 cxxbridge1$str$ptr + 3027312
+22  chromedriver                        0x00000001047f56a8 cxxbridge1$str$ptr + 3094820
+23  libsystem_pthread.dylib             0x0000000186ccfc08 _pthread_start + 136
+24  libsystem_pthread.dylib             0x0000000186ccaba8 thread_start + 8
+
+2026-03-06 01:14:49,287 [INFO] src.crawlers.namuwiki_selenium: 시도 실패: 필로제 -> 제이든 필로전
+2026-03-06 01:14:49,787 [WARNING] selenium.webdriver.common.selenium_manager: There was an error managing chromedriver (error sending request for url (https://googlechromelabs.github.io/chrome-for-testing/known-good-versions-with-downloads.json)); using driver found in the cache
+2026-03-06 01:46:59,387 [WARNING] src.crawlers.namuwiki_selenium: 크롤링 오류: 제이든 필로제 (attempt 1): Message: timeout: Timed out receiving message from renderer: 59.563
+  (Session info: chrome=145.0.7632.119)
+Stacktrace:
+0   chromedriver                        0x00000001031716b4 cxxbridge1$str$ptr + 3127600
+1   chromedriver                        0x0000000103169a50 cxxbridge1$str$ptr + 3095756
+2   chromedriver                        0x0000000102c4656c _RNvCsdExgN8vFLbb_7___rustc35___rust_no_alloc_shim_is_unstable_v2 + 75432
+3   chromedriver                        0x0000000102c308c4 cxxbridge1$string$len + 4160
+4   chromedriver                        0x0000000102c305e4 cxxbridge1$string$len + 3424
+5   chromedriver                        0x0000000102c2e1a8 chromedriver + 221608
+6   chromedriver                        0x0000000102c2ed9c chromedriver + 224668
+7   chromedriver                        0x0000000102c3c768 _RNvCsdExgN8vFLbb_7___rustc35___rust_no_alloc_shim_is_unstable_v2 + 34980
+8   chromedriver                        0x0000000102c53240 _RNvCsdExgN8vFLbb_7___rustc35___rust_no_alloc_shim_is_unstable_v2 + 127868
+9   chromedriver                        0x0000000102c2f408 chromedriver + 226312
+10  chromedriver                        0x0000000102c5303c _RNvCsdExgN8vFLbb_7___rustc35___rust_no_alloc_shim_is_unstable_v2 + 127352
+11  chromedriver                        0x0000000102cce8e0 _RNvCsdExgN8vFLbb_7___rustc35___rust_no_alloc_shim_is_unstable_v2 + 633372
+12  chromedriver                        0x0000000102c83b9c _RNvCsdExgN8vFLbb_7___rustc35___rust_no_alloc_shim_is_unstable_v2 + 326872
+13  chromedriver                        0x0000000103130680 cxxbridge1$str$ptr + 2861308
+14  chromedriver                        0x0000000103133dd4 cxxbridge1$str$ptr + 2875472
+15  chromedriver                        0x0000000103115a7c cxxbridge1$str$ptr + 2751736
+16  chromedriver                        0x0000000103134658 cxxbridge1$str$ptr + 2877652
+17  chromedriver                        0x0000000103105ffc cxxbridge1$str$ptr + 2687608
+18  chromedriver                        0x0000000103158d78 cxxbridge1$str$ptr + 3026932
+19  chromedriver                        0x0000000103158ef4 cxxbridge1$str$ptr + 3027312
+20  chromedriver                        0x00000001031696a8 cxxbridge1$str$ptr + 3094820
+21  libsystem_pthread.dylib             0x0000000186ccfc08 _pthread_start + 136
+22  libsystem_pthread.dylib             0x0000000186ccaba8 thread_start + 8
+
+2026-03-06 02:41:16,308 [INFO] src.crawlers.namuwiki_selenium: 시도 실패: 필로제 -> 제이든 필로제
+2026-03-06 02:48:06,406 [INFO] src.crawlers.namuwiki_selenium: 성공: 필로제 (문서명: 필로제)
+2026-03-06 02:48:06,408 [INFO] src.processors.play_style_enricher: 나무위키 성공: 필로제
+2026-03-06 02:48:06,408 [INFO] src.processors.play_style_enricher: [40/40] 보강 시작: 타운센드 (Andros Townsend)
+2026-03-06 03:42:15,782 [INFO] src.crawlers.namuwiki_selenium: 성공: 타운센드 (문서명: 안드로스 타운센드)
+2026-03-06 03:42:15,784 [INFO] src.processors.play_style_enricher: 나무위키 성공: 타운센드
+2026-03-06 03:42:15,964 [INFO] src.processors.play_style_enricher: 보강 완료: namuwiki=14, llm=0, failed=8, skipped=18
+2026-03-06 03:42:15,970 [INFO] __main__: 저장 완료: /Users/danghyeonsong/ai-dev-team/projects/lapaz-crawl-20260305170615/data/players_all.json
+2026-03-06 03:42:15,970 [INFO] __main__: === 최종 결과 ===
+2026-03-06 03:42:15,970 [INFO] __main__: play_style 보유: 32/40
+2026-03-06 03:42:15,970 [INFO] __main__: 소스별: {'namuwiki': 32, 'failed': 8}
+2026-03-06 03:42:15,970 [INFO] __main__: 이번 실행: namuwiki=14, llm=0, failed=8
+2026-03-06 09:55:58,152 [INFO] __main__: 백업 생성: /Users/danghyeonsong/ai-dev-team/projects/lapaz-crawl-20260305170615/data/players_all_backup.json
+2026-03-06 09:55:58,153 [INFO] __main__: 데이터 로드: /Users/danghyeonsong/ai-dev-team/projects/lapaz-crawl-20260305170615/data/players_all.json
+2026-03-06 09:55:58,154 [INFO] __main__: 선수 수: 40
+2026-03-06 09:55:58,154 [INFO] __main__: 보강 필요 선수: 8명
+2026-03-06 09:55:58,155 [INFO] src.processors.play_style_enricher: [1/40] 스킵: 오나나 (이미 보강됨)
+2026-03-06 09:55:58,155 [INFO] src.processors.play_style_enricher: [2/40] 스킵: 마즈라위 (이미 보강됨)
+2026-03-06 09:55:58,155 [INFO] src.processors.play_style_enricher: [3/40] 스킵: 데 리흐트 (이미 보강됨)
+2026-03-06 09:55:58,155 [INFO] src.processors.play_style_enricher: [4/40] 스킵: 리산드로 마르티네스 (이미 보강됨)
+2026-03-06 09:55:58,155 [INFO] src.processors.play_style_enricher: [5/40] 스킵: 달로 (이미 보강됨)
+2026-03-06 09:55:58,155 [INFO] src.processors.play_style_enricher: [6/40] 스킵: 에반스 (이미 보강됨)
+2026-03-06 09:55:58,155 [INFO] src.processors.play_style_enricher: [7/40] 스킵: 유로 (이미 보강됨)
+2026-03-06 09:55:58,155 [INFO] src.processors.play_style_enricher: [8/40] 스킵: 카세미루 (이미 보강됨)
+2026-03-06 09:55:58,155 [INFO] src.processors.play_style_enricher: [9/40] 스킵: 메이누 (이미 보강됨)
+2026-03-06 09:55:58,155 [INFO] src.processors.play_style_enricher: [10/40] 스킵: 브루노 페르난데스 (이미 보강됨)
+2026-03-06 09:55:58,155 [INFO] src.processors.play_style_enricher: [11/40] 스킵: 마운트 (이미 보강됨)
+2026-03-06 09:55:58,155 [INFO] src.processors.play_style_enricher: [12/40] 스킵: 에릭센 (이미 보강됨)
+2026-03-06 09:55:58,155 [INFO] src.processors.play_style_enricher: [13/40] 스킵: 우가르테 (이미 보강됨)
+2026-03-06 09:55:58,155 [INFO] src.processors.play_style_enricher: [14/40] 스킵: 콜리어 (이미 보강됨)
+2026-03-06 09:55:58,155 [INFO] src.processors.play_style_enricher: [15/40] 스킵: 호일룬 (이미 보강됨)
+2026-03-06 09:55:58,155 [INFO] src.processors.play_style_enricher: [16/40] 스킵: 가르나초 (이미 보강됨)
+2026-03-06 09:55:58,155 [INFO] src.processors.play_style_enricher: [17/40] 스킵: 아마드 디알로 (이미 보강됨)
+2026-03-06 09:55:58,155 [INFO] src.processors.play_style_enricher: [18/40] 스킵: 안토니 (이미 보강됨)
+2026-03-06 09:55:58,155 [INFO] src.processors.play_style_enricher: [19/40] 스킵: 지르크제 (이미 보강됨)
+2026-03-06 09:55:58,155 [INFO] src.processors.play_style_enricher: [20/40] 스킵: 래시포드 (이미 보강됨)
+2026-03-06 09:55:58,155 [INFO] src.processors.play_style_enricher: [21/40] 스킵: 에밀리아노 마르티네스 (이미 보강됨)
+2026-03-06 09:55:58,155 [INFO] src.processors.play_style_enricher: [22/40] 스킵: 올센 (이미 보강됨)
+2026-03-06 09:55:58,155 [INFO] src.processors.play_style_enricher: [23/40] 스킵: 캐시 (이미 보강됨)
+2026-03-06 09:55:58,155 [INFO] src.processors.play_style_enricher: [24/40] 스킵: 콘사 (이미 보강됨)
+2026-03-06 09:55:58,155 [INFO] src.processors.play_style_enricher: [25/40] 스킵: 토레스 (이미 보강됨)
+2026-03-06 09:55:58,155 [INFO] src.processors.play_style_enricher: [26/40] 스킵: 딘뉴 (이미 보강됨)
+2026-03-06 09:55:58,155 [INFO] src.processors.play_style_enricher: [27/40] 스킵: 카를로스 (이미 보강됨)
+2026-03-06 09:55:58,155 [INFO] src.processors.play_style_enricher: [28/40] 스킵: 밍스 (이미 보강됨)
+2026-03-06 09:55:58,155 [INFO] src.processors.play_style_enricher: [29/40] 보강 시작: 카마라 (Boubacar Kamara)
+2026-03-06 09:57:12,016 [WARNING] src.crawlers.namuwiki_selenium: 크롤링 오류: 부바카르 카마라 (attempt 1): Message: timeout: Timed out receiving message from renderer: 59.429
+  (Session info: chrome=145.0.7632.119)
+Stacktrace:
+0   chromedriver                        0x00000001006ad6b4 cxxbridge1$str$ptr + 3127600
+1   chromedriver                        0x00000001006a5a50 cxxbridge1$str$ptr + 3095756
+2   chromedriver                        0x000000010018256c _RNvCsdExgN8vFLbb_7___rustc35___rust_no_alloc_shim_is_unstable_v2 + 75432
+3   chromedriver                        0x000000010016c8c4 cxxbridge1$string$len + 4160
+4   chromedriver                        0x000000010016c5e4 cxxbridge1$string$len + 3424
+5   chromedriver                        0x000000010016a1a8 chromedriver + 221608
+6   chromedriver                        0x000000010016ad9c chromedriver + 224668
+7   chromedriver                        0x0000000100178768 _RNvCsdExgN8vFLbb_7___rustc35___rust_no_alloc_shim_is_unstable_v2 + 34980
+8   chromedriver                        0x000000010018f240 _RNvCsdExgN8vFLbb_7___rustc35___rust_no_alloc_shim_is_unstable_v2 + 127868
+9   chromedriver                        0x000000010016b408 chromedriver + 226312
+10  chromedriver                        0x000000010018f03c _RNvCsdExgN8vFLbb_7___rustc35___rust_no_alloc_shim_is_unstable_v2 + 127352
+11  chromedriver                        0x000000010020a8e0 _RNvCsdExgN8vFLbb_7___rustc35___rust_no_alloc_shim_is_unstable_v2 + 633372
+12  chromedriver                        0x00000001001bfb9c _RNvCsdExgN8vFLbb_7___rustc35___rust_no_alloc_shim_is_unstable_v2 + 326872
+13  chromedriver                        0x000000010066c680 cxxbridge1$str$ptr + 2861308
+14  chromedriver                        0x000000010066fdd4 cxxbridge1$str$ptr + 2875472
+15  chromedriver                        0x0000000100651a7c cxxbridge1$str$ptr + 2751736
+16  chromedriver                        0x0000000100670658 cxxbridge1$str$ptr + 2877652
+17  chromedriver                        0x0000000100641ffc cxxbridge1$str$ptr + 2687608
+18  chromedriver                        0x0000000100694d78 cxxbridge1$str$ptr + 3026932
+19  chromedriver                        0x0000000100694ef4 cxxbridge1$str$ptr + 3027312
+20  chromedriver                        0x00000001006a56a8 cxxbridge1$str$ptr + 3094820
+21  libsystem_pthread.dylib             0x0000000186ccfc08 _pthread_start + 136
+22  libsystem_pthread.dylib             0x0000000186ccaba8 thread_start + 8
+
+2026-03-06 09:58:26,104 [INFO] src.crawlers.namuwiki_selenium: 성공: 카마라 (문서명: 부바카르 카마라)
+2026-03-06 09:58:26,105 [INFO] src.processors.play_style_enricher: 나무위키 성공: 카마라
+2026-03-06 09:58:26,105 [INFO] src.processors.play_style_enricher: [30/40] 보강 시작: 티엘레만스 (Youri Tielemans)
+2026-03-06 09:59:24,120 [INFO] src.crawlers.namuwiki_selenium: 성공: 티엘레만스 (문서명: 유리 틸레만스)
+2026-03-06 09:59:24,122 [INFO] src.processors.play_style_enricher: 나무위키 성공: 티엘레만스
+2026-03-06 09:59:24,122 [INFO] src.processors.play_style_enricher: [31/40] 스킵: 맥긴 (이미 보강됨)
+2026-03-06 09:59:24,122 [INFO] src.processors.play_style_enricher: [32/40] 보강 시작: 로저스 (Morgan Rogers)
+2026-03-06 10:00:29,659 [INFO] src.crawlers.namuwiki_selenium: 성공: 로저스 (문서명: 모건 로저스)
+2026-03-06 10:00:29,660 [INFO] src.processors.play_style_enricher: 나무위키 성공: 로저스
+2026-03-06 10:00:29,660 [INFO] src.processors.play_style_enricher: [33/40] 스킵: 오나나 (이미 보강됨)
+2026-03-06 10:00:29,660 [INFO] src.processors.play_style_enricher: [34/40] 보강 시작: 램지 (Jacob Ramsey)
+2026-03-06 10:00:54,409 [INFO] src.crawlers.namuwiki_selenium: 성공: 램지 (문서명: 제이컵 램지)
+2026-03-06 10:00:54,410 [INFO] src.processors.play_style_enricher: 나무위키 성공: 램지
+2026-03-06 10:00:54,410 [INFO] src.processors.play_style_enricher: [35/40] 보강 시작: 바클리 (Ross Barkley)
+2026-03-06 10:01:33,244 [INFO] src.crawlers.namuwiki_selenium: 성공: 바클리 (문서명: 로스 바클리)
+2026-03-06 10:01:33,244 [INFO] src.processors.play_style_enricher: 나무위키 성공: 바클리
+2026-03-06 10:01:33,244 [INFO] src.processors.play_style_enricher: [36/40] 보강 시작: 왓킨스 (Ollie Watkins)
+2026-03-06 10:02:02,629 [INFO] src.crawlers.namuwiki_selenium: 성공: 왓킨스 (문서명: 올리 왓킨스)
+2026-03-06 10:02:02,630 [INFO] src.processors.play_style_enricher: 나무위키 성공: 왓킨스
+2026-03-06 10:02:02,630 [INFO] src.processors.play_style_enricher: [37/40] 보강 시작: 베일리 (Leon Bailey)
+2026-03-06 10:02:24,133 [INFO] src.crawlers.namuwiki_selenium: 성공: 베일리 (문서명: 레온 베일리)
+2026-03-06 10:02:24,134 [INFO] src.processors.play_style_enricher: 나무위키 성공: 베일리
+2026-03-06 10:02:24,134 [INFO] src.processors.play_style_enricher: [38/40] 보강 시작: 듀란 (Jhon Durán)
+2026-03-06 10:02:37,431 [INFO] src.crawlers.namuwiki_selenium: 시도 실패: 듀란 -> 혼 두란
+2026-03-06 10:03:05,662 [INFO] src.crawlers.namuwiki_selenium: 성공: 듀란 (문서명: 존 두란)
+2026-03-06 10:03:05,663 [INFO] src.processors.play_style_enricher: 나무위키 성공: 듀란
+2026-03-06 10:03:05,664 [INFO] src.processors.play_style_enricher: [39/40] 스킵: 필로제 (이미 보강됨)
+2026-03-06 10:03:05,664 [INFO] src.processors.play_style_enricher: [40/40] 스킵: 타운센드 (이미 보강됨)
+2026-03-06 10:03:05,930 [INFO] src.processors.play_style_enricher: 보강 완료: namuwiki=8, llm=0, failed=0, skipped=32
+2026-03-06 10:03:05,934 [INFO] __main__: 저장 완료: /Users/danghyeonsong/ai-dev-team/projects/lapaz-crawl-20260305170615/data/players_all.json
+2026-03-06 10:03:05,934 [INFO] __main__: === 최종 결과 ===
+2026-03-06 10:03:05,934 [INFO] __main__: play_style 보유: 40/40
+2026-03-06 10:03:05,934 [INFO] __main__: 소스별: {'namuwiki': 40}
+2026-03-06 10:03:05,934 [INFO] __main__: 이번 실행: namuwiki=8, llm=0, failed=0

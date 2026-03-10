@@ -1,0 +1,39 @@
+============================================================
+딥 크롤링 리포트
+============================================================
+총 페이지: 30
+총 섹션: 724
+총 글자 수: 762,082
+
+카테고리별:
+  epl: 6 페이지, 183,614자
+  manager_avl: 1 페이지, 13,158자
+  manager_mun: 1 페이지, 11,385자
+  rivalry: 2 페이지, 38,270자
+  rules: 2 페이지, 41,089자
+  season: 1 페이지, 13,035자
+  season_avl: 1 페이지, 27,875자
+  season_mun: 2 페이지, 161,652자
+  team_avl: 1 페이지, 13,895자
+  team_mun: 1 페이지, 69,829자
+  team_mun_related: 7 페이지, 124,573자
+  ucl: 5 페이지, 63,707자
+
+Supabase 업로드: 성공 724, 실패 0
+
+생성 파일:
+  - data/context/all_context.json
+  - data/context/markdown/ (30개 .md)
+  - data/context/epl.json
+  - data/context/manager_avl.json
+  - data/context/manager_mun.json
+  - data/context/rivalry.json
+  - data/context/rules.json
+  - data/context/season.json
+  - data/context/season_avl.json
+  - data/context/season_mun.json
+  - data/context/team_avl.json
+  - data/context/team_mun.json
+  - data/context/team_mun_related.json
+  - data/context/ucl.json
+============================================================
