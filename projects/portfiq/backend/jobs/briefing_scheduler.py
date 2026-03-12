@@ -4,7 +4,9 @@
 추가로 일간 메트릭 집계, 퍼널 코호트 집계, 주말 브리핑 Job도 관리한다.
 """
 
+import asyncio
 import logging
+import threading
 
 from apscheduler.schedulers.asyncio import AsyncIOScheduler
 from apscheduler.triggers.cron import CronTrigger
@@ -14,6 +16,25 @@ from config import settings
 
 logger = logging.getLogger(__name__)
 
+
+def _run_in_thread(coro_fn):
+    """코루틴 함수를 별도 스레드 + 별도 event loop에서 실행.
+
+    메인 event loop을 전혀 블로킹하지 않으므로 /health 등 API가 항상 응답 가능.
+    """
+    def _wrapper():
+        def _target():
+            loop = asyncio.new_event_loop()
+            try:
+                loop.run_until_complete(coro_fn())
+            except Exception as e:
+                logger.error("Background job failed: %s", e)
+            finally:
+                loop.close()
+        t = threading.Thread(target=_target, daemon=True)
+        t.start()
+    return _wrapper
+
 scheduler: AsyncIOScheduler | None = None
 
 
@@ -22,9 +43,9 @@ def start_scheduler() -> AsyncIOScheduler:
     global scheduler
     scheduler = AsyncIOScheduler()
 
-    # 1. 뉴스 수집: 3분마다 (실시간 금융 뉴스 서비스)
+    # 1. 뉴스 수집: 3분마다 (별도 스레드에서 실행 — 메인 event loop 보호)
     scheduler.add_job(
-        _run_news_collection,
+        _run_in_thread(_run_news_collection_async),
         IntervalTrigger(minutes=3),
         id="news_collector",
         name="뉴스 수집",
@@ -51,10 +72,10 @@ def start_scheduler() -> AsyncIOScheduler:
         replace_existing=True,
     )
 
-    # 4. 서버 시작 직후 뉴스 수집 1회 즉시 실행 (5초 후)
+    # 4. 서버 시작 직후 뉴스 수집 1회 즉시 실행 (5초 후, 별도 스레드)
     from datetime import datetime, timedelta
     scheduler.add_job(
-        _run_news_collection,
+        _run_in_thread(_run_news_collection_async),
         "date",
         run_date=datetime.now() + timedelta(seconds=5),
         id="news_collector_initial",
@@ -131,8 +152,8 @@ def stop_scheduler() -> None:
         logger.info("스케줄러 중지")
 
 
-async def _run_news_collection() -> None:
-    """뉴스 수집 Job 실행."""
+async def _run_news_collection_async() -> None:
+    """뉴스 수집 Job 실행 (별도 스레드의 event loop에서 호출됨)."""
     from jobs.news_collector import collect_news
     await collect_news()
 
