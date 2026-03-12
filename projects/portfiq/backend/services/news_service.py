@@ -9,6 +9,7 @@ Architecture:
 
 from __future__ import annotations
 
+import asyncio
 import json
 import logging
 import threading
@@ -416,7 +417,7 @@ async def _collect_rss_fast() -> list[dict]:
                     "User-Agent": "Mozilla/5.0 (compatible; Portfiq/1.0)"
                 })
                 resp.raise_for_status()
-                feed = feedparser.parse(resp.text)
+                feed = await asyncio.to_thread(feedparser.parse, resp.text)
 
                 for entry in feed.entries[:10]:
                     published = entry.get("published_parsed")
@@ -568,76 +569,83 @@ async def fetch_and_store_news() -> int:
         unique = _deduplicate(raw)
         logger.info("RSS 수집 %d건, 중복 제거 후 %d건", len(raw), len(unique))
 
-        # Impact classification for each article
-        try:
-            from services.impact_service import impact_service
-            for article in unique:
-                headline = article.get("headline", "")
-                summary = article.get("summary", "")
-                text = f"{headline} {summary}"
-                impacts = impact_service.classify(text)
-                article["impacts"] = [
-                    {"etf_ticker": imp.etf_ticker, "level": imp.level}
-                    for imp in impacts
-                ]
-            logger.info("영향 분류 완료: %d건", len(unique))
-        except Exception as e:
-            logger.warning("영향 분류 실패, impacts 없이 진행: %s", e)
+        # Impact classification (동기 → thread로 실행)
+        def _classify_impacts() -> None:
+            try:
+                from services.impact_service import impact_service
+                for article in unique:
+                    headline = article.get("headline", "")
+                    summary = article.get("summary", "")
+                    text = f"{headline} {summary}"
+                    impacts = impact_service.classify(text)
+                    article["impacts"] = [
+                        {"etf_ticker": imp.etf_ticker, "level": imp.level}
+                        for imp in impacts
+                    ]
+                logger.info("영향 분류 완료: %d건", len(unique))
+            except Exception as e:
+                logger.warning("영향 분류 실패, impacts 없이 진행: %s", e)
 
-        # Supabase 저장 시도
-        stored = 0
-        try:
-            from services.supabase_client import get_supabase_service as get_supabase
-            sb = get_supabase()
+        await asyncio.to_thread(_classify_impacts)
 
-            for article in unique:
-                try:
-                    row: dict[str, object] = {
-                        "headline": article["headline"],
-                        "impact_reason": article.get("summary", ""),
-                        "source": article["source"],
-                        "source_url": article["source_url"],
-                        "published_at": article["published_at"],
-                        "raw_data": {
-                            "headline_en": article.get("headline_en", ""),
-                            "impacts": article.get("impacts", []),
-                        },
-                    }
+        # Supabase 저장 (동기 → thread로 실행)
+        def _store_to_supabase() -> int:
+            count = 0
+            try:
+                from services.supabase_client import get_supabase_service as get_supabase
+                sb = get_supabase()
+
+                for article in unique:
                     try:
-                        # upsert 시도 (source_url UNIQUE 제약 필요)
-                        sb.table("news").upsert(
-                            row,
-                            on_conflict="source_url",
-                        ).execute()
-                    except Exception:
-                        # UNIQUE 제약이 없으면 중복 체크 후 insert
-                        existing = (
-                            sb.table("news")
-                            .select("id")
-                            .eq("source_url", article["source_url"])
-                            .limit(1)
-                            .execute()
-                        )
-                        if not existing.data:
-                            sb.table("news").insert(row).execute()
-                        else:
-                            sb.table("news").update(row).eq(
-                                "source_url", article["source_url"]
+                        row: dict[str, object] = {
+                            "headline": article["headline"],
+                            "impact_reason": article.get("summary", ""),
+                            "source": article["source"],
+                            "source_url": article["source_url"],
+                            "published_at": article["published_at"],
+                            "raw_data": {
+                                "headline_en": article.get("headline_en", ""),
+                                "impacts": article.get("impacts", []),
+                            },
+                        }
+                        try:
+                            sb.table("news").upsert(
+                                row,
+                                on_conflict="source_url",
                             ).execute()
-                    stored += 1
-                except Exception as e:
-                    logger.warning("Supabase 저장 실패 (개별): %s", e)
+                        except Exception:
+                            existing = (
+                                sb.table("news")
+                                .select("id")
+                                .eq("source_url", article["source_url"])
+                                .limit(1)
+                                .execute()
+                            )
+                            if not existing.data:
+                                sb.table("news").insert(row).execute()
+                            else:
+                                sb.table("news").update(row).eq(
+                                    "source_url", article["source_url"]
+                                ).execute()
+                        count += 1
+                    except Exception as e:
+                        logger.warning("Supabase 저장 실패 (개별): %s", e)
 
-            logger.info("Supabase 저장 완료: %d건", stored)
-        except Exception as e:
-            logger.warning("Supabase 연결 실패, 캐시만 갱신: %s", e)
+                logger.info("Supabase 저장 완료: %d건", count)
+            except Exception as e:
+                logger.warning("Supabase 연결 실패, 캐시만 갱신: %s", e)
+            return count
 
-        # 번역 실행 (동기 — 스케줄러 job이므로 blocking OK)
-        if unique and settings.GEMINI_API_KEY and not _is_gemini_rate_limited():
+        stored = await asyncio.to_thread(_store_to_supabase)
+
+        # 번역 실행 (동기 Gemini + Supabase → thread로 실행)
+        def _translate_and_update() -> None:
+            if not (unique and settings.GEMINI_API_KEY and not _is_gemini_rate_limited()):
+                return
+
             headlines = [a.get("headline_en", a.get("headline", "")) for a in unique]
             logger.info("번역 시작: %d건 (Gemini %s)", len(headlines), _GEMINI_MODEL)
             for start in range(0, len(headlines), _BATCH_SIZE):
-                # 배치 간 rate limit 재확인
                 if _is_gemini_rate_limited():
                     logger.info("Gemini rate limited, 남은 번역 배치 스킵")
                     break
@@ -671,7 +679,7 @@ async def fetch_and_store_news() -> int:
                     err_str = str(e).lower()
                     if "429" in err_str or "resource_exhausted" in err_str or "rate" in err_str:
                         _set_gemini_rate_limited(60)
-                        break  # rate limited — 남은 배치 스킵
+                        break
                     logger.error("번역 배치 실패 (%d~%d): %s", start, start + len(batch), e)
 
             translated_count = sum(1 for a in unique if a.get("translated"))
@@ -685,7 +693,6 @@ async def fetch_and_store_news() -> int:
                 for article in unique:
                     if article.get("translated") and article.get("source_url"):
                         try:
-                            # 기본 컬럼만 업데이트 (migration 전에도 동작)
                             update_row: dict[str, str] = {
                                 "headline": article["headline"],
                                 "impact_reason": article.get("summary", ""),
@@ -695,10 +702,12 @@ async def fetch_and_store_news() -> int:
                             ).eq("source_url", article["source_url"]).execute()
                             update_count += 1
                         except Exception:
-                            pass  # 개별 업데이트 실패는 무시
+                            pass
                 logger.info("Supabase 번역 업데이트: %d건", update_count)
             except Exception as e:
                 logger.warning("Supabase 번역 업데이트 실패: %s", e)
+
+        await asyncio.to_thread(_translate_and_update)
 
         # 피드 캐시 무효화 (새 뉴스 수집 후 즉시 반영)
         try:
