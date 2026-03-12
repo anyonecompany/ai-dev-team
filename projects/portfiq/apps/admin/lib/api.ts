@@ -18,7 +18,7 @@ const API_BASE = typeof window !== "undefined"
   ? "/api/proxy"  // Browser: use same-origin proxy (no CORS)
   : (process.env.NEXT_PUBLIC_API_URL || "http://localhost:8000");  // SSR: direct call
 
-/** API 요청 타임아웃 (20초 — Railway 리소스 경합 대비) */
+/** API 요청 타임아웃 (20초) */
 const API_TIMEOUT_MS = 20_000;
 
 async function adminFetch<T>(path: string, options?: RequestInit): Promise<T> {

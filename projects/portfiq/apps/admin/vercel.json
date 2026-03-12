@@ -6,7 +6,7 @@
   "rewrites": [
     {
       "source": "/api/proxy/:path*",
-      "destination": "https://portfiq-production.up.railway.app/:path*"
+      "destination": "https://portfiq.fly.dev/:path*"
     }
   ],
   "headers": [

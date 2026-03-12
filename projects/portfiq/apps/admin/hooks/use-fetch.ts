@@ -9,7 +9,7 @@ interface UseFetchResult<T> {
   refetch: () => void;
 }
 
-/** API 호출 전체 타임아웃 (25초) — getAccessToken() + Railway 응답 대기 */
+/** API 호출 전체 타임아웃 (25초) */
 const FETCH_TIMEOUT_MS = 25_000;
 
 export function useFetch<T>(fetcher: () => Promise<T>, deps: unknown[] = []): UseFetchResult<T> {
