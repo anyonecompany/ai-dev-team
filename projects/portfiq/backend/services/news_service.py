@@ -12,6 +12,7 @@ from __future__ import annotations
 import json
 import logging
 import threading
+import time as _time_mod
 from datetime import datetime, timedelta, timezone
 
 import feedparser
@@ -26,6 +27,21 @@ logger = logging.getLogger(__name__)
 
 _GEMINI_MODEL = settings.GEMINI_MODEL
 _gemini_client: genai.Client | None = None
+
+# Gemini rate limit tracking
+_gemini_rate_limited_until: float = 0  # monotonic timestamp
+
+
+def _is_gemini_rate_limited() -> bool:
+    """Check if Gemini API is currently rate-limited."""
+    return _time_mod.monotonic() < _gemini_rate_limited_until
+
+
+def _set_gemini_rate_limited(backoff_seconds: float = 60) -> None:
+    """Mark Gemini API as rate-limited for backoff_seconds."""
+    global _gemini_rate_limited_until
+    _gemini_rate_limited_until = _time_mod.monotonic() + backoff_seconds
+    logger.warning("Gemini API rate limited, backing off for %.0fs", backoff_seconds)
 
 
 def _get_gemini_client() -> genai.Client:
@@ -286,8 +302,14 @@ async def _translate_batch(headlines: list[str]) -> list[dict[str, str]]:
     """Translate a single batch of headlines (max ~15).
 
     Returns list of dicts with 'ko' and 'impact_reason' keys.
+    Handles Gemini 429 rate limits with backoff.
     """
     fallback = [{"ko": h, "impact_reason": ""} for h in headlines]
+
+    # Rate limit 상태면 즉시 fallback 반환 (대기하지 않음)
+    if _is_gemini_rate_limited():
+        logger.info("Gemini rate limited, 원문 헤드라인 반환 (배치 %d건)", len(headlines))
+        return fallback
 
     numbered = "\n".join(f"[{i}] {h}" for i, h in enumerate(headlines))
     prompt = _TRANSLATE_SUMMARISE_PROMPT.format(headlines=numbered)
@@ -295,7 +317,7 @@ async def _translate_batch(headlines: list[str]) -> list[dict[str, str]]:
     try:
         client = _get_gemini_client()
 
-        # Gemini 호출을 스레드 풀에서 실행 + 15초 타임아웃
+        # Gemini 호출을 스레드 풀에서 실행 + 10초 타임아웃 (15s → 10s)
         import asyncio
 
         def _gemini_sync() -> str:
@@ -307,10 +329,10 @@ async def _translate_batch(headlines: list[str]) -> list[dict[str, str]]:
         try:
             text = await asyncio.wait_for(
                 asyncio.to_thread(_gemini_sync),
-                timeout=15,
+                timeout=10,
             )
         except asyncio.TimeoutError:
-            logger.warning("Gemini 번역 배치 타임아웃 (15s)")
+            logger.warning("Gemini 번역 배치 타임아웃 (10s)")
             return fallback
 
         if "```json" in text:
@@ -339,6 +361,10 @@ async def _translate_batch(headlines: list[str]) -> list[dict[str, str]]:
         ]
 
     except Exception as e:
+        # Gemini 429 rate limit 감지
+        err_str = str(e).lower()
+        if "429" in err_str or "resource_exhausted" in err_str or "rate" in err_str:
+            _set_gemini_rate_limited(60)  # 60초 backoff
         logger.error("번역 배치 실패: %s", e)
         return fallback
 
@@ -440,11 +466,20 @@ def _translate_cached_articles_sync() -> None:
             logger.warning("GEMINI_API_KEY 미설정 — 번역 건너뜀")
             return
 
+        if _is_gemini_rate_limited():
+            logger.info("Gemini rate limited, 백그라운드 번역 스킵")
+            return
+
         headlines = [a["headline_en"] for a in untranslated]
         logger.info("백그라운드 번역 시작: %d건", len(headlines))
 
         # Synchronous batch translation
         for start in range(0, len(headlines), _BATCH_SIZE):
+            # 배치 간 rate limit 재확인
+            if _is_gemini_rate_limited():
+                logger.info("Gemini rate limited, 남은 배치 스킵")
+                break
+
             batch = headlines[start:start + _BATCH_SIZE]
             numbered = "\n".join(f"[{i}] {h}" for i, h in enumerate(batch))
             prompt = _TRANSLATE_SUMMARISE_PROMPT.format(headlines=numbered)
@@ -481,6 +516,10 @@ def _translate_cached_articles_sync() -> None:
                 logger.info("번역 배치 완료: %d~%d / %d", start, start + len(batch), len(headlines))
 
             except Exception as e:
+                err_str = str(e).lower()
+                if "429" in err_str or "resource_exhausted" in err_str or "rate" in err_str:
+                    _set_gemini_rate_limited(60)
+                    break  # rate limited — 남은 배치 스킵
                 logger.error("번역 배치 실패 (%d~%d): %s", start, start + len(batch), e)
 
         translated_count = sum(1 for a in _news_cache if a.get("translated"))
@@ -594,10 +633,15 @@ async def fetch_and_store_news() -> int:
             logger.warning("Supabase 연결 실패, 캐시만 갱신: %s", e)
 
         # 번역 실행 (동기 — 스케줄러 job이므로 blocking OK)
-        if unique and settings.GEMINI_API_KEY:
+        if unique and settings.GEMINI_API_KEY and not _is_gemini_rate_limited():
             headlines = [a.get("headline_en", a.get("headline", "")) for a in unique]
-            logger.info("번역 시작: %d건 (Gemini 2.0 Flash)", len(headlines))
+            logger.info("번역 시작: %d건 (Gemini %s)", len(headlines), _GEMINI_MODEL)
             for start in range(0, len(headlines), _BATCH_SIZE):
+                # 배치 간 rate limit 재확인
+                if _is_gemini_rate_limited():
+                    logger.info("Gemini rate limited, 남은 번역 배치 스킵")
+                    break
+
                 batch = headlines[start:start + _BATCH_SIZE]
                 numbered = "\n".join(f"[{i}] {h}" for i, h in enumerate(batch))
                 prompt = _TRANSLATE_SUMMARISE_PROMPT.format(headlines=numbered)
@@ -624,6 +668,10 @@ async def fetch_and_store_news() -> int:
                             article["translated"] = True
                     logger.info("번역 배치 완료: %d~%d / %d", start, start + len(batch), len(headlines))
                 except Exception as e:
+                    err_str = str(e).lower()
+                    if "429" in err_str or "resource_exhausted" in err_str or "rate" in err_str:
+                        _set_gemini_rate_limited(60)
+                        break  # rate limited — 남은 배치 스킵
                     logger.error("번역 배치 실패 (%d~%d): %s", start, start + len(batch), e)
 
             translated_count = sum(1 for a in unique if a.get("translated"))
@@ -829,6 +877,146 @@ class NewsService:
             logger.warning("Supabase 뉴스 로드 실패: %s", e)
             return []
 
+    async def get_all_news_paginated(
+        self, *, offset: int = 0, limit: int = 20
+    ) -> tuple[list[FeedItem], int]:
+        """Return paginated news items, including items older than 24 hours.
+
+        Unlike get_all_news() which only returns the last 24 hours, this method
+        supports browsing older news via offset/limit for infinite scroll.
+
+        Args:
+            offset: Number of items to skip.
+            limit: Maximum number of items to return.
+
+        Returns:
+            Tuple of (paginated FeedItem list, total count).
+        """
+        from services.cache import get_cached, set_cached
+
+        # First, gather the full sorted list (from cache or build it)
+        cache_key = "feed_all_sorted"
+        all_items: list[FeedItem] | None = get_cached(cache_key)
+
+        if all_items is None:
+            all_items = await self._get_all_items_no_time_filter()
+            if all_items:
+                set_cached(cache_key, all_items)
+
+        total = len(all_items)
+        page = all_items[offset:offset + limit]
+        return page, total
+
+    async def _get_all_items_no_time_filter(self) -> list[FeedItem]:
+        """Gather all available news items without the 24-hour filter.
+
+        Data source priority:
+        1. _news_cache (RSS collection results)
+        2. Supabase news table (server restart recovery)
+        3. Mock data (final fallback)
+
+        Returns:
+            All FeedItem instances sorted newest-first.
+        """
+        from services.impact_service import impact_service
+
+        if _news_cache:
+            items = self._build_feed_items_unfiltered(_news_cache)
+            if items:
+                return items
+
+        sb_articles = await self._load_from_supabase_all()
+        if sb_articles:
+            items = self._build_feed_items_unfiltered(sb_articles)
+            if items:
+                return items
+
+        # Fallback to mock
+        mock = _build_mock_news()
+        return sorted(mock, key=lambda n: n.published_at or "", reverse=True)
+
+    def _build_feed_items_unfiltered(self, articles: list[dict]) -> list[FeedItem]:
+        """Build FeedItem list from articles WITHOUT the 24-hour filter.
+
+        Args:
+            articles: Raw article dicts.
+
+        Returns:
+            Sorted FeedItem list (newest first).
+        """
+        from services.impact_service import impact_service
+
+        items: list[FeedItem] = []
+        for i, a in enumerate(articles):
+            cached_impacts = a.get("impacts", [])
+            if cached_impacts:
+                impacts = [
+                    ETFImpact(etf_ticker=imp["etf_ticker"], level=imp["level"])
+                    for imp in cached_impacts
+                ]
+            else:
+                headline = a.get("headline", "")
+                summary = a.get("summary", "")
+                impacts = impact_service.classify(f"{headline} {summary}")
+
+            if not impacts:
+                continue
+
+            items.append(
+                FeedItem(
+                    id=f"rss-{i}",
+                    headline=a["headline"],
+                    impact_reason=a.get("summary", ""),
+                    summary_3line=a.get("summary_3line", ""),
+                    sentiment=a.get("sentiment", "중립"),
+                    source=a.get("source"),
+                    source_url=a.get("source_url"),
+                    published_at=a.get("published_at"),
+                    impacts=impacts,
+                )
+            )
+        return sorted(items, key=lambda n: n.published_at or "", reverse=True)
+
+    async def _load_from_supabase_all(self) -> list[dict]:
+        """Load all news from Supabase without time filter (for pagination).
+
+        Returns:
+            News article dicts sorted newest-first. Empty list on failure.
+        """
+        try:
+            from services.supabase_client import get_supabase_service as get_supabase
+            sb = get_supabase()
+
+            resp = (
+                sb.table("news")
+                .select("id,headline,impact_reason,source,source_url,published_at,raw_data")
+                .order("published_at", desc=True)
+                .limit(500)
+                .execute()
+            )
+
+            if not resp.data:
+                return []
+
+            articles: list[dict] = []
+            for row in resp.data:
+                raw_data = row.get("raw_data") or {}
+                impacts = raw_data.get("impacts", []) if isinstance(raw_data, dict) else []
+                articles.append({
+                    "headline": row.get("headline", ""),
+                    "summary": row.get("impact_reason", ""),
+                    "source": row.get("source", ""),
+                    "source_url": row.get("source_url", ""),
+                    "published_at": row.get("published_at", ""),
+                    "impacts": impacts,
+                    "translated": True,
+                })
+            return articles
+
+        except Exception as e:
+            logger.warning("Supabase 전체 뉴스 로드 실패: %s", e)
+            return []
+
     async def get_news_for_etfs(self, tickers: list[str]) -> list[FeedItem]:
         """Filter news items that impact any of the given ETF tickers."""
         tickers_upper = {t.upper() for t in tickers}
@@ -859,10 +1047,10 @@ class NewsService:
 
 
 async def translate_headlines(headlines: list[str]) -> list[str]:
-    """Translate English news headlines to Korean using Claude API.
+    """Translate English news headlines to Korean using Gemini API.
 
-    Falls back to returning original headlines if the API key is missing
-    or the API call fails.
+    Falls back to returning original headlines if the API key is missing,
+    rate limited, or the API call fails.
 
     Args:
         headlines: List of English headline strings.
@@ -875,6 +1063,10 @@ async def translate_headlines(headlines: list[str]) -> list[str]:
 
     if not settings.GEMINI_API_KEY:
         logger.warning("GEMINI_API_KEY 미설정 — 원문 헤드라인 반환")
+        return headlines
+
+    if _is_gemini_rate_limited():
+        logger.info("Gemini rate limited, 원문 헤드라인 반환")
         return headlines
 
     # Build numbered headline list
@@ -920,6 +1112,9 @@ async def translate_headlines(headlines: list[str]) -> list[str]:
         return [translation_map.get(i, h) for i, h in enumerate(headlines)]
 
     except Exception as e:
+        err_str = str(e).lower()
+        if "429" in err_str or "resource_exhausted" in err_str or "rate" in err_str:
+            _set_gemini_rate_limited(60)
         logger.error("번역 API 호출 실패: %s", e)
         return headlines
 

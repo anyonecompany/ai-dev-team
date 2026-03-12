@@ -1,7 +1,7 @@
 """ETF 실시간 가격 서비스 — yfinance 기반.
 
 yfinance 호출은 동기 I/O이므로 asyncio.to_thread()로 스레드 풀에서 실행하여
-이벤트 루프 블로킹을 방지한다. 추가로 10초 타임아웃을 적용한다.
+이벤트 루프 블로킹을 방지한다. 5초 타임아웃을 적용한다.
 """
 
 import asyncio
@@ -10,10 +10,13 @@ import time
 
 logger = logging.getLogger(__name__)
 
-# In-memory price cache (15분 TTL)
+# In-memory price cache (5분 TTL — 가격은 자주 변하므로 15분보다 짧게)
 _price_cache: dict[str, tuple[float, dict]] = {}  # ticker -> (expires_at, data)
-_PRICE_TTL = 900  # 15분
-_YFINANCE_TIMEOUT = 10  # yfinance 호출 타임아웃 (초)
+_PRICE_TTL = 300  # 5분
+_YFINANCE_TIMEOUT = 5  # yfinance 호출 타임아웃 (초) — 10s → 5s로 단축
+
+# Stale cache: 실패 시 이전 데이터를 반환하기 위한 장기 캐시 (24시간)
+_stale_cache: dict[str, dict] = {}  # ticker -> last known good data
 
 
 def _get_cached_price(ticker: str) -> dict | None:
@@ -31,6 +34,7 @@ def _get_cached_price(ticker: str) -> dict | None:
 def _cache_price(ticker: str, data: dict) -> None:
     """가격을 캐시에 저장."""
     _price_cache[ticker] = (time.monotonic() + _PRICE_TTL, data)
+    _stale_cache[ticker] = data  # stale 캐시도 갱신
 
 
 def _fetch_price_sync(ticker: str) -> dict:
@@ -98,11 +102,11 @@ async def get_etf_price(ticker: str) -> dict:
         return result
 
     except asyncio.TimeoutError:
-        logger.warning("가격 조회 타임아웃 (%s, %ds) — mock 데이터 반환", ticker, _YFINANCE_TIMEOUT)
-        return _get_mock_price(ticker)
+        logger.warning("가격 조회 타임아웃 (%s, %ds) — stale/mock 데이터 반환", ticker, _YFINANCE_TIMEOUT)
+        return _stale_cache.get(ticker) or _get_mock_price(ticker)
     except Exception as e:
-        logger.warning("가격 조회 실패 (%s): %s — mock 데이터 반환", ticker, e)
-        return _get_mock_price(ticker)
+        logger.warning("가격 조회 실패 (%s): %s — stale/mock 데이터 반환", ticker, e)
+        return _stale_cache.get(ticker) or _get_mock_price(ticker)
 
 
 def _get_mock_price(ticker: str) -> dict:
