@@ -9,8 +9,8 @@ interface UseFetchResult<T> {
   refetch: () => void;
 }
 
-/** API 호출 전체 타임아웃 (15초) — getAccessToken() 행 포함 방지 */
-const FETCH_TIMEOUT_MS = 15_000;
+/** API 호출 전체 타임아웃 (25초) — getAccessToken() + Railway 응답 대기 */
+const FETCH_TIMEOUT_MS = 25_000;
 
 export function useFetch<T>(fetcher: () => Promise<T>, deps: unknown[] = []): UseFetchResult<T> {
   const [data, setData] = useState<T | null>(null);

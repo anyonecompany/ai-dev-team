@@ -43,10 +43,10 @@ def start_scheduler() -> AsyncIOScheduler:
     global scheduler
     scheduler = AsyncIOScheduler()
 
-    # 1. 뉴스 수집: 3분마다 (별도 스레드에서 실행 — 메인 event loop 보호)
+    # 1. 뉴스 수집: 10분마다 (별도 스레드에서 실행 — 메인 event loop 보호)
     scheduler.add_job(
         _run_in_thread(_run_news_collection_async),
-        IntervalTrigger(minutes=3),
+        IntervalTrigger(minutes=10),
         id="news_collector",
         name="뉴스 수집",
         replace_existing=True,
