@@ -10,13 +10,16 @@ import type {
   DeployStatusResponse,
   LoginResponse,
 } from "@/types/admin";
-import { getAccessToken, signOut } from "./auth";
+import { getAccessToken } from "./auth";
 
 // Use Next.js rewrite proxy to avoid CORS issues.
 // In development, falls back to direct API call if proxy not configured.
 const API_BASE = typeof window !== "undefined"
   ? "/api/proxy"  // Browser: use same-origin proxy (no CORS)
   : (process.env.NEXT_PUBLIC_API_URL || "http://localhost:8000");  // SSR: direct call
+
+/** API 요청 타임아웃 (30초 — Railway cold start 대비) */
+const API_TIMEOUT_MS = 30_000;
 
 async function adminFetch<T>(path: string, options?: RequestInit): Promise<T> {
   const token = await getAccessToken();
@@ -30,14 +33,29 @@ async function adminFetch<T>(path: string, options?: RequestInit): Promise<T> {
     headers["Authorization"] = `Bearer ${token}`;
   }
 
-  const res = await fetch(`${API_BASE}${path}`, {
-    ...options,
-    headers,
-  });
+  const controller = new AbortController();
+  const timer = setTimeout(() => controller.abort(), API_TIMEOUT_MS);
+
+  let res: Response;
+  try {
+    res = await fetch(`${API_BASE}${path}`, {
+      ...options,
+      headers,
+      signal: controller.signal,
+    });
+  } catch (err) {
+    clearTimeout(timer);
+    if (err instanceof DOMException && err.name === "AbortError") {
+      throw new Error("서버 응답 시간 초과 (30초). 잠시 후 다시 시도해주세요.");
+    }
+    throw new Error("서버에 연결할 수 없습니다. 네트워크를 확인해주세요.");
+  } finally {
+    clearTimeout(timer);
+  }
 
   if (res.status === 401) {
-    await signOut();
-    throw new Error("Unauthorized");
+    console.warn("[api] 401 Unauthorized from:", path);
+    throw new Error("인증이 만료되었습니다. 다시 로그인해주세요.");
   }
 
   if (!res.ok) {

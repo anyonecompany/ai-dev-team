@@ -163,11 +163,11 @@ async def _generate_and_push_for_all_devices(briefing_type: str) -> None:
     for device_info in devices:
         device_id = device_info["device_id"]
         try:
-            # 디바이스별 브리핑 생성
+            # 디바이스별 브리핑 생성 (백그라운드 — 실제 Claude API 호출)
             if briefing_type == "morning":
-                briefing = await briefing_service.get_morning_briefing(device_id)
+                briefing = await briefing_service.generate_morning_briefing_background(device_id)
             else:
-                briefing = await briefing_service.get_night_briefing(device_id)
+                briefing = await briefing_service.generate_night_briefing_background(device_id)
 
             # 푸시 전송
             emoji = "\U0001f305" if briefing_type == "morning" else "\U0001f319"
