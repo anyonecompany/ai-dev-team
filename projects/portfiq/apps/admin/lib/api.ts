@@ -18,8 +18,8 @@ const API_BASE = typeof window !== "undefined"
   ? "/api/proxy"  // Browser: use same-origin proxy (no CORS)
   : (process.env.NEXT_PUBLIC_API_URL || "http://localhost:8000");  // SSR: direct call
 
-/** API 요청 타임아웃 (30초 — Railway cold start 대비) */
-const API_TIMEOUT_MS = 30_000;
+/** API 요청 타임아웃 (12초 — Railway cold start 포함) */
+const API_TIMEOUT_MS = 12_000;
 
 async function adminFetch<T>(path: string, options?: RequestInit): Promise<T> {
   const token = await getAccessToken();
@@ -46,7 +46,7 @@ async function adminFetch<T>(path: string, options?: RequestInit): Promise<T> {
   } catch (err) {
     clearTimeout(timer);
     if (err instanceof DOMException && err.name === "AbortError") {
-      throw new Error("서버 응답 시간 초과 (30초). 잠시 후 다시 시도해주세요.");
+      throw new Error("서버 응답 시간 초과 (12초). 잠시 후 다시 시도해주세요.");
     }
     throw new Error("서버에 연결할 수 없습니다. 네트워크를 확인해주세요.");
   } finally {
