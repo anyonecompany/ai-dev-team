@@ -636,7 +636,7 @@ async def fetch_and_store_news() -> int:
                 logger.warning("Supabase 연결 실패, 캐시만 갱신: %s", e)
             return count
 
-        stored = await asyncio.to_thread(_store_to_supabase)
+        await asyncio.to_thread(_store_to_supabase)
 
         # 번역 실행 (동기 Gemini + Supabase → thread로 실행)
         def _translate_and_update() -> None:
@@ -927,8 +927,6 @@ class NewsService:
         Returns:
             All FeedItem instances sorted newest-first.
         """
-        from services.impact_service import impact_service
-
         if _news_cache:
             items = self._build_feed_items_unfiltered(_news_cache)
             if items:
