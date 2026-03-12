@@ -1,11 +1,11 @@
-"""AI 브리핑 생성 서비스 — Claude API 연동.
+"""AI 브리핑 생성 서비스 — Gemini API 연동.
 
-Claude API 호출은 동기 I/O이므로 asyncio.to_thread()로 스레드 풀에서 실행하여
-이벤트 루프 블로킹을 방지한다. 8초 타임아웃을 적용한다.
+Gemini API 호출은 동기 I/O이므로 asyncio.to_thread()로 스레드 풀에서 실행하여
+이벤트 루프 블로킹을 방지한다. 12초 타임아웃을 적용한다.
 
 핵심 설계 원칙:
 - API 응답은 항상 2초 이내 (캐시/mock에서 즉시 반환)
-- Claude API 호출은 백그라운드에서만 수행 (요청 시점이 아님)
+- Gemini API 호출은 백그라운드에서만 수행 (요청 시점이 아님)
 - 스케줄러가 미리 생성한 브리핑을 캐시에서 반환
 """
 
@@ -16,7 +16,7 @@ import json
 import logging
 from datetime import datetime, timezone
 
-import anthropic
+from google import genai
 
 from config import settings
 from models.schemas import BriefingResponse, ETFChange
@@ -24,45 +24,40 @@ from prompts.briefing import MORNING_PROMPT, NIGHT_PROMPT
 
 logger = logging.getLogger(__name__)
 
-MODEL = "claude-sonnet-4-5-20250929"
-_CLAUDE_TIMEOUT = 8  # Claude API 호출 타임아웃 (초) — 12s → 8s
+_GEMINI_MODEL = settings.GEMINI_MODEL
+_GEMINI_TIMEOUT = 12  # Gemini API 호출 타임아웃 (초)
 
-_client: anthropic.Anthropic | None = None
+_gemini_client: genai.Client | None = None
 
 # 마지막으로 성공한 브리핑 저장 (캐시 만료 후에도 반환 가능)
 _last_morning_briefing: BriefingResponse | None = None
 _last_night_briefing: BriefingResponse | None = None
 
 
-def _get_client() -> anthropic.Anthropic:
-    """Return a lazily-initialised Anthropic client with timeout."""
-    global _client
-    if _client is None:
-        _client = anthropic.Anthropic(
-            api_key=settings.ANTHROPIC_API_KEY,
-            timeout=_CLAUDE_TIMEOUT,
-        )
-    return _client
+def _get_gemini_client() -> genai.Client:
+    """Return a lazily-initialised Gemini client."""
+    global _gemini_client
+    if _gemini_client is None:
+        _gemini_client = genai.Client(api_key=settings.GEMINI_API_KEY)
+    return _gemini_client
 
 
-def _call_claude_sync(prompt: str) -> dict | None:
-    """Claude API 동기 호출 + JSON 파싱 (스레드 풀에서 실행).
+def _call_gemini_sync(prompt: str) -> dict | None:
+    """Gemini API 동기 호출 + JSON 파싱 (스레드 풀에서 실행).
 
     Args:
-        prompt: The formatted prompt to send to Claude.
+        prompt: The formatted prompt to send to Gemini.
 
     Returns:
         Parsed JSON dict on success, None on failure.
     """
     try:
-        client = _get_client()
-        response = client.messages.create(
-            model=MODEL,
-            max_tokens=1024,
-            messages=[{"role": "user", "content": prompt}],
+        client = _get_gemini_client()
+        response = client.models.generate_content(
+            model=_GEMINI_MODEL,
+            contents=prompt,
         )
-        block = response.content[0]
-        text = block.text if hasattr(block, "text") else ""
+        text = response.text or ""
         # Extract JSON from response
         if "```json" in text:
             text = text.split("```json")[1].split("```")[0]
@@ -70,37 +65,37 @@ def _call_claude_sync(prompt: str) -> dict | None:
             text = text.split("```")[1].split("```")[0]
         return json.loads(text.strip())
     except Exception as e:
-        logger.error("Claude API 호출 실패: %s", e)
+        logger.error("Gemini API 호출 실패: %s", e)
         return None
 
 
-async def _call_claude(prompt: str) -> dict | None:
-    """Claude API 비동기 호출 — 스레드 풀 + 타임아웃.
+async def _call_gemini(prompt: str) -> dict | None:
+    """Gemini API 비동기 호출 — 스레드 풀 + 타임아웃.
 
     Args:
-        prompt: The formatted prompt to send to Claude.
+        prompt: The formatted prompt to send to Gemini.
 
     Returns:
         Parsed JSON dict on success, None on failure/timeout.
     """
     try:
         return await asyncio.wait_for(
-            asyncio.to_thread(_call_claude_sync, prompt),
-            timeout=_CLAUDE_TIMEOUT,
+            asyncio.to_thread(_call_gemini_sync, prompt),
+            timeout=_GEMINI_TIMEOUT,
         )
     except asyncio.TimeoutError:
-        logger.warning("Claude API 타임아웃 (%ds)", _CLAUDE_TIMEOUT)
+        logger.warning("Gemini API 타임아웃 (%ds)", _GEMINI_TIMEOUT)
         return None
     except Exception as e:
-        logger.error("Claude API 호출 실패: %s", e)
+        logger.error("Gemini API 호출 실패: %s", e)
         return None
 
 
-def _build_briefing_from_claude(data: dict, briefing_type: str) -> BriefingResponse:
-    """Convert Claude JSON output into a BriefingResponse.
+def _build_briefing_from_ai(data: dict, briefing_type: str) -> BriefingResponse:
+    """Convert AI JSON output into a BriefingResponse.
 
     Args:
-        data: Parsed JSON dict from Claude.
+        data: Parsed JSON dict from AI.
         briefing_type: "morning" or "night".
 
     Returns:
@@ -187,17 +182,15 @@ _DEFAULT_ETFS = ["QQQ", "VOO", "SCHD", "SOXL", "ARKK", "TLT"]
 
 
 class BriefingService:
-    """Generates personalized ETF briefings using Claude API with mock fallback."""
+    """Generates personalized ETF briefings using Gemini API with mock fallback."""
 
     async def get_morning_briefing(self, device_id: str) -> BriefingResponse:
         """Return morning briefing for the device.
 
-        Never blocks on Claude API calls. Returns in priority order:
+        Never blocks on Gemini API calls. Returns in priority order:
         1. TTL cache (15분)
         2. Last successfully generated briefing (_last_morning_briefing)
         3. Mock data (즉시 반환)
-
-        Claude API 호출은 스케줄러가 사전 생성한 것만 사용한다.
 
         Args:
             device_id: The requesting device identifier.
@@ -214,13 +207,11 @@ class BriefingService:
             logger.debug("Cache hit for %s", cache_key)
             return cached
 
-        # 캐시 만료 후에도 이전 생성 결과가 있으면 반환 (stale-while-revalidate)
         if _last_morning_briefing is not None:
             logger.info("TTL 캐시 만료, last_morning_briefing 반환 (stale)")
             set_cached(cache_key, _last_morning_briefing)
             return _last_morning_briefing
 
-        # 최후 fallback: mock 즉시 반환 (Claude API 호출 안 함)
         logger.info("브리핑 미생성 — mock morning briefing 즉시 반환")
         return _MOCK_MORNING.model_copy(
             update={"generated_at": datetime.now(timezone.utc).isoformat()}
@@ -229,7 +220,7 @@ class BriefingService:
     async def get_night_briefing(self, device_id: str) -> BriefingResponse:
         """Return night checkpoint for the device.
 
-        Never blocks on Claude API calls. Returns in priority order:
+        Never blocks on Gemini API calls. Returns in priority order:
         1. TTL cache (15분)
         2. Last successfully generated briefing (_last_night_briefing)
         3. Mock data (즉시 반환)
@@ -249,13 +240,11 @@ class BriefingService:
             logger.debug("Cache hit for %s", cache_key)
             return cached
 
-        # 캐시 만료 후에도 이전 생성 결과가 있으면 반환 (stale-while-revalidate)
         if _last_night_briefing is not None:
             logger.info("TTL 캐시 만료, last_night_briefing 반환 (stale)")
             set_cached(cache_key, _last_night_briefing)
             return _last_night_briefing
 
-        # 최후 fallback: mock 즉시 반환
         logger.info("브리핑 미생성 — mock night briefing 즉시 반환")
         return _MOCK_NIGHT.model_copy(
             update={"generated_at": datetime.now(timezone.utc).isoformat()}
@@ -263,10 +252,6 @@ class BriefingService:
 
     async def generate_briefing(self, device_id: str) -> BriefingResponse:
         """Manually trigger briefing generation.
-
-        Delegates to generate_morning_briefing_background by default.
-        In production, this determines the appropriate briefing type
-        based on current time (KST).
 
         Args:
             device_id: The requesting device identifier.
@@ -278,7 +263,7 @@ class BriefingService:
         return await self.generate_morning_briefing_background(device_id)
 
     async def generate_morning_briefing_background(self, device_id: str) -> BriefingResponse:
-        """실제로 Claude API를 호출하여 모닝 브리핑을 생성한다.
+        """실제로 Gemini API를 호출하여 모닝 브리핑을 생성한다.
 
         스케줄러 또는 수동 트리거에서 호출한다. API 엔드포인트에서 직접 호출하지 않는다.
 
@@ -291,8 +276,8 @@ class BriefingService:
         global _last_morning_briefing
         from services.cache import set_cached
 
-        if not settings.ANTHROPIC_API_KEY:
-            logger.warning("ANTHROPIC_API_KEY 미설정 — mock 데이터 반환")
+        if not settings.GEMINI_API_KEY:
+            logger.warning("GEMINI_API_KEY 미설정 — mock 데이터 반환")
             return _MOCK_MORNING.model_copy(
                 update={"generated_at": datetime.now(timezone.utc).isoformat()}
             )
@@ -304,21 +289,21 @@ class BriefingService:
         )
 
         prompt = MORNING_PROMPT.format(etf_list=etf_list, news_summary=news_summary)
-        data = await _call_claude(prompt)
+        data = await _call_gemini(prompt)
 
         if data is None:
-            logger.warning("Claude API 실패 — mock morning briefing 반환")
+            logger.warning("Gemini API 실패 — mock morning briefing 반환")
             return _MOCK_MORNING.model_copy(
                 update={"generated_at": datetime.now(timezone.utc).isoformat()}
             )
 
-        result = _build_briefing_from_claude(data, "morning")
+        result = _build_briefing_from_ai(data, "morning")
         _last_morning_briefing = result
         set_cached("briefing_morning", result)
         return result
 
     async def generate_night_briefing_background(self, device_id: str) -> BriefingResponse:
-        """실제로 Claude API를 호출하여 나이트 브리핑을 생성한다.
+        """실제로 Gemini API를 호출하여 나이트 브리핑을 생성한다.
 
         스케줄러 또는 수동 트리거에서 호출한다. API 엔드포인트에서 직접 호출하지 않는다.
 
@@ -331,8 +316,8 @@ class BriefingService:
         global _last_night_briefing
         from services.cache import set_cached
 
-        if not settings.ANTHROPIC_API_KEY:
-            logger.warning("ANTHROPIC_API_KEY 미설정 — mock 데이터 반환")
+        if not settings.GEMINI_API_KEY:
+            logger.warning("GEMINI_API_KEY 미설정 — mock 데이터 반환")
             return _MOCK_NIGHT.model_copy(
                 update={"generated_at": datetime.now(timezone.utc).isoformat()}
             )
@@ -344,15 +329,15 @@ class BriefingService:
         )
 
         prompt = NIGHT_PROMPT.format(etf_list=etf_list, news_summary=news_summary)
-        data = await _call_claude(prompt)
+        data = await _call_gemini(prompt)
 
         if data is None:
-            logger.warning("Claude API 실패 — mock night briefing 반환")
+            logger.warning("Gemini API 실패 — mock night briefing 반환")
             return _MOCK_NIGHT.model_copy(
                 update={"generated_at": datetime.now(timezone.utc).isoformat()}
             )
 
-        result = _build_briefing_from_claude(data, "night")
+        result = _build_briefing_from_ai(data, "night")
         _last_night_briefing = result
         set_cached("briefing_night", result)
         return result
