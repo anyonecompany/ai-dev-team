@@ -411,7 +411,7 @@ class _LastUpdateBar extends StatelessWidget {
             ),
           )
         else
-          Icon(
+          const Icon(
             Icons.access_time,
             size: 13,
             color: PortfiqTheme.textTertiary,

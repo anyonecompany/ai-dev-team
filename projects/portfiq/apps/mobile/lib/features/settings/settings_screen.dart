@@ -368,11 +368,11 @@ class _SettingsScreenState extends ConsumerState<SettingsScreen> {
       padding: EdgeInsets.zero,
       child: Column(
         children: [
-          ListTile(
+          const ListTile(
             dense: true,
             contentPadding:
-                const EdgeInsets.symmetric(horizontal: 16, vertical: 2),
-            title: const Text(
+                EdgeInsets.symmetric(horizontal: 16, vertical: 2),
+            title: Text(
               '버전',
               style: TextStyle(
                 fontSize: 15,
@@ -380,7 +380,7 @@ class _SettingsScreenState extends ConsumerState<SettingsScreen> {
                 color: PortfiqTheme.textPrimary,
               ),
             ),
-            trailing: const Text(
+            trailing: Text(
               '1.0.0',
               style: TextStyle(
                 fontSize: 14,
@@ -530,13 +530,13 @@ AI 분석 결과는 참고 정보이며 투자 조언이 아닙니다.
 ''';
 
   Widget _buildAiDisclosure() {
-    return Padding(
-      padding: const EdgeInsets.symmetric(horizontal: PortfiqSpacing.space16),
+    return const Padding(
+      padding: EdgeInsets.symmetric(horizontal: PortfiqSpacing.space16),
       child: GlassCard(
-        padding: const EdgeInsets.all(PortfiqSpacing.space16),
+        padding: EdgeInsets.all(PortfiqSpacing.space16),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
-          children: const [
+          children: [
             Text(
               'AI 기반 서비스 고지',
               style: TextStyle(

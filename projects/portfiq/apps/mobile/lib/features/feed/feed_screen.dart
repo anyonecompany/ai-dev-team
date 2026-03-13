@@ -341,7 +341,7 @@ class _FeedScreenState extends ConsumerState<FeedScreen>
                               children: [
                                 Row(
                                   children: [
-                                    Icon(
+                                    const Icon(
                                       Icons.auto_awesome,
                                       size: 14,
                                       color: PortfiqTheme.accent,
@@ -414,7 +414,7 @@ class _FeedScreenState extends ConsumerState<FeedScreen>
                         // Source + 전문 보러가기
                         Container(
                           width: double.infinity,
-                          decoration: BoxDecoration(
+                          decoration: const BoxDecoration(
                             border: Border(
                               top: BorderSide(color: PortfiqTheme.divider, width: 1),
                             ),
@@ -465,7 +465,7 @@ class _FeedScreenState extends ConsumerState<FeedScreen>
                           const SizedBox(height: PortfiqSpacing.space20),
                           Container(
                             width: double.infinity,
-                            decoration: BoxDecoration(
+                            decoration: const BoxDecoration(
                               border: Border(
                                 top: BorderSide(color: PortfiqTheme.divider, width: 1),
                               ),
@@ -476,7 +476,7 @@ class _FeedScreenState extends ConsumerState<FeedScreen>
                               children: [
                                 Row(
                                   children: [
-                                    Icon(
+                                    const Icon(
                                       Icons.link_rounded,
                                       size: 16,
                                       color: PortfiqTheme.textSecondary,
@@ -503,9 +503,8 @@ class _FeedScreenState extends ConsumerState<FeedScreen>
                                         Future.delayed(
                                           const Duration(milliseconds: 300),
                                           () {
-                                            if (mounted) {
-                                              _showNewsDetail(context, related);
-                                            }
+                                            if (!mounted) return;
+                                            _showNewsDetail(this.context, related);
                                           },
                                         );
                                       },
@@ -561,7 +560,7 @@ class _FeedScreenState extends ConsumerState<FeedScreen>
                                                             ),
                                                             child: Text(
                                                               imp.etfTicker,
-                                                              style: TextStyle(
+                                                              style: const TextStyle(
                                                                 fontSize: 10,
                                                                 fontWeight: FontWeight.w600,
                                                                 color: PortfiqTheme.accent,
