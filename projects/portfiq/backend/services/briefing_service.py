@@ -25,7 +25,7 @@ from prompts.briefing import MORNING_PROMPT, NIGHT_PROMPT
 logger = logging.getLogger(__name__)
 
 _GEMINI_MODEL = settings.GEMINI_MODEL
-_GEMINI_TIMEOUT = 12  # Gemini API 호출 타임아웃 (초)
+_GEMINI_TIMEOUT = 30  # Gemini API 호출 타임아웃 (초) — 프롬프트 복잡도 증가로 12→30s
 
 _gemini_client: genai.Client | None = None
 
@@ -171,16 +171,15 @@ _MOCK_NIGHT = BriefingResponse(
     type="night",
     is_mock=True,
     title="나이트 체크포인트",  # get 시 동적으로 덮어씀
-    summary="오늘 하루 기술주 중심 강세 마감. 야간에 발표될 3가지 이벤트에 주목하세요.",
+    summary="오늘 하루 시장 마감 후 주요 이벤트를 확인하세요. AI 브리핑이 곧 생성됩니다.",
     etf_changes=[
-        ETFChange(ticker="QQQ", change_pct=1.5, direction="up", cause="기술주 매수세 지속"),
-        ETFChange(ticker="VOO", change_pct=0.9, direction="up", cause="S&P 500 +0.9% 마감"),
-        ETFChange(ticker="SOXL", change_pct=4.2, direction="up", cause="반도체 섹터 랠리"),
+        ETFChange(ticker="QQQ", change_pct=0.0, direction="flat", cause="시장 데이터 로딩 중"),
+        ETFChange(ticker="VOO", change_pct=0.0, direction="flat", cause="시장 데이터 로딩 중"),
     ],
     checkpoints=[
-        "21:30 — 미국 소비자물가지수(CPI) 발표 예정",
-        "22:00 — 연준 이사 월러 연설: 금리 전망 힌트 가능성",
-        "익일 장전 — 유럽중앙은행(ECB) 금리 결정 영향 체크",
+        "22:30 KST — 미국 시장 정규 거래 시작: ETF 가격 변동 확인",
+        "AI 브리핑이 자동 생성되면 실시간 경제 일정이 표시됩니다",
+        "설정에서 알림 시간을 변경할 수 있습니다",
     ],
     generated_at=datetime.now(timezone.utc).isoformat(),
 )
@@ -391,8 +390,13 @@ class BriefingService:
 
         etf_list = ", ".join(await _get_dynamic_etf_list())
         news_summary = _get_news_summary()
+        today_date = datetime.now(timezone.utc).strftime("%Y-%m-%d")
 
-        prompt = NIGHT_PROMPT.format(etf_list=etf_list, news_summary=news_summary)
+        prompt = NIGHT_PROMPT.format(
+            etf_list=etf_list,
+            news_summary=news_summary,
+            today_date=today_date,
+        )
         data = await _call_gemini(prompt)
 
         if data is None:
