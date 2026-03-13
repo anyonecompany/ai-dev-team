@@ -790,18 +790,21 @@ async def fetch_and_store_news() -> int:
             except Exception as e:
                 logger.warning("Supabase 번역 업데이트 실패: %s", e)
 
+        # 먼저 영문 원문으로 캐시 갱신 (빈 캐시 방지)
+        _news_cache = unique
+
         await asyncio.to_thread(_translate_and_update)
 
-        # 피드 캐시 무효화 (새 뉴스 수집 후 즉시 반영)
+        # 번역 완료 후 캐시 갱신 (unique는 in-place 번역됨)
+        _news_cache = unique
+
+        # 피드 캐시 무효화 — 번역된 데이터로 재생성되도록
         try:
             from services.cache import clear_cache as _clear
             _clear()
-            logger.info("피드 캐시 무효화 완료 (새 뉴스 반영)")
+            logger.info("피드 캐시 무효화 완료 (번역 반영)")
         except Exception:
             pass
-
-        # 캐시 갱신 (번역 완료 후)
-        _news_cache = unique
         return len(unique)
 
     except Exception as e:
