@@ -52,6 +52,15 @@ def start_scheduler() -> AsyncIOScheduler:
         replace_existing=True,
     )
 
+    # 1.5. 미번역 뉴스 재번역: 5분마다
+    scheduler.add_job(
+        _run_in_thread(_retry_untranslated_news),
+        IntervalTrigger(minutes=5),
+        id="translation_retry",
+        name="미번역 뉴스 재번역",
+        replace_existing=True,
+    )
+
     # 2. 아침 브리핑: 매일 설정된 시간 KST (UTC로 변환: KST - 9)
     morning_utc_hour = (settings.BRIEFING_MORNING_HOUR - 9) % 24
     scheduler.add_job(
@@ -153,7 +162,7 @@ def start_scheduler() -> AsyncIOScheduler:
 
     scheduler.start()
     logger.info(
-        "스케줄러 시작: 뉴스(10분), 아침(%02d:%02d KST), 밤(%02d:00 KST), "
+        "스케줄러 시작: 뉴스(10분), 재번역(5분), 아침(%02d:%02d KST), 밤(%02d:00 KST), "
         "집계(01:00 KST), 퍼널(01:30 KST), 주말(토08:35/일22:00 KST), 스냅샷(월01:00 KST)",
         settings.BRIEFING_MORNING_HOUR,
         settings.BRIEFING_MORNING_MINUTE,
@@ -388,3 +397,12 @@ async def _run_holdings_snapshot() -> None:
 
     except Exception as e:
         logger.error("보유종목 스냅샷 실패: %s", e)
+
+
+async def _retry_untranslated_news() -> None:
+    """미번역 뉴스를 백그라운드에서 재번역한다."""
+    from services.news_service import _translate_cached_articles_sync
+    try:
+        await asyncio.to_thread(_translate_cached_articles_sync)
+    except Exception as e:
+        logger.error("미번역 뉴스 재번역 실패: %s", e)

@@ -315,8 +315,9 @@ async def _translate_batch(headlines: list[str]) -> list[dict[str, str]]:
 
     Returns list of dicts with 'ko' and 'impact_reason' keys.
     Handles Gemini 429 rate limits with backoff.
+    Retries up to 3 times with exponential backoff on timeout/transient errors.
     """
-    fallback = [{"ko": h, "impact_reason": ""} for h in headlines]
+    fallback = [{"ko": h, "impact_reason": "", "summary_3line": "", "sentiment": "중립"} for h in headlines]
 
     # Rate limit 상태면 즉시 fallback 반환 (대기하지 않음)
     if _is_gemini_rate_limited():
@@ -326,59 +327,68 @@ async def _translate_batch(headlines: list[str]) -> list[dict[str, str]]:
     numbered = "\n".join(f"[{i}] {h}" for i, h in enumerate(headlines))
     prompt = _TRANSLATE_SUMMARISE_PROMPT.format(headlines=numbered)
 
-    try:
-        client = _get_gemini_client()
+    import asyncio
 
-        # Gemini 호출을 스레드 풀에서 실행 + 10초 타임아웃 (15s → 10s)
-        import asyncio
-
-        def _gemini_sync() -> str:
-            response = client.models.generate_content(
-                model=_GEMINI_MODEL, contents=prompt
-            )
-            return response.text if response.text else ""
-
+    for attempt in range(3):  # 최대 3회 시도
         try:
-            text = await asyncio.wait_for(
-                asyncio.to_thread(_gemini_sync),
-                timeout=10,
-            )
-        except asyncio.TimeoutError:
-            logger.warning("Gemini 번역 배치 타임아웃 (10s)")
+            client = _get_gemini_client()
+
+            def _gemini_sync() -> str:
+                response = client.models.generate_content(
+                    model=_GEMINI_MODEL, contents=prompt
+                )
+                return response.text if response.text else ""
+
+            try:
+                text = await asyncio.wait_for(
+                    asyncio.to_thread(_gemini_sync),
+                    timeout=30,
+                )
+            except asyncio.TimeoutError:
+                logger.warning("Gemini 번역 배치 타임아웃 (30s, attempt %d/3)", attempt + 1)
+                if attempt < 2:
+                    await asyncio.sleep(2 ** attempt)
+                    continue
+                return fallback
+
+            if "```json" in text:
+                text = text.split("```json")[1].split("```")[0]
+            elif "```" in text:
+                text = text.split("```")[1].split("```")[0]
+
+            parsed: list[dict] = json.loads(text.strip())
+
+            result_map: dict[int, dict[str, str]] = {}
+            for item in parsed:
+                idx = item.get("index", -1)
+                ko = item.get("ko", "")
+                reason = item.get("impact_reason", "")
+                if 0 <= idx < len(headlines) and ko:
+                    result_map[idx] = {
+                        "ko": ko,
+                        "impact_reason": reason,
+                        "summary_3line": item.get("summary_3line", ""),
+                        "sentiment": item.get("sentiment", "중립"),
+                    }
+
+            return [
+                result_map.get(i, {"ko": h, "impact_reason": "", "summary_3line": "", "sentiment": "중립"})
+                for i, h in enumerate(headlines)
+            ]
+
+        except Exception as e:
+            # Gemini 429 rate limit 감지
+            err_str = str(e).lower()
+            if "429" in err_str or "resource_exhausted" in err_str or "rate" in err_str:
+                _set_gemini_rate_limited(60)  # 60초 backoff
+                return fallback
+            logger.error("번역 배치 실패 (attempt %d/3): %s", attempt + 1, e)
+            if attempt < 2:
+                await asyncio.sleep(2 ** attempt)
+                continue
             return fallback
 
-        if "```json" in text:
-            text = text.split("```json")[1].split("```")[0]
-        elif "```" in text:
-            text = text.split("```")[1].split("```")[0]
-
-        parsed: list[dict] = json.loads(text.strip())
-
-        result_map: dict[int, dict[str, str]] = {}
-        for item in parsed:
-            idx = item.get("index", -1)
-            ko = item.get("ko", "")
-            reason = item.get("impact_reason", "")
-            if 0 <= idx < len(headlines) and ko:
-                result_map[idx] = {
-                    "ko": ko,
-                    "impact_reason": reason,
-                    "summary_3line": item.get("summary_3line", ""),
-                    "sentiment": item.get("sentiment", "중립"),
-                }
-
-        return [
-            result_map.get(i, {"ko": h, "impact_reason": "", "summary_3line": "", "sentiment": "중립"})
-            for i, h in enumerate(headlines)
-        ]
-
-    except Exception as e:
-        # Gemini 429 rate limit 감지
-        err_str = str(e).lower()
-        if "429" in err_str or "resource_exhausted" in err_str or "rate" in err_str:
-            _set_gemini_rate_limited(60)  # 60초 backoff
-        logger.error("번역 배치 실패: %s", e)
-        return fallback
+    return fallback
 
 
 async def _translate_and_summarize(headlines: list[str]) -> list[dict[str, str]]:
@@ -566,6 +576,7 @@ def _translate_cached_articles_sync() -> None:
                         article["translated"] = True
 
                 logger.info("번역 배치 완료: %d~%d / %d", start, start + len(batch), len(headlines))
+                _time_mod.sleep(1.5)  # rate limit 방지 — 배치 간 1.5초 대기
 
             except Exception as e:
                 err_str = str(e).lower()
@@ -746,6 +757,7 @@ async def fetch_and_store_news() -> int:
                             article["sentiment"] = item.get("sentiment", "중립")
                             article["translated"] = True
                     logger.info("번역 배치 완료: %d~%d / %d", start, start + len(batch), len(headlines))
+                    _time_mod.sleep(1.5)  # rate limit 방지 — 배치 간 1.5초 대기
                 except Exception as e:
                     err_str = str(e).lower()
                     if "429" in err_str or "resource_exhausted" in err_str or "rate" in err_str:

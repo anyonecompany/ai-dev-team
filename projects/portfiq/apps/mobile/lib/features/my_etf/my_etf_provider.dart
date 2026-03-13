@@ -135,6 +135,9 @@ class MyEtfNotifier extends StateNotifier<MyEtfState> {
           currentPrice: (priceData['price'] as num?)?.toDouble(),
           changePct: (priceData['change_pct'] as num?)?.toDouble(),
           changeAmount: (priceData['change_amt'] as num?)?.toDouble(),
+          priceKrw: (priceData['price_krw'] as num?)?.toInt(),
+          changeAmountKrw: (priceData['change_amt_krw'] as num?)?.toInt(),
+          exchangeRate: (priceData['exchange_rate'] as num?)?.toDouble(),
         );
       }).toList();
     } catch (e) {

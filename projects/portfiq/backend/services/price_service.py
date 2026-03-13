@@ -8,6 +8,8 @@ import asyncio
 import logging
 import time
 
+from services.exchange_rate_service import get_usd_krw_rate
+
 logger = logging.getLogger(__name__)
 
 # In-memory price cache (5분 TTL — 가격은 자주 변하므로 15분보다 짧게)
@@ -74,6 +76,21 @@ def _fetch_price_sync(ticker: str) -> dict:
     }
 
 
+async def _add_krw_fields(data: dict) -> dict:
+    """가격 데이터에 KRW 환산 필드를 추가한다."""
+    try:
+        rate = await get_usd_krw_rate()
+        data["price_krw"] = round(data.get("price", 0) * rate)
+        data["change_amt_krw"] = round(data.get("change_amt", 0) * rate)
+        data["exchange_rate"] = round(rate, 2)
+    except Exception as e:
+        logger.warning("KRW 환산 실패: %s", e)
+        data["price_krw"] = None
+        data["change_amt_krw"] = None
+        data["exchange_rate"] = None
+    return data
+
+
 async def get_etf_price(ticker: str) -> dict:
     """ETF 현재가 및 등락률을 반환한다.
 
@@ -84,12 +101,13 @@ async def get_etf_price(ticker: str) -> dict:
         ticker: ETF 티커 (예: QQQ, VOO).
 
     Returns:
-        {"ticker": str, "price": float, "change_pct": float, "change_amt": float, "currency": "USD"}
+        {"ticker": str, "price": float, "change_pct": float, "change_amt": float,
+         "currency": "USD", "price_krw": int, "change_amt_krw": int, "exchange_rate": float}
     """
     # Check cache
     cached = _get_cached_price(ticker)
     if cached:
-        return cached
+        return await _add_krw_fields(dict(cached))
 
     try:
         # yfinance는 동기 I/O이므로 스레드 풀에서 실행 + 타임아웃 적용
@@ -100,14 +118,14 @@ async def get_etf_price(ticker: str) -> dict:
 
         _cache_price(ticker, result)
         logger.info("가격 조회: %s = $%.2f (%.2f%%)", ticker, result["price"], result["change_pct"])
-        return result
+        return await _add_krw_fields(result)
 
     except asyncio.TimeoutError:
         logger.warning("가격 조회 타임아웃 (%s, %ds) — stale/mock 데이터 반환", ticker, _YFINANCE_TIMEOUT)
-        return _stale_cache.get(ticker) or _get_mock_price(ticker)
+        return await _add_krw_fields(_stale_cache.get(ticker) or _get_mock_price(ticker))
     except Exception as e:
         logger.warning("가격 조회 실패 (%s): %s — stale/mock 데이터 반환", ticker, e)
-        return _stale_cache.get(ticker) or _get_mock_price(ticker)
+        return await _add_krw_fields(_stale_cache.get(ticker) or _get_mock_price(ticker))
 
 
 def _get_mock_price(ticker: str) -> dict:
