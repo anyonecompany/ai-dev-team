@@ -1,0 +1,30 @@
+name: Portfiq Backend Deploy
+
+on:
+  push:
+    branches: [main]
+    paths: ['projects/portfiq/backend/**']
+
+concurrency:
+  group: portfiq-deploy
+  cancel-in-progress: false
+
+jobs:
+  test:
+    uses: ./.github/workflows/portfiq-backend.yml
+
+  deploy:
+    runs-on: ubuntu-latest
+    needs: test
+    environment: production
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Install Railway CLI
+        run: npm install -g @railway/cli
+
+      - name: Deploy to Railway
+        run: railway up --service portfiq-backend
+        working-directory: projects/portfiq/backend
+        env:
+          RAILWAY_TOKEN: ${{ secrets.RAILWAY_TOKEN }}

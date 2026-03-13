@@ -1,0 +1,117 @@
+{
+  "schema_version": "1.0.0",
+  "last_updated": "2026-03-11T04:39:04Z",
+  "summary": {
+    "total_tasks": 0,
+    "tasks_completed": 0,
+    "tasks_failed": 0,
+    "tasks_blocked": 0,
+    "success_rate_pct": 0,
+    "total_builds": 0,
+    "build_failures": 0,
+    "build_failure_rate_pct": 0,
+    "total_qa_runs": 6,
+    "qa_failures": 2,
+    "qa_failure_rate_pct": 33.3,
+    "total_runtime_checks": 6,
+    "runtime_failures": 1,
+    "runtime_failure_rate_pct": 16.6,
+    "total_deployments": 0,
+    "deployment_failures": 0,
+    "deployment_failure_rate_pct": 0,
+    "total_incidents": 2,
+    "incidents_resolved": 1,
+    "mean_time_to_resolve_hours": 0
+  },
+  "agent_performance": {
+    "Tech-Lead": {
+      "tasks_assigned": 0,
+      "tasks_completed": 0,
+      "gate_approvals": 0,
+      "gate_rejections": 0,
+      "avg_cycle_time_hours": 0
+    },
+    "BE-Developer": {
+      "tasks_assigned": 0,
+      "tasks_completed": 0,
+      "code_lines_added": 0,
+      "bugs_introduced": 0,
+      "tests_written": 0,
+      "avg_cycle_time_hours": 0
+    },
+    "FE-Developer": {
+      "tasks_assigned": 0,
+      "tasks_completed": 0,
+      "code_lines_added": 0,
+      "bugs_introduced": 0,
+      "tests_written": 0,
+      "avg_cycle_time_hours": 0
+    },
+    "QA-Engineer": {
+      "tasks_assigned": 0,
+      "tasks_completed": 0,
+      "bugs_found": 0,
+      "security_issues_found": 0,
+      "qa_gate_runs": 0,
+      "avg_cycle_time_hours": 0
+    },
+    "Designer": {
+      "tasks_assigned": 0,
+      "tasks_completed": 0,
+      "screens_designed": 0,
+      "avg_cycle_time_hours": 0
+    },
+    "CTO-Agent": {
+      "reviews_conducted": 0,
+      "improvements_proposed": 0,
+      "improvements_adopted": 0,
+      "incidents_analyzed": 0
+    }
+  },
+  "failure_categories": {
+    "lint": 0,
+    "typecheck": 0,
+    "test": 0,
+    "security": 0,
+    "build": 0,
+    "runtime": 0,
+    "deployment": 0,
+    "mock_violation": 0,
+    "lock_violation": 0
+  },
+  "history": [
+    {
+      "timestamp": "2026-03-11T04:27:52Z",
+      "qa_runs": 3,
+      "qa_pass": 1,
+      "qa_fail": 2,
+      "runtime_runs": 3,
+      "runtime_pass": 2,
+      "runtime_fail": 1,
+      "incidents_total": 1,
+      "incidents_resolved": 1
+    },
+    {
+      "timestamp": "2026-03-11T04:37:45Z",
+      "qa_runs": 5,
+      "qa_pass": 3,
+      "qa_fail": 2,
+      "runtime_runs": 5,
+      "runtime_pass": 4,
+      "runtime_fail": 1,
+      "incidents_total": 2,
+      "incidents_resolved": 1
+    },
+    {
+      "timestamp": "2026-03-11T04:39:04Z",
+      "qa_runs": 6,
+      "qa_pass": 4,
+      "qa_fail": 2,
+      "runtime_runs": 6,
+      "runtime_pass": 5,
+      "runtime_fail": 1,
+      "incidents_total": 2,
+      "incidents_resolved": 1
+    }
+  ]
+}

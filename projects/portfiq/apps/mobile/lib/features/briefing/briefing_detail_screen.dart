@@ -174,57 +174,56 @@ class _BriefingDetailScreenState extends State<BriefingDetailScreen> {
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
         // Summary
-        const Text(
+        Text(
           '오버나잇 요약',
-          style: TextStyle(
-            color: Color(0xFF6366F1),
-            fontSize: 13,
+          style: PortfiqTypography.caption.copyWith(
+            color: PortfiqTheme.accent,
             fontWeight: FontWeight.w600,
+            fontSize: 13,
           ),
         ),
         const SizedBox(height: 8),
         Text(
           data.summary,
-          style: const TextStyle(
-            color: Color(0xFFD1D5DB),
-            fontSize: 15,
+          style: PortfiqTypography.body.copyWith(
+            color: const Color(0xFFD1D5DB),
             height: 1.6,
           ),
         ),
 
-        const SizedBox(height: 24),
-        const Divider(color: Color(0xFF2D2F3A)),
-        const SizedBox(height: 16),
+        const SizedBox(height: PortfiqSpacing.space24),
+        const Divider(color: PortfiqTheme.divider),
+        const SizedBox(height: PortfiqSpacing.space16),
 
         // ETF-by-ETF breakdown
-        const Text(
+        Text(
           'ETF 변동',
-          style: TextStyle(
-            color: Color(0xFF6366F1),
-            fontSize: 13,
+          style: PortfiqTypography.caption.copyWith(
+            color: PortfiqTheme.accent,
             fontWeight: FontWeight.w600,
+            fontSize: 13,
           ),
         ),
-        const SizedBox(height: 12),
+        const SizedBox(height: PortfiqSpacing.space12),
 
         ...data.etfChanges.map((change) {
           return _EtfChangeRow(change: change);
         }),
 
-        const SizedBox(height: 24),
-        const Divider(color: Color(0xFF2D2F3A)),
-        const SizedBox(height: 16),
+        const SizedBox(height: PortfiqSpacing.space24),
+        const Divider(color: PortfiqTheme.divider),
+        const SizedBox(height: PortfiqSpacing.space16),
 
         // Key overnight events
-        const Text(
+        Text(
           '주요 이벤트',
-          style: TextStyle(
-            color: Color(0xFF6366F1),
-            fontSize: 13,
+          style: PortfiqTypography.caption.copyWith(
+            color: PortfiqTheme.accent,
             fontWeight: FontWeight.w600,
+            fontSize: 13,
           ),
         ),
-        const SizedBox(height: 12),
+        const SizedBox(height: PortfiqSpacing.space12),
         _eventItem('NVIDIA 시간외 +8.2% — 데이터센터 매출 전년비 409% 증가'),
         _eventItem('FOMC 의사록 — 위원 다수 금리인하 신중론 유지'),
         _eventItem('미 10년물 국채금리 4.31%로 소폭 상승'),
@@ -236,39 +235,39 @@ class _BriefingDetailScreenState extends State<BriefingDetailScreen> {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        const Text(
+        Text(
           '오늘 밤 주요 일정',
-          style: TextStyle(
-            color: Color(0xFFF59E0B),
-            fontSize: 13,
+          style: PortfiqTypography.caption.copyWith(
+            color: PortfiqTheme.warning,
             fontWeight: FontWeight.w600,
+            fontSize: 13,
           ),
         ),
-        const SizedBox(height: 16),
+        const SizedBox(height: PortfiqSpacing.space16),
 
         ...data.checkpoints.asMap().entries.map((entry) {
           return _CheckpointRow(index: entry.key + 1, text: entry.value);
         }),
 
-        const SizedBox(height: 24),
-        const Divider(color: Color(0xFF2D2F3A)),
-        const SizedBox(height: 16),
+        const SizedBox(height: PortfiqSpacing.space24),
+        const Divider(color: PortfiqTheme.divider),
+        const SizedBox(height: PortfiqSpacing.space16),
 
         // ETF impact mapping
-        const Text(
+        Text(
           '예상 ETF 영향',
-          style: TextStyle(
-            color: Color(0xFFF59E0B),
-            fontSize: 13,
+          style: PortfiqTypography.caption.copyWith(
+            color: PortfiqTheme.warning,
             fontWeight: FontWeight.w600,
+            fontSize: 13,
           ),
         ),
-        const SizedBox(height: 12),
+        const SizedBox(height: PortfiqSpacing.space12),
 
         _impactMapRow('FOMC 의사록', ['QQQ', 'VOO']),
-        const SizedBox(height: 8),
+        const SizedBox(height: PortfiqSpacing.space8),
         _impactMapRow('NVIDIA 실적', ['QQQ']),
-        const SizedBox(height: 8),
+        const SizedBox(height: PortfiqSpacing.space8),
         _impactMapRow('실업수당 청구', ['VOO', 'SCHD']),
       ],
     );
@@ -375,23 +374,24 @@ class _CheckpointRow extends StatelessWidget {
     return Padding(
       padding: const EdgeInsets.only(bottom: PortfiqSpacing.space12),
       child: GlassCard(
+        depth: 2,
         padding: const EdgeInsets.all(PortfiqSpacing.space16),
         child: Row(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             Container(
-              width: 24,
-              height: 24,
-              decoration: BoxDecoration(
-                color: const Color(0xFFF59E0B).withValues(alpha: 0.15),
+              width: 28,
+              height: 28,
+              decoration: const BoxDecoration(
+                color: PortfiqTheme.accent,
                 shape: BoxShape.circle,
               ),
               child: Center(
                 child: Text(
                   '$index',
                   style: const TextStyle(
-                    color: Color(0xFFF59E0B),
-                    fontSize: 12,
+                    color: PortfiqTheme.textPrimary,
+                    fontSize: 13,
                     fontWeight: FontWeight.w700,
                   ),
                 ),
@@ -401,8 +401,8 @@ class _CheckpointRow extends StatelessWidget {
             Expanded(
               child: Text(
                 text,
-                style: const TextStyle(
-                  color: Color(0xFFD1D5DB),
+                style: PortfiqTypography.body.copyWith(
+                  color: const Color(0xFFD1D5DB),
                   fontSize: 14,
                   height: 1.5,
                 ),

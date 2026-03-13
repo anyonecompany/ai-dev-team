@@ -1,0 +1,8 @@
+{
+  "timestamp": "2026-03-11T04:36:21Z",
+  "project": "/Users/danghyeonsong/ai-dev-team/projects/portfiq",
+  "target": "all",
+  "status": "FAILED",
+  "reason": "Metrics degraded — QA failure rate 66.6% exceeds 30% threshold",
+  "log": "/Users/danghyeonsong/ai-dev-team/deployments/logs/deploy-20260311-133621.log"
+}

@@ -1,0 +1,28 @@
+{
+  "timestamp": "2026-03-11T04:57:33Z",
+  "project": "portfiq",
+  "target": "backend",
+  "status": "success",
+  "backend": {
+    "platform": "Railway",
+    "status": "deployed",
+    "project_name": "zooming-inspiration",
+    "service_name": "portfiq",
+    "deploy_url": "https://portfiq-production.up.railway.app",
+    "build_logs": "https://railway.com/project/14c14405-29e4-466f-b1e3-f4796c0a0883/service/27a35b39-3fe2-47e5-a2f7-e62db1760e57"
+  },
+  "frontend": {
+    "platform": "Vercel",
+    "status": "N/A",
+    "reason": "No web frontend — Flutter mobile only"
+  },
+  "health_check_passed": true,
+  "health_check_results": {
+    "health": "200 OK",
+    "api_health": "200 OK",
+    "docs": "200 OK",
+    "etf_search": "200 OK",
+    "content_validation": "PASS"
+  },
+  "log": "deployments/logs/healthcheck-20260311-135704.log"
+}

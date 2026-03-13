@@ -1,0 +1,35 @@
+# La Paz — Python 의존성
+# 5-Domain: Structure, Match, Performance, Narrative, Tactics
+# LLM: DeepSeek V3.2 via OpenAI SDK
+
+# ── Core ──
+fastapi>=0.115.0
+uvicorn[standard]>=0.32.0
+pydantic>=2.9.0
+
+# ── LLM (OpenAI SDK → DeepSeek / Gemini) ──
+openai>=1.50.0
+
+# ── Database ──
+supabase>=2.10.0
+python-dotenv>=1.0.1
+
+# ── Data Collection ──
+soccerdata
+statsbombpy
+understatapi
+feedparser
+pandas>=2.2.0
+requests>=2.32.0
+
+# ── Embedding ──
+sentence-transformers>=3.3.0
+
+# ── ML Utils ──
+scikit-learn
+
+# ── Web Search ──
+ddgs>=6.0.0
+
+# ── Optional: Local vector backup ──
+# chromadb>=0.5.0

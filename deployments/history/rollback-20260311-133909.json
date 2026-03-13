@@ -1,0 +1,8 @@
+{
+  "timestamp": "2026-03-11T04:39:09Z",
+  "project": "portfiq",
+  "rollback_status": "dry-run",
+  "last_stable_deployment": "none",
+  "trigger": "automated-health-check-failure",
+  "log": "/Users/danghyeonsong/ai-dev-team/deployments/logs/rollback-20260311-133909.log"
+}

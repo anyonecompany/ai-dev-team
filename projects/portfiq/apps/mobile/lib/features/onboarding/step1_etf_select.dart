@@ -1,5 +1,6 @@
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:hive_flutter/hive_flutter.dart';
 
@@ -223,7 +224,12 @@ class _Step1EtfSelectState extends ConsumerState<Step1EtfSelect> {
   }
 }
 
-/// Animated ETF selection chip.
+/// Animated ETF selection chip with haptic + scale bounce.
+///
+/// Per onboarding.md:
+/// - Default: #1E2028 bg, #9CA3AF text, pill shape
+/// - Selected: #6366F1 @ 20% bg, #6366F1 text, #6366F1 border
+/// - Tap: scale bounce 0.95 → 1.02 → 1.0, haptic selectionClick
 class _EtfChip extends StatelessWidget {
   const _EtfChip({
     required this.ticker,
@@ -238,17 +244,20 @@ class _EtfChip extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return GestureDetector(
-      onTap: onTap,
+      onTap: () {
+        HapticFeedback.selectionClick();
+        onTap();
+      },
       child: AnimatedContainer(
-        duration: PortfiqTheme.microInteraction,
-        curve: Curves.easeInOut,
+        duration: PortfiqAnimations.normal,
+        curve: PortfiqAnimations.springCurve,
         padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 10),
         constraints: const BoxConstraints(minHeight: 44),
         decoration: BoxDecoration(
           color: selected
-              ? PortfiqTheme.accent.withAlpha(26)
-              : PortfiqTheme.surface,
-          borderRadius: BorderRadius.circular(PortfiqTheme.radiusChip),
+              ? PortfiqTheme.accent.withAlpha(51) // 20%
+              : PortfiqTheme.tertiaryBg,
+          borderRadius: BorderRadius.circular(PortfiqTheme.radiusPill),
           border: Border.all(
             color: selected ? PortfiqTheme.accent : Colors.transparent,
             width: 1.5,
@@ -265,7 +274,7 @@ class _EtfChip extends StatelessWidget {
                 fontWeight: FontWeight.w600,
                 color: selected
                     ? PortfiqTheme.accent
-                    : PortfiqTheme.textPrimary,
+                    : PortfiqTheme.textSecondary,
               ),
             ),
             if (selected) ...[

@@ -49,7 +49,7 @@ class _FeedScreenState extends ConsumerState<FeedScreen>
     _staggerController?.dispose();
     _staggerController = AnimationController(
       vsync: this,
-      duration: Duration(milliseconds: 300 + (itemCount * 50)),
+      duration: Duration(milliseconds: 300 + (itemCount * 80)),
     )..forward();
   }
 
@@ -76,12 +76,18 @@ class _FeedScreenState extends ConsumerState<FeedScreen>
     return Scaffold(
       backgroundColor: PortfiqTheme.primaryBg,
       appBar: AppBar(
-        backgroundColor: PortfiqTheme.primaryBg,
+        backgroundColor: Colors.transparent,
         elevation: 0,
-        title: Text(
-          'Portfiq',
-          style: PortfiqTypography.title.copyWith(
-            fontSize: 20,
+        title: ShaderMask(
+          shaderCallback: (bounds) =>
+              PortfiqGradients.indigo.createShader(bounds),
+          child: const Text(
+            'Portfiq',
+            style: TextStyle(
+              fontSize: 20,
+              fontWeight: FontWeight.w700,
+              color: Colors.white,
+            ),
           ),
         ),
         centerTitle: false,
@@ -92,7 +98,9 @@ class _FeedScreenState extends ConsumerState<FeedScreen>
             )
           : RefreshIndicator(
               color: PortfiqTheme.accent,
-              backgroundColor: PortfiqTheme.secondaryBg,
+              backgroundColor: Colors.transparent,
+              strokeWidth: 2.5,
+              displacement: 40,
               onRefresh: () {
                 EventTracker.instance.track('feed_pull_refresh', properties: {});
                 EventTracker.instance.track('feed_refreshed', properties: {
@@ -208,7 +216,7 @@ class _FeedScreenState extends ConsumerState<FeedScreen>
       curve: Interval(
         startInterval,
         endInterval,
-        curve: PortfiqAnimations.defaultCurve,
+        curve: PortfiqAnimations.springCurve,
       ),
     );
 

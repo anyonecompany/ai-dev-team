@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:hive_flutter/hive_flutter.dart';
 import '../../config/theme.dart';
@@ -156,11 +157,9 @@ class _SettingsScreenState extends ConsumerState<SettingsScreen> {
     return Padding(
       padding: const EdgeInsets.symmetric(horizontal: 16),
       child: Text(
-        title,
-        style: const TextStyle(
-          fontSize: 14,
-          fontWeight: FontWeight.w700,
-          color: PortfiqTheme.textSecondary,
+        title.toUpperCase(),
+        style: PortfiqTypography.label.copyWith(
+          color: PortfiqTheme.textTertiary,
         ),
       ),
     );
@@ -362,11 +361,14 @@ class _SettingsScreenState extends ConsumerState<SettingsScreen> {
         ),
       ),
       value: value,
-      onChanged: onChanged,
+      onChanged: (v) {
+        HapticFeedback.selectionClick();
+        onChanged(v);
+      },
       activeThumbColor: PortfiqTheme.accent,
-      activeTrackColor: PortfiqTheme.accent.withAlpha(77),
-      inactiveThumbColor: PortfiqTheme.textSecondary,
-      inactiveTrackColor: PortfiqTheme.surface,
+      activeTrackColor: PortfiqTheme.accent,
+      inactiveThumbColor: PortfiqTheme.textPrimary,
+      inactiveTrackColor: PortfiqTheme.divider,
     );
   }
 

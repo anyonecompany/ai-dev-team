@@ -1,0 +1,101 @@
+@import "tailwindcss";
+@config "../tailwind.config.ts";
+
+@layer base {
+  :root {
+    --background: 220 20% 97%;
+    --foreground: 225 30% 10%;
+    --card: 0 0% 100%;
+    --card-foreground: 225 30% 10%;
+    --popover: 0 0% 100%;
+    --popover-foreground: 225 30% 10%;
+    --primary: 160 84% 39%;
+    --primary-foreground: 0 0% 100%;
+    --secondary: 220 14% 92%;
+    --secondary-foreground: 225 30% 15%;
+    --muted: 220 14% 92%;
+    --muted-foreground: 220 10% 45%;
+    --accent: 38 92% 50%;
+    --accent-foreground: 225 40% 7%;
+    --destructive: 0 84% 60%;
+    --destructive-foreground: 0 0% 100%;
+    --success: 142 71% 45%;
+    --success-foreground: 0 0% 100%;
+    --warning: 38 92% 50%;
+    --warning-foreground: 225 40% 7%;
+    --info: 217 91% 60%;
+    --border: 220 13% 87%;
+    --input: 220 13% 87%;
+    --ring: 160 84% 39%;
+    --radius: 8px;
+  }
+
+  .dark {
+    --background: 225 40% 7%;
+    --foreground: 216 20% 95%;
+    --card: 225 32% 12%;
+    --card-foreground: 216 20% 95%;
+    --popover: 225 35% 16%;
+    --popover-foreground: 216 20% 95%;
+    --primary: 160 84% 39%;
+    --primary-foreground: 0 0% 100%;
+    --secondary: 225 35% 18%;
+    --secondary-foreground: 216 20% 95%;
+    --muted: 225 35% 18%;
+    --muted-foreground: 220 15% 60%;
+    --accent: 38 92% 50%;
+    --accent-foreground: 225 40% 7%;
+    --destructive: 0 84% 60%;
+    --destructive-foreground: 0 0% 100%;
+    --success: 142 71% 45%;
+    --success-foreground: 0 0% 100%;
+    --warning: 38 92% 50%;
+    --warning-foreground: 225 40% 7%;
+    --info: 217 91% 60%;
+    --border: 225 30% 24%;
+    --input: 225 30% 24%;
+    --ring: 160 84% 39%;
+    --radius: 8px;
+  }
+}
+
+@layer base {
+  * {
+    @apply border-border;
+  }
+  body {
+    @apply bg-background text-foreground;
+  }
+}
+
+.stat-number {
+  font-family: var(--font-mono, ui-monospace, monospace);
+  font-weight: 700;
+  font-variant-numeric: tabular-nums;
+  letter-spacing: -0.02em;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+    scroll-behavior: auto !important;
+  }
+}
+
+::-webkit-scrollbar {
+  width: 6px;
+}
+::-webkit-scrollbar-track {
+  background: transparent;
+}
+::-webkit-scrollbar-thumb {
+  background: hsl(var(--muted));
+  border-radius: 10px;
+}
+::-webkit-scrollbar-thumb:hover {
+  background: hsl(var(--muted-foreground));
+}

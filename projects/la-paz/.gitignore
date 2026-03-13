@@ -1,0 +1,30 @@
+# Environment
+.env
+.venv/
+__pycache__/
+*.pyc
+
+# Data (수집 데이터는 Supabase에 저장)
+data/raw/
+data/processed/
+
+# Logs
+logs/
+
+# Vector store backup
+ai/vectorstore/
+
+# Evaluation results (재생성 가능)
+evaluation/
+
+# OS
+.DS_Store
+Thumbs.db
+
+# IDE
+.idea/
+.vscode/
+*.swp
+
+# Supabase temp
+supabase/.temp/

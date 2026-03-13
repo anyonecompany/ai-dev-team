@@ -1,0 +1,176 @@
+"""La Paz — Streamlit 축구 AI 채팅 프론트엔드."""
+
+import uuid
+
+import requests
+import streamlit as st
+
+API_BASE = "http://localhost:8000"
+
+# ── 페이지 설정 ──────────────────────────────────
+st.set_page_config(
+    page_title="La Paz - 축구 AI",
+    page_icon="⚽",
+    layout="centered",
+)
+
+# ── 커스텀 스타일 ────────────────────────────────
+st.markdown("""
+<style>
+    .stApp { background-color: #0a1628; }
+    header[data-testid="stHeader"] { background-color: #0a1628; }
+    .main-title {
+        text-align: center;
+        color: #4ade80;
+        font-size: 2.4rem;
+        font-weight: 800;
+        margin-bottom: 0;
+    }
+    .sub-title {
+        text-align: center;
+        color: #94a3b8;
+        font-size: 1rem;
+        margin-bottom: 1.5rem;
+    }
+    .source-chip {
+        display: inline-block;
+        background: #1e293b;
+        border: 1px solid #334155;
+        border-radius: 12px;
+        padding: 2px 10px;
+        margin: 2px 4px;
+        font-size: 0.78rem;
+        color: #94a3b8;
+    }
+    .latency-badge {
+        font-size: 0.75rem;
+        color: #64748b;
+    }
+</style>
+""", unsafe_allow_html=True)
+
+# ── 헤더 ────────────────────────────────────────
+st.markdown('<p class="main-title">⚽ La Paz</p>', unsafe_allow_html=True)
+st.markdown('<p class="sub-title">축구 AI 어시스턴트 — 5대 리그 RAG 채팅</p>', unsafe_allow_html=True)
+
+# ── 세션 상태 초기화 ────────────────────────────
+if "messages" not in st.session_state:
+    st.session_state.messages = []
+if "session_id" not in st.session_state:
+    st.session_state.session_id = str(uuid.uuid4())
+
+# ── 사이드바 ────────────────────────────────────
+with st.sidebar:
+    st.markdown("### 설정")
+    top_k = st.slider("참조 문서 수 (top_k)", min_value=1, max_value=20, value=5)
+    if st.button("대화 초기화"):
+        st.session_state.messages = []
+        st.session_state.session_id = str(uuid.uuid4())
+        st.rerun()
+    st.divider()
+    st.markdown("### 예시 질문")
+    examples = [
+        "손흥민 이번 시즌 성적 알려줘",
+        "프리미어리그 순위 어떻게 돼?",
+        "메시 vs 호날두 통산 기록 비교",
+        "오늘 축구 경기 결과 알려줘",
+    ]
+    for ex in examples:
+        if st.button(ex, key=f"ex_{ex}"):
+            st.session_state._pending_example = ex
+            st.rerun()
+
+# ── 대화 히스토리 렌더링 ────────────────────────
+for msg in st.session_state.messages:
+    with st.chat_message(msg["role"], avatar="⚽" if msg["role"] == "assistant" else None):
+        st.markdown(msg["content"])
+        if msg["role"] == "assistant" and msg.get("sources"):
+            with st.expander("참조 소스", expanded=False):
+                for src in msg["sources"]:
+                    sim = src.get("similarity", 0)
+                    sim_str = f" ({sim:.0%})" if sim > 0 else ""
+                    st.markdown(
+                        f'<span class="source-chip">{src.get("doc_type", "")} | '
+                        f'{src.get("title", "제목 없음")}{sim_str}</span>',
+                        unsafe_allow_html=True,
+                    )
+            if msg.get("meta"):
+                meta = msg["meta"]
+                st.markdown(
+                    f'<span class="latency-badge">'
+                    f'{meta.get("model", "")} · {meta.get("latency_ms", 0):.0f}ms</span>',
+                    unsafe_allow_html=True,
+                )
+
+
+def _send_message(user_input: str) -> None:
+    """사용자 메시지를 API로 전송하고 응답을 히스토리에 추가."""
+    st.session_state.messages.append({"role": "user", "content": user_input})
+
+    with st.chat_message("user"):
+        st.markdown(user_input)
+
+    with st.chat_message("assistant", avatar="⚽"):
+        with st.spinner("분석 중..."):
+            try:
+                resp = requests.post(
+                    f"{API_BASE}/chat",
+                    json={
+                        "message": user_input,
+                        "session_id": st.session_state.session_id,
+                        "top_k": top_k,
+                    },
+                    timeout=60,
+                )
+                resp.raise_for_status()
+                data = resp.json()
+
+                answer = data["answer"]
+                sources = data.get("sources", [])
+                model = data.get("model", "")
+                latency = data.get("latency_ms", 0)
+
+                st.markdown(answer)
+
+                if sources:
+                    with st.expander("참조 소스", expanded=False):
+                        for src in sources:
+                            sim = src.get("similarity", 0)
+                            sim_str = f" ({sim:.0%})" if sim > 0 else ""
+                            st.markdown(
+                                f'<span class="source-chip">{src.get("doc_type", "")} | '
+                                f'{src.get("title", "제목 없음")}{sim_str}</span>',
+                                unsafe_allow_html=True,
+                            )
+
+                st.markdown(
+                    f'<span class="latency-badge">{model} · {latency:.0f}ms</span>',
+                    unsafe_allow_html=True,
+                )
+
+                st.session_state.messages.append({
+                    "role": "assistant",
+                    "content": answer,
+                    "sources": sources,
+                    "meta": {"model": model, "latency_ms": latency},
+                })
+
+            except requests.ConnectionError:
+                err = "백엔드 서버에 연결할 수 없습니다. `localhost:8000` 이 실행 중인지 확인하세요."
+                st.error(err)
+                st.session_state.messages.append({"role": "assistant", "content": err})
+            except requests.HTTPError as e:
+                err = f"API 오류: {e.response.status_code} — {e.response.text[:300]}"
+                st.error(err)
+                st.session_state.messages.append({"role": "assistant", "content": err})
+
+
+# ── 예시 질문 처리 ──────────────────────────────
+if hasattr(st.session_state, "_pending_example"):
+    example = st.session_state._pending_example
+    del st.session_state._pending_example
+    _send_message(example)
+
+# ── 채팅 입력 ───────────────────────────────────
+if user_input := st.chat_input("축구에 대해 무엇이든 물어보세요!"):
+    _send_message(user_input)
