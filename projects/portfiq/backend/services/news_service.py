@@ -78,6 +78,7 @@ RSS_FEEDS = [url for url, _ in RSS_FEEDS_EN]
 # ──────────────────────────────────────────────
 
 _news_cache: list[dict] = []
+_rss_ever_succeeded = False  # True once at least one RSS collection succeeds
 _translation_lock = threading.Lock()
 _translating = False  # True while background translation is running
 
@@ -97,6 +98,7 @@ def _build_mock_news() -> list[FeedItem]:
     return [
         FeedItem(
             id="news-001",
+            is_mock=True,
             headline="FOMC 금리 동결 결정, 시장 안도 랠리 예상",
             impact_reason=(
                 "연준이 기준금리를 5.25~5.50%에서 동결했습니다.\n"
@@ -115,6 +117,7 @@ def _build_mock_news() -> list[FeedItem]:
         ),
         FeedItem(
             id="news-002",
+            is_mock=True,
             headline="NVIDIA 분기 실적 발표, 매출 260% 급증",
             impact_reason=(
                 "NVIDIA가 AI 칩 수요 폭증에 힘입어 분기 매출 $26B을 기록했습니다.\n"
@@ -133,6 +136,7 @@ def _build_mock_news() -> list[FeedItem]:
         ),
         FeedItem(
             id="news-003",
+            is_mock=True,
             headline="SCHD 분기 배당 $0.72 발표, 전년 대비 8% 증가",
             impact_reason=(
                 "SCHD가 분기당 $0.72 배당을 확정하며 배당 성장세를 이어갔습니다.\n"
@@ -149,6 +153,7 @@ def _build_mock_news() -> list[FeedItem]:
         ),
         FeedItem(
             id="news-004",
+            is_mock=True,
             headline="ARK Invest, Tesla 목표가 $350 유지하며 추가 매수",
             impact_reason=(
                 "캐시 우드가 이끄는 ARK Invest가 Tesla 주식을 5일 연속 매수했습니다.\n"
@@ -165,6 +170,7 @@ def _build_mock_news() -> list[FeedItem]:
         ),
         FeedItem(
             id="news-005",
+            is_mock=True,
             headline="국제유가 WTI $85 돌파, OPEC+ 감산 연장 영향",
             impact_reason=(
                 "OPEC+가 2분기까지 일일 200만 배럴 감산을 연장하기로 합의했습니다.\n"
@@ -182,6 +188,7 @@ def _build_mock_news() -> list[FeedItem]:
         ),
         FeedItem(
             id="news-006",
+            is_mock=True,
             headline="미 국채 10년물 금리 4.1%로 하락, 채권 랠리 시작",
             impact_reason=(
                 "경기 둔화 우려로 미 국채 10년물 금리가 4.1%까지 떨어졌습니다.\n"
@@ -199,6 +206,7 @@ def _build_mock_news() -> list[FeedItem]:
         ),
         FeedItem(
             id="news-007",
+            is_mock=True,
             headline="골드만삭스, 2026년 S&P 500 목표치 6,200 제시",
             impact_reason=(
                 "골드만삭스가 S&P 500 연말 목표치를 기존 5,800에서 6,200으로 상향했습니다.\n"
@@ -217,6 +225,7 @@ def _build_mock_news() -> list[FeedItem]:
         ),
         FeedItem(
             id="news-008",
+            is_mock=True,
             headline="중국 AI 스타트업 DeepSeek, 미국 반도체 수입 규제 우회 논란",
             impact_reason=(
                 "DeepSeek가 미국 반도체 수출 규제를 우회해 고성능 칩을 확보했다는 보도가 나왔습니다.\n"
@@ -234,6 +243,7 @@ def _build_mock_news() -> list[FeedItem]:
         ),
         FeedItem(
             id="news-009",
+            is_mock=True,
             headline="금값 사상 최고 $2,400 돌파, 안전자산 선호 강화",
             impact_reason=(
                 "지정학적 리스크와 달러 약세로 금 가격이 사상 최고치를 경신했습니다.\n"
@@ -251,6 +261,7 @@ def _build_mock_news() -> list[FeedItem]:
         ),
         FeedItem(
             id="news-010",
+            is_mock=True,
             headline="JP모건, JEPI 운용자산 $40B 돌파 발표",
             impact_reason=(
                 "JEPI가 출시 4년 만에 운용자산 $40B을 돌파하며 인컴 ETF 시장 1위를 굳혔습니다.\n"
@@ -407,42 +418,82 @@ async def _collect_rss_fast() -> list[dict]:
 
     Returns immediately with English headlines. Translation happens later
     in background via _translate_cached_articles().
+
+    각 피드별로 최대 2회 재시도(3초 간격). 일부 피드만 성공해도 결과를 반환한다.
     """
+    global _rss_ever_succeeded
     articles: list[dict] = []
 
-    async with httpx.AsyncClient(timeout=8.0) as client:
+    feed_success_count = 0
+    feed_fail_count = 0
+
+    async with httpx.AsyncClient(timeout=15.0) as client:
         for feed_url, source_name in RSS_FEEDS_EN:
-            try:
-                resp = await client.get(feed_url, headers={
-                    "User-Agent": "Mozilla/5.0 (compatible; Portfiq/1.0)"
-                })
-                resp.raise_for_status()
-                feed = await asyncio.to_thread(feedparser.parse, resp.text)
-
-                for entry in feed.entries[:10]:
-                    published = entry.get("published_parsed")
-                    pub_dt = (
-                        datetime(
-                            published[0], published[1], published[2],
-                            published[3], published[4], published[5],
-                            tzinfo=timezone.utc,
-                        )
-                        if published
-                        else datetime.now(timezone.utc)
-                    )
-
-                    articles.append({
-                        "headline_en": entry.get("title", ""),
-                        "headline": entry.get("title", ""),  # English until translated
-                        "summary": entry.get("summary", ""),
-                        "source": source_name,
-                        "source_url": entry.get("link", ""),
-                        "published_at": pub_dt.isoformat(),
-                        "translated": False,
+            success = False
+            for attempt in range(3):  # 최초 1회 + 재시도 2회
+                try:
+                    resp = await client.get(feed_url, headers={
+                        "User-Agent": "Mozilla/5.0 (compatible; Portfiq/1.0)"
                     })
-            except Exception as e:
-                logger.warning("RSS 수집 실패 (%s): %s", feed_url, e)
+                    resp.raise_for_status()
+                    feed = await asyncio.to_thread(feedparser.parse, resp.text)
 
+                    for entry in feed.entries[:10]:
+                        published = entry.get("published_parsed")
+                        pub_dt = (
+                            datetime(
+                                published[0], published[1], published[2],
+                                published[3], published[4], published[5],
+                                tzinfo=timezone.utc,
+                            )
+                            if published
+                            else datetime.now(timezone.utc)
+                        )
+
+                        articles.append({
+                            "headline_en": entry.get("title", ""),
+                            "headline": entry.get("title", ""),
+                            "summary": entry.get("summary", ""),
+                            "source": source_name,
+                            "source_url": entry.get("link", ""),
+                            "published_at": pub_dt.isoformat(),
+                            "translated": False,
+                        })
+                    success = True
+                    feed_success_count += 1
+                    break
+                except httpx.TimeoutException as e:
+                    logger.error(
+                        "RSS 타임아웃 (%s, attempt %d/3): %s",
+                        source_name, attempt + 1, e,
+                    )
+                    if attempt < 2:
+                        await asyncio.sleep(3)
+                except httpx.HTTPStatusError as e:
+                    logger.error(
+                        "RSS HTTP 에러 (%s, attempt %d/3): status=%d, %s",
+                        source_name, attempt + 1, e.response.status_code, e,
+                    )
+                    if attempt < 2:
+                        await asyncio.sleep(3)
+                except Exception as e:
+                    logger.error(
+                        "RSS 수집 실패 (%s, attempt %d/3): %s: %s",
+                        source_name, attempt + 1, type(e).__name__, e,
+                    )
+                    if attempt < 2:
+                        await asyncio.sleep(3)
+
+            if success:
+                _rss_ever_succeeded = True
+            else:
+                feed_fail_count += 1
+                logger.warning("RSS 피드 최종 실패: %s (%s)", source_name, feed_url)
+
+    logger.info(
+        "RSS 수집 결과: 성공=%d/%d, 실패=%d, 기사=%d건",
+        feed_success_count, len(RSS_FEEDS_EN), feed_fail_count, len(articles),
+    )
     return articles
 
 
@@ -558,13 +609,33 @@ async def fetch_and_store_news() -> int:
     Returns:
         수집/저장된 뉴스 건수.
     """
-    global _news_cache
+    global _news_cache, _rss_ever_succeeded
 
     try:
         raw = await fetch_rss_news()
         if not raw:
-            logger.info("RSS에서 수집된 뉴스 없음, 캐시 유지")
-            return 0
+            logger.warning("모든 RSS 피드 실패 — mock 뉴스로 캐시 갱신")
+            mock_items = _build_mock_news()
+            _news_cache = [
+                {
+                    "headline": m.headline,
+                    "headline_en": m.headline,
+                    "summary": m.impact_reason,
+                    "source": m.source or "",
+                    "source_url": m.source_url or "",
+                    "published_at": m.published_at or "",
+                    "translated": True,
+                    "is_mock": True,
+                    "impacts": [
+                        {"etf_ticker": imp.etf_ticker, "level": imp.level}
+                        for imp in m.impacts
+                    ],
+                }
+                for m in mock_items
+            ]
+            return len(_news_cache)
+
+        _rss_ever_succeeded = True
 
         unique = _deduplicate(raw)
         logger.info("RSS 수집 %d건, 중복 제거 후 %d건", len(raw), len(unique))
@@ -777,15 +848,18 @@ class NewsService:
                 set_cached(cache_key, result)
                 return result
 
-        # 최후 fallback: mock data (always fresh due to dynamic timestamps)
-        mock = _build_mock_news()
-        result = sorted(
-            [m for m in mock if _is_within_24h(m.published_at)],
-            key=lambda n: n.published_at or "",
-            reverse=True,
-        )
-        set_cached(cache_key, result)
-        return result
+        # 최후 fallback: RSS 수집 성공한 적이 없을 때만 mock 사용
+        if not _rss_ever_succeeded:
+            mock = _build_mock_news()
+            result = sorted(
+                [m for m in mock if _is_within_24h(m.published_at)],
+                key=lambda n: n.published_at or "",
+                reverse=True,
+            )
+            set_cached(cache_key, result)
+            return result
+
+        return []
 
     def _build_feed_items_from_cache(self, articles: list[dict]) -> list[FeedItem]:
         """캐시된 뉴스 기사 목록을 FeedItem 리스트로 변환한다.
@@ -938,9 +1012,12 @@ class NewsService:
             if items:
                 return items
 
-        # Fallback to mock
-        mock = _build_mock_news()
-        return sorted(mock, key=lambda n: n.published_at or "", reverse=True)
+        # RSS 수집 성공한 적이 없을 때만 mock 사용
+        if not _rss_ever_succeeded:
+            mock = _build_mock_news()
+            return sorted(mock, key=lambda n: n.published_at or "", reverse=True)
+
+        return []
 
     def _build_feed_items_unfiltered(self, articles: list[dict]) -> list[FeedItem]:
         """Build FeedItem list from articles WITHOUT the 24-hour filter.

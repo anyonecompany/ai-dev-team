@@ -1,6 +1,7 @@
 import 'package:flutter/foundation.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:hive_flutter/hive_flutter.dart';
+import '../../config/constants.dart';
 import '../../shared/services/api_client.dart';
 import 'etf_models.dart';
 
@@ -62,7 +63,7 @@ class MyEtfNotifier extends StateNotifier<MyEtfState> {
       final box = Hive.box('settings');
       final tickers = (box.get('registered_etfs') as List<dynamic>?)
               ?.cast<String>() ??
-          ['QQQ', 'VOO', 'SCHD']; // 기본 3개
+          kDefaultEtfs; // 기본 3개
 
       // 1) ETF 상세 정보를 개별 조회
       final etfs = <EtfInfo>[];

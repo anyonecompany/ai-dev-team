@@ -72,6 +72,7 @@ class FeedItem(BaseModel):
     source_url: str | None = None
     published_at: str | None = None
     impacts: list[ETFImpact] = Field(default_factory=list)
+    is_mock: bool = False
 
 
 # ──────────────────────────────────────────────

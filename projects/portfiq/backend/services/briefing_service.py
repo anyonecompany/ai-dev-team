@@ -140,10 +140,16 @@ def _build_briefing_from_ai(data: dict, briefing_type: str) -> BriefingResponse:
 # Mock briefing data (fallback)
 # ──────────────────────────────────────────────
 
+def _today_title(suffix: str) -> str:
+    """오늘 날짜로 동적 브리핑 제목 생성."""
+    now = datetime.now(timezone.utc)
+    return f"{now.month}월 {now.day}일 {suffix}"
+
+
 _MOCK_MORNING = BriefingResponse(
     type="morning",
     is_mock=True,
-    title="3월 10일 모닝 브리핑",
+    title="모닝 브리핑",  # get 시 동적으로 덮어씀
     summary="FOMC 금리 동결 이후 기술주 반등세가 이어지고 있습니다. NVIDIA 실적 호조로 반도체 섹터 강세, 배당주는 보합세를 유지하고 있습니다.",
     etf_changes=[
         ETFChange(ticker="QQQ", change_pct=1.2, direction="up", cause="FOMC 금리 동결 + 기술주 반등"),
@@ -164,7 +170,7 @@ _MOCK_MORNING = BriefingResponse(
 _MOCK_NIGHT = BriefingResponse(
     type="night",
     is_mock=True,
-    title="3월 10일 나이트 체크포인트",
+    title="나이트 체크포인트",  # get 시 동적으로 덮어씀
     summary="오늘 하루 기술주 중심 강세 마감. 야간에 발표될 3가지 이벤트에 주목하세요.",
     etf_changes=[
         ETFChange(ticker="QQQ", change_pct=1.5, direction="up", cause="기술주 매수세 지속"),
@@ -179,8 +185,64 @@ _MOCK_NIGHT = BriefingResponse(
     generated_at=datetime.now(timezone.utc).isoformat(),
 )
 
-# Default ETF list for mock/fallback
-_DEFAULT_ETFS = ["QQQ", "VOO", "SCHD", "SOXL", "ARKK", "TLT"]
+_FALLBACK_ETFS = ["QQQ", "VOO", "SCHD", "SOXL", "ARKK", "TLT"]
+
+
+async def _get_dynamic_etf_list() -> list[str]:
+    """Supabase 또는 etf_master.json에서 전체 등록 ETF 목록을 조회한다.
+
+    Returns:
+        ETF 티커 리스트. 실패 시 fallback 리스트.
+    """
+    # 1. Supabase에서 조회
+    try:
+        from services.supabase_client import get_supabase
+        sb = get_supabase()
+        resp = sb.table("etf_master").select("ticker").execute()
+        if resp.data:
+            tickers = [row["ticker"] for row in resp.data if row.get("ticker")]
+            if tickers:
+                return tickers
+    except Exception as e:
+        logger.warning("Supabase ETF 목록 조회 실패: %s", e)
+
+    # 2. etf_master.json에서 로드
+    try:
+        from pathlib import Path
+        json_path = Path(__file__).resolve().parent.parent / "seeds" / "etf_master.json"
+        if json_path.exists():
+            with open(json_path, encoding="utf-8") as f:
+                data = json.load(f)
+            tickers = [etf["ticker"] for etf in data if etf.get("ticker")]
+            if tickers:
+                return tickers
+    except Exception as e:
+        logger.warning("etf_master.json 로드 실패: %s", e)
+
+    return _FALLBACK_ETFS
+
+
+def _get_news_summary() -> str:
+    """뉴스 캐시에서 최근 헤드라인 10개를 가져와 프롬프트용 요약을 생성한다.
+
+    Returns:
+        뉴스 헤드라인 문자열. 뉴스 0건이면 안내 문구 반환.
+    """
+    from services.news_service import _news_cache
+
+    if not _news_cache:
+        return "최근 수집된 뉴스 없음"
+
+    headlines: list[str] = []
+    for article in _news_cache[:10]:
+        headline = article.get("headline", "")
+        if headline:
+            headlines.append(headline)
+
+    if not headlines:
+        return "최근 수집된 뉴스 없음"
+
+    return ", ".join(headlines)
 
 
 class BriefingService:
@@ -216,7 +278,10 @@ class BriefingService:
 
         logger.info("브리핑 미생성 — mock morning briefing 즉시 반환")
         return _MOCK_MORNING.model_copy(
-            update={"generated_at": datetime.now(timezone.utc).isoformat()}
+            update={
+                "generated_at": datetime.now(timezone.utc).isoformat(),
+                "title": _today_title("모닝 브리핑"),
+            }
         )
 
     async def get_night_briefing(self, device_id: str) -> BriefingResponse:
@@ -249,7 +314,10 @@ class BriefingService:
 
         logger.info("브리핑 미생성 — mock night briefing 즉시 반환")
         return _MOCK_NIGHT.model_copy(
-            update={"generated_at": datetime.now(timezone.utc).isoformat()}
+            update={
+                "generated_at": datetime.now(timezone.utc).isoformat(),
+                "title": _today_title("나이트 체크포인트"),
+            }
         )
 
     async def generate_briefing(self, device_id: str) -> BriefingResponse:
@@ -284,11 +352,8 @@ class BriefingService:
                 update={"generated_at": datetime.now(timezone.utc).isoformat(), "is_mock": True}
             )
 
-        etf_list = ", ".join(_DEFAULT_ETFS)
-        news_summary = (
-            "FOMC 금리 동결, NVIDIA 분기 실적 매출 260% 급증, "
-            "국제유가 WTI $85 돌파, 미 국채 10년물 금리 4.1%로 하락"
-        )
+        etf_list = ", ".join(await _get_dynamic_etf_list())
+        news_summary = _get_news_summary()
 
         prompt = MORNING_PROMPT.format(etf_list=etf_list, news_summary=news_summary)
         data = await _call_gemini(prompt)
@@ -324,11 +389,8 @@ class BriefingService:
                 update={"generated_at": datetime.now(timezone.utc).isoformat(), "is_mock": True}
             )
 
-        etf_list = ", ".join(_DEFAULT_ETFS)
-        news_summary = (
-            "오늘 밤 CPI 발표 예정, 연준 이사 월러 연설 예정, "
-            "유럽중앙은행 금리 결정 대기 중"
-        )
+        etf_list = ", ".join(await _get_dynamic_etf_list())
+        news_summary = _get_news_summary()
 
         prompt = NIGHT_PROMPT.format(etf_list=etf_list, news_summary=news_summary)
         data = await _call_gemini(prompt)

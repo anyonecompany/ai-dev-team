@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:hive_flutter/hive_flutter.dart';
+import '../../config/constants.dart';
 import '../../config/theme.dart';
 import '../../shared/tracking/event_tracker.dart';
 import '../../shared/widgets/glass_card.dart';
@@ -41,7 +42,7 @@ class _SettingsScreenState extends ConsumerState<SettingsScreen> {
     final stored = box.get('registered_etfs');
     final tickers = (stored is List)
         ? stored.cast<String>()
-        : const ['QQQ', 'VOO', 'SCHD'];
+        : kDefaultEtfs;
     setState(() {
       _registeredEtfs = tickers
           .map((t) => _RegisteredEtf(ticker: t, name: t))
@@ -529,14 +530,14 @@ class _SettingsScreenState extends ConsumerState<SettingsScreen> {
 
 4. 제3자 제공
 - Supabase (데이터 저장): 미국 소재
-- Anthropic Claude API (AI 분석): 미국 소재
+- Google Gemini API (AI 분석): 미국 소재
 - 뉴스 분석 시 개인정보는 전달되지 않습니다
 
 5. 개인정보 삭제 요청
 앱 설정에서 데이터 초기화 또는 support@portfiq.com으로 요청
 
 6. AI 서비스 고지
-본 앱은 AI(Claude)를 활용하여 뉴스를 분석합니다.
+본 앱은 AI(Google Gemini)를 활용하여 뉴스를 분석합니다.
 AI 분석 결과는 참고 정보이며 투자 조언이 아닙니다.
 ''';
 
@@ -558,7 +559,7 @@ AI 분석 결과는 참고 정보이며 투자 조언이 아닙니다.
             ),
             SizedBox(height: 8),
             Text(
-              '본 앱의 뉴스 분석 및 브리핑은 AI(Claude)가 생성한 참고 정보이며, '
+              '본 앱의 뉴스 분석 및 브리핑은 AI(Google Gemini)가 생성한 참고 정보이며, '
               '투자 조언이 아닙니다.',
               style: TextStyle(
                 fontSize: 12,

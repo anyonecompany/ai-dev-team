@@ -110,15 +110,54 @@ kill $PREVIEW_PID 2>/dev/null; wait $PREVIEW_PID 2>/dev/null
 - **FAIL**: 서버 기동 실패, 헬스체크 실패, 또는 CRUD 중 하나라도 에러 응답 (4xx/5xx)
 - **SKIP**: 해당 유형 없음 (예: 프론트엔드 전용 프로젝트에서 백엔드 스모크 테스트)
 
-### 5. 결과 종합
+### 5. 실데이터 검증 (출시 프로젝트 필수)
+
+**정적 검증과 스모크 테스트만으로는 QA가 아니다. 사용자가 보는 화면에 진짜 데이터가 나오는지 검증해야 한다.**
+
+#### 5-1. 하드코딩/Mock 감지
+```bash
+# API 응답에 is_mock, mock, sample 등 플래그가 있으면 FAIL
+# 고정 문자열이 시간이 지나도 변하지 않으면 FAIL
+# grep으로 하드코딩 문자열 검색 (mock 함수 외에 사용되면 FAIL)
+```
+
+#### 5-2. API 실데이터 검증
+서버 기동 후 주요 API를 호출하여 응답이 실제 데이터인지 확인:
+- 가격 API → 고정값(예: 487.52)이 매번 동일하면 FAIL
+- 뉴스/피드 API → items가 0이거나 mock 뉴스만 있으면 FAIL
+- 브리핑 API → is_mock=true이면 FAIL, 고정 제목이면 FAIL
+- 시간 관련 데이터 → 날짜가 오늘이 아니면 FAIL
+
+#### 5-3. 사용자 플로우 검증
+- 앱/프론트가 production API에 연결되는지 (localhost 연결 = FAIL)
+- 신규 사용자 첫 화면에 유의미한 데이터가 보이는지
+- ETF 미등록 상태에서도 뉴스/브리핑이 보이는지
+
+#### 5-4. 빈 상태 / 에러 상태 검증
+- 데이터 없을 때: 무한 로딩 = FAIL, 빈 화면 = FAIL, 안내 메시지 = PASS
+- 서버 꺼진 상태에서 앱: 크래시 = FAIL, 에러 메시지 = PASS
+- API 타임아웃 시: 무한 대기 = FAIL
+
+#### 5-5. Flavor / 환경 검증
+- main.dart가 Flavor.production인지 (Flavor.local = FAIL)
+- .env 파일이 커밋에 포함되지 않았는지
+- 디버그 print문이 릴리즈 코드에 있는지
+
+#### 실데이터 검증 판정 기준:
+- **PASS**: 모든 API가 실데이터 반환 + 하드코딩 없음 + production 연결
+- **FAIL**: 하나라도 mock/하드코딩 노출, localhost 연결, 무한 로딩
+- **SKIP**: API가 없는 프로젝트 (정적 사이트 등)
+
+### 6. 결과 종합
 각 항목별 PASS/FAIL/SKIP 판정:
 - 린트
 - 타입 체크
 - 단위 테스트
 - 빌드
-- **서버 스모크 테스트** (신규)
+- 서버 스모크 테스트
+- **실데이터 검증** (신규 — 출시 프로젝트 필수)
 
-### 6. 연동 (Python으로 실행)
+### 7. 연동 (Python으로 실행)
 ```python
 import asyncio, sys, os
 sys.path.insert(0, os.path.expanduser("~/ai-dev-team"))
@@ -131,5 +170,5 @@ asyncio.run(notify_qa_result("{project_name}", {passed}, "{details}"))
 asyncio.run(sync_project_qa("{project_name}", {results_dict}, "{details}"))
 ```
 
-### 7. 리포트 저장
+### 8. 리포트 저장
 `.claude/reports/qa-{project-name}-{YYYYMMDD-HHmm}.md`

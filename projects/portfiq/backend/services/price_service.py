@@ -1,7 +1,7 @@
 """ETF 실시간 가격 서비스 — yfinance 기반.
 
 yfinance 호출은 동기 I/O이므로 asyncio.to_thread()로 스레드 풀에서 실행하여
-이벤트 루프 블로킹을 방지한다. 5초 타임아웃을 적용한다.
+이벤트 루프 블로킹을 방지한다. 10초 타임아웃을 적용한다.
 """
 
 import asyncio
@@ -13,7 +13,7 @@ logger = logging.getLogger(__name__)
 # In-memory price cache (5분 TTL — 가격은 자주 변하므로 15분보다 짧게)
 _price_cache: dict[str, tuple[float, dict]] = {}  # ticker -> (expires_at, data)
 _PRICE_TTL = 300  # 5분
-_YFINANCE_TIMEOUT = 5  # yfinance 호출 타임아웃 (초) — 10s → 5s로 단축
+_YFINANCE_TIMEOUT = 10  # yfinance 호출 타임아웃 (초) — cold-start 대응 10s
 
 # Stale cache: 실패 시 이전 데이터를 반환하기 위한 장기 캐시 (24시간)
 _stale_cache: dict[str, dict] = {}  # ticker -> last known good data
@@ -70,6 +70,7 @@ def _fetch_price_sync(ticker: str) -> dict:
         "change_pct": change_pct,
         "change_amt": change_amt,
         "currency": "USD",
+        "is_mock": False,
     }
 
 
@@ -125,7 +126,7 @@ def _get_mock_price(ticker: str) -> dict:
         "NVDA": {"price": 892.50, "change_pct": 2.8, "change_amt": 24.30},
     }
     data = mock_prices.get(ticker.upper(), {"price": 100.00, "change_pct": 0.0, "change_amt": 0.0})
-    return {"ticker": ticker.upper(), **data, "currency": "USD"}
+    return {"ticker": ticker.upper(), **data, "currency": "USD", "is_mock": True}
 
 
 async def get_batch_prices(tickers: list[str]) -> list[dict]:
