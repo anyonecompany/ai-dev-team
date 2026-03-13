@@ -113,7 +113,48 @@ class _BriefingDetailScreenState extends State<BriefingDetailScreen> {
           children: [
             SingleChildScrollView(
               padding: const EdgeInsets.all(PortfiqSpacing.space20),
-              child: isMorning ? _buildMorningContent(data) : _buildNightContent(data),
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  if (data.isMock)
+                    Padding(
+                      padding: const EdgeInsets.only(bottom: PortfiqSpacing.space16),
+                      child: Container(
+                        width: double.infinity,
+                        padding: const EdgeInsets.symmetric(
+                          horizontal: PortfiqSpacing.space12,
+                          vertical: PortfiqSpacing.space8,
+                        ),
+                        decoration: BoxDecoration(
+                          color: const Color(0xFFF59E0B).withAlpha(26),
+                          borderRadius: BorderRadius.circular(8),
+                          border: Border.all(
+                            color: const Color(0xFFF59E0B).withAlpha(77),
+                          ),
+                        ),
+                        child: const Row(
+                          children: [
+                            Icon(
+                              Icons.auto_awesome,
+                              size: 14,
+                              color: Color(0xFFF59E0B),
+                            ),
+                            SizedBox(width: 6),
+                            Text(
+                              'AI 분석 준비 중 — 샘플 데이터입니다',
+                              style: TextStyle(
+                                fontSize: 12,
+                                fontWeight: FontWeight.w600,
+                                color: Color(0xFFF59E0B),
+                              ),
+                            ),
+                          ],
+                        ),
+                      ),
+                    ),
+                  isMorning ? _buildMorningContent(data) : _buildNightContent(data),
+                ],
+              ),
             ),
 
             // Offscreen share card for capture

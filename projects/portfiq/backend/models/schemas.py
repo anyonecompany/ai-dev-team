@@ -94,6 +94,7 @@ class BriefingResponse(BaseModel):
     etf_changes: list[ETFChange] = Field(default_factory=list)
     checkpoints: list[str] = Field(default_factory=list)
     generated_at: str | None = None
+    is_mock: bool = False
 
 
 # ──────────────────────────────────────────────

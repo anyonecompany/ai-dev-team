@@ -142,6 +142,7 @@ def _build_briefing_from_ai(data: dict, briefing_type: str) -> BriefingResponse:
 
 _MOCK_MORNING = BriefingResponse(
     type="morning",
+    is_mock=True,
     title="3월 10일 모닝 브리핑",
     summary="FOMC 금리 동결 이후 기술주 반등세가 이어지고 있습니다. NVIDIA 실적 호조로 반도체 섹터 강세, 배당주는 보합세를 유지하고 있습니다.",
     etf_changes=[
@@ -162,6 +163,7 @@ _MOCK_MORNING = BriefingResponse(
 
 _MOCK_NIGHT = BriefingResponse(
     type="night",
+    is_mock=True,
     title="3월 10일 나이트 체크포인트",
     summary="오늘 하루 기술주 중심 강세 마감. 야간에 발표될 3가지 이벤트에 주목하세요.",
     etf_changes=[
@@ -279,7 +281,7 @@ class BriefingService:
         if not settings.GEMINI_API_KEY:
             logger.warning("GEMINI_API_KEY 미설정 — mock 데이터 반환")
             return _MOCK_MORNING.model_copy(
-                update={"generated_at": datetime.now(timezone.utc).isoformat()}
+                update={"generated_at": datetime.now(timezone.utc).isoformat(), "is_mock": True}
             )
 
         etf_list = ", ".join(_DEFAULT_ETFS)
@@ -294,7 +296,7 @@ class BriefingService:
         if data is None:
             logger.warning("Gemini API 실패 — mock morning briefing 반환")
             return _MOCK_MORNING.model_copy(
-                update={"generated_at": datetime.now(timezone.utc).isoformat()}
+                update={"generated_at": datetime.now(timezone.utc).isoformat(), "is_mock": True}
             )
 
         result = _build_briefing_from_ai(data, "morning")
@@ -319,7 +321,7 @@ class BriefingService:
         if not settings.GEMINI_API_KEY:
             logger.warning("GEMINI_API_KEY 미설정 — mock 데이터 반환")
             return _MOCK_NIGHT.model_copy(
-                update={"generated_at": datetime.now(timezone.utc).isoformat()}
+                update={"generated_at": datetime.now(timezone.utc).isoformat(), "is_mock": True}
             )
 
         etf_list = ", ".join(_DEFAULT_ETFS)
@@ -334,7 +336,7 @@ class BriefingService:
         if data is None:
             logger.warning("Gemini API 실패 — mock night briefing 반환")
             return _MOCK_NIGHT.model_copy(
-                update={"generated_at": datetime.now(timezone.utc).isoformat()}
+                update={"generated_at": datetime.now(timezone.utc).isoformat(), "is_mock": True}
             )
 
         result = _build_briefing_from_ai(data, "night")

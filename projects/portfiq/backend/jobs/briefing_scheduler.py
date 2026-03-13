@@ -55,7 +55,7 @@ def start_scheduler() -> AsyncIOScheduler:
     # 2. 아침 브리핑: 매일 설정된 시간 KST (UTC로 변환: KST - 9)
     morning_utc_hour = (settings.BRIEFING_MORNING_HOUR - 9) % 24
     scheduler.add_job(
-        _run_morning_briefing,
+        _run_in_thread(_run_morning_briefing),
         CronTrigger(hour=morning_utc_hour, minute=settings.BRIEFING_MORNING_MINUTE),
         id="morning_briefing",
         name="아침 브리핑 생성",
@@ -65,7 +65,7 @@ def start_scheduler() -> AsyncIOScheduler:
     # 3. 밤 체크포인트: 매일 설정된 시간 KST (UTC로 변환: KST - 9)
     night_utc_hour = (settings.BRIEFING_NIGHT_HOUR - 9) % 24
     scheduler.add_job(
-        _run_night_briefing,
+        _run_in_thread(_run_night_briefing),
         CronTrigger(hour=night_utc_hour, minute=0),
         id="night_briefing",
         name="밤 체크포인트 생성",
@@ -80,6 +80,15 @@ def start_scheduler() -> AsyncIOScheduler:
         run_date=datetime.now() + timedelta(seconds=5),
         id="news_collector_initial",
         name="초기 뉴스 수집",
+    )
+
+    # 4.5. 서버 시작 15초 후 모닝 브리핑 1회 즉시 생성 (캐시에 없을 때만)
+    scheduler.add_job(
+        _run_in_thread(_run_initial_morning_briefing),
+        "date",
+        run_date=datetime.now() + timedelta(seconds=15),
+        id="morning_briefing_initial",
+        name="초기 모닝 브리핑 생성",
     )
 
     # 5. 일간 메트릭 집계: 01:00 KST = 16:00 UTC
@@ -135,7 +144,7 @@ def start_scheduler() -> AsyncIOScheduler:
 
     scheduler.start()
     logger.info(
-        "스케줄러 시작: 뉴스(3분), 아침(%02d:%02d KST), 밤(%02d:00 KST), "
+        "스케줄러 시작: 뉴스(10분), 아침(%02d:%02d KST), 밤(%02d:00 KST), "
         "집계(01:00 KST), 퍼널(01:30 KST), 주말(토08:35/일22:00 KST), 스냅샷(월01:00 KST)",
         settings.BRIEFING_MORNING_HOUR,
         settings.BRIEFING_MORNING_MINUTE,
@@ -219,6 +228,22 @@ async def _generate_and_push_for_all_devices(briefing_type: str) -> None:
         "%s 완료: 성공=%d, 실패=%d, 전체=%d",
         type_label, success_count, fail_count, len(devices),
     )
+
+
+async def _run_initial_morning_briefing() -> None:
+    """서버 시작 15초 후 모닝 브리핑 1회 생성. 캐시에 이미 있으면 스킵."""
+    from services.cache import get_cached
+
+    cached = get_cached("briefing_morning")
+    if cached is not None:
+        logger.info("초기 모닝 브리핑: 캐시에 이미 존재, 스킵")
+        return
+
+    logger.info("초기 모닝 브리핑 생성 시작")
+    try:
+        await _generate_and_push_for_all_devices("morning")
+    except Exception as e:
+        logger.error("초기 모닝 브리핑 생성 실패: %s", e)
 
 
 async def _run_morning_briefing() -> None:

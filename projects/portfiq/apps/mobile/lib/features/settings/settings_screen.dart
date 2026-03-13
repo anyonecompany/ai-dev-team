@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:hive_flutter/hive_flutter.dart';
 import '../../config/theme.dart';
 import '../../shared/tracking/event_tracker.dart';
 import '../../shared/widgets/glass_card.dart';
@@ -23,19 +24,27 @@ class SettingsScreen extends ConsumerStatefulWidget {
 }
 
 class _SettingsScreenState extends ConsumerState<SettingsScreen> {
-  // Registered ETFs (mock initial data)
-  final List<_RegisteredEtf> _registeredEtfs = [
-    const _RegisteredEtf(ticker: 'QQQ', name: 'Invesco QQQ Trust'),
-    const _RegisteredEtf(ticker: 'SPY', name: 'SPDR S&P 500 ETF'),
-    const _RegisteredEtf(ticker: 'TLT', name: 'iShares 20+ Year Treasury'),
-    const _RegisteredEtf(ticker: 'GLD', name: 'SPDR Gold Shares'),
-  ];
+  List<_RegisteredEtf> _registeredEtfs = [];
 
   @override
   void initState() {
     super.initState();
     EventTracker.instance.track('screen_viewed', properties: {
       'screen_name': 'settings',
+    });
+    _loadRegisteredEtfs();
+  }
+
+  void _loadRegisteredEtfs() {
+    final box = Hive.box('settings');
+    final stored = box.get('registered_etfs');
+    final tickers = (stored is List)
+        ? stored.cast<String>()
+        : const ['QQQ', 'VOO', 'SCHD'];
+    setState(() {
+      _registeredEtfs = tickers
+          .map((t) => _RegisteredEtf(ticker: t, name: t))
+          .toList();
     });
   }
 

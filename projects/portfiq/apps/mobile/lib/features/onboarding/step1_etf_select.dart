@@ -1,7 +1,10 @@
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:hive_flutter/hive_flutter.dart';
 
 import '../../config/theme.dart';
+import '../../shared/services/api_client.dart';
 import '../../shared/tracking/event_tracker.dart';
 import 'onboarding_provider.dart';
 
@@ -176,14 +179,36 @@ class _Step1EtfSelectState extends ConsumerState<Step1EtfSelect> {
                 width: double.infinity,
                 child: ElevatedButton(
                   onPressed: notifier.canProceed
-                      ? () {
+                      ? () async {
+                          final tickers = state.selectedEtfs;
                           EventTracker.instance.track(
                             'etf_registered',
                             properties: {
-                              'tickers': state.selectedEtfs,
-                              'count': state.selectedEtfs.length,
+                              'tickers': tickers,
+                              'count': tickers.length,
                             },
                           );
+
+                          // Hive에 registered_etfs 저장
+                          final box = Hive.box('settings');
+                          await box.put('registered_etfs', tickers);
+
+                          // POST /api/v1/etf/register (실패해도 onNext 진행)
+                          final deviceId = box.get('device_id') as String?;
+                          try {
+                            await ApiClient.instance.post(
+                              '/api/v1/etf/register',
+                              data: {
+                                'device_id': deviceId,
+                                'tickers': tickers,
+                              },
+                            );
+                          } catch (e) {
+                            if (kDebugMode) {
+                              print('[Step1EtfSelect] ETF register API failed: $e');
+                            }
+                          }
+
                           widget.onNext();
                         }
                       : null,
