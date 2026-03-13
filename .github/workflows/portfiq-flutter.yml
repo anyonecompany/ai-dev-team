@@ -20,6 +20,8 @@ jobs:
         working-directory: projects/portfiq/apps/mobile
     steps:
       - uses: actions/checkout@v4
+        with:
+          submodules: false
 
       - uses: subosito/flutter-action@v2
         with:
@@ -56,6 +58,8 @@ jobs:
         working-directory: projects/portfiq/apps/mobile
     steps:
       - uses: actions/checkout@v4
+        with:
+          submodules: false
 
       - uses: actions/setup-java@v4
         with:
@@ -100,6 +104,8 @@ jobs:
         working-directory: projects/portfiq/apps/mobile
     steps:
       - uses: actions/checkout@v4
+        with:
+          submodules: false
 
       - uses: subosito/flutter-action@v2
         with:
