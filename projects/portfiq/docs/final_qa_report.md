@@ -1,5 +1,13 @@
 # Portfiq 최종 QA 리포트
 
+## 2026-03-14 Update
+
+- 이 문서는 2026-03-11 기준 검증 결과를 담고 있으며, 현재 코드 상태와 일부 차이가 있다.
+- 2026-03-14 추가 검증에서 `flutter analyze`, backend `py_compile`, backend release smoke tests(`7 passed`)가 통과했다.
+- analytics 응답 계약은 `{"status":"accepted","count":N,"accepted":N}`으로 정리되었고, 모바일 디바이스 등록 payload는 `platform`, `app_version`을 포함한다.
+- `backend/migrations/005_device_preferences_and_deploy_steps.sql`가 추가되어 `devices` 알림 설정 컬럼과 `deploy_history.steps` 컬럼 누락을 보완했다.
+- 최종 출시 판정은 이 문서 단독이 아니라 최신 `docs/release_qa_report.md`와 프로덕션 Supabase 실데이터 검증을 함께 기준으로 삼아야 한다.
+
 ## 검증 일시
 2026-03-11
 

@@ -8,7 +8,7 @@ All client-side events are sent to `POST /api/v1/analytics/events` with the foll
 ```json
 {
   "event_name": "string",
-  "user_id": "string",
+  "device_id": "string",
   "timestamp": "ISO 8601",
   "properties": {
     "session_id": "string (auto-injected)"
@@ -16,7 +16,7 @@ All client-side events are sent to `POST /api/v1/analytics/events` with the foll
 }
 ```
 
-**Note:** `session_id` is automatically injected into all event properties by EventTracker.
+**Note:** `session_id` is automatically injected into all event properties by EventTracker. The client also sends `X-Device-ID` in the request header.
 
 ---
 

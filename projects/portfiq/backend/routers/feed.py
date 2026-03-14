@@ -15,6 +15,8 @@ router = APIRouter()
 @router.get("")
 async def get_feed(
     device_id: str = Query(..., description="Device identifier"),
+    offset: int = Query(0, ge=0, description="Number of items to skip"),
+    limit: int = Query(20, ge=1, le=100, description="Number of items to return"),
 ) -> dict:
     """Get personalized feed for a device based on their registered ETFs.
 
@@ -27,9 +29,13 @@ async def get_feed(
         items = await news_service.get_all_news()
     else:
         items = await news_service.get_news_for_etfs(tickers)
+    paged_items = items[offset:offset + limit]
     return {
-        "items": [item.model_dump() for item in items],
+        "items": [item.model_dump() for item in paged_items],
         "total": len(items),
+        "offset": offset,
+        "limit": limit,
+        "has_more": offset + limit < len(items),
     }
 
 

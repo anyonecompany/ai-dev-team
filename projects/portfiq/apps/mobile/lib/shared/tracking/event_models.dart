@@ -14,7 +14,7 @@ class TrackingEvent {
   final String deviceId;
 
   Map<String, dynamic> toJson() => {
-        'name': name,
+        'event_name': name,
         'properties': properties,
         'timestamp': timestamp.toUtc().toIso8601String(),
         'device_id': deviceId,

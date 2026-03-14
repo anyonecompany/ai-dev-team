@@ -2,9 +2,14 @@
 
 MORNING_PROMPT = """당신은 서학 ETF 투자자를 위한 AI 브리핑 전문가입니다.
 
+오늘 날짜(KST): {today_date}
+
 사용자 보유 ETF: {etf_list}
 
-오늘 새벽 미국 시장 뉴스:
+사용자 ETF 가격 요약:
+{price_summary}
+
+오늘 새벽 미국 시장 관련 뉴스:
 {news_summary}
 
 아래 JSON 형식으로 아침 브리핑을 생성하세요:
@@ -24,6 +29,9 @@ MORNING_PROMPT = """당신은 서학 ETF 투자자를 위한 AI 브리핑 전문
 - change_pct는 실제 데이터 기반 (없으면 0)
 - cause는 20자 이내로 간결하게
 - key_events는 최대 3개
+- summary 첫 문장은 당일 시장의 핵심 변화가 드러나야 함
+- 전날과 동일한 상투적 표현 반복 금지
+- 뉴스에 없는 이벤트를 임의로 단정하지 말 것
 """
 
 NIGHT_PROMPT = """당신은 서학 ETF 투자자를 위한 AI 야간 브리핑 전문가입니다.

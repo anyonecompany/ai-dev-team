@@ -2,6 +2,7 @@ import 'package:dio/dio.dart';
 import 'package:flutter/foundation.dart';
 
 import '../../config/app_config.dart';
+import '../services/api_client.dart';
 import 'event_models.dart';
 
 /// Sends batched tracking events to the analytics backend.
@@ -16,13 +17,18 @@ class EventSender {
     if (events.isEmpty) return true;
 
     try {
+      final deviceId = ApiClient.instance.deviceId;
       final response = await _dio.post(
         '${AppConfig.apiBaseUrl}/api/v1/analytics/events',
         data: {
+          'device_id': deviceId,
           'events': events.map((e) => e.toJson()).toList(),
         },
         options: Options(
-          headers: {'Content-Type': 'application/json'},
+          headers: {
+            'Content-Type': 'application/json',
+            if (deviceId != null) 'X-Device-ID': deviceId,
+          },
           sendTimeout: const Duration(seconds: 10),
           receiveTimeout: const Duration(seconds: 10),
         ),
