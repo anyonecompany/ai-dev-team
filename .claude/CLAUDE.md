@@ -1,7 +1,7 @@
 # 프로젝트 중앙 제어 헌장 (Master Charter)
 
-> 버전: 3.1.0
-> 최종 갱신: 2026-02-09
+> 버전: 3.2.0
+> 최종 갱신: 2026-03-14
 > 관리자: CTO 당현송
 
 ---
@@ -314,7 +314,10 @@ ai-dev-team/
 .claude/
 ├── CLAUDE.md              ← 마스터 헌장
 ├── agents/                ← 에이전트 프로필
-├── commands/              ← 커맨드 (/qa, /qa-fix, /qa-report)
+├── commands/              ← 커맨드 (17개: qa, auto, plan, verify-loop 등)
+├── rules/                 ← 6개 규칙 파일 (claude-forge 기반)
+├── hooks/                 ← 4개 자동화 훅 (보안 필터, 명령 가드, DB 가드)
+├── skills/                ← 3개 스킬 (session-wrap, verification-engine, build-system)
 ├── docs/                  ← 운영 문서, 법규 가이드
 ├── tasks/                 ← 태스크 관리
 ├── templates/             ← 프로젝트/태스크 템플릿
@@ -323,7 +326,7 @@ ai-dev-team/
 ├── scripts/               ← 자동화 스크립트
 ├── knowledge/             ← 지식 베이스
 ├── reports/               ← QA/활동 리포트
-└── settings.local.json    ← 로컬 설정
+└── settings.local.json    ← 로컬 설정 (hooks + deny 패턴 포함)
 ```
 
 ---
@@ -375,6 +378,31 @@ ai-dev-team/
 | 보안 에이전트 | `.claude/agents/Security-Developer.md` | 보안 역할 정의 |
 | **인공지능기본법 가이드라인** | **`.claude/docs/AI_BASIC_LAW_COMPLIANCE.md`** | **AI 법규 준수 (필수)** |
 | Agent Teams 가이드 | `.claude/docs/AGENT_TEAMS_GUIDE.md` | 팀 실행 실용 가이드 |
+| 골든 원칙 | `.claude/rules/golden-principles.md` | 12가지 코딩 핵심 원칙 (claude-forge 기반) |
+| 검증 규칙 | `.claude/rules/verification.md` | 증거 기반 완료 선언 규칙 |
+| 상호작용 규칙 | `.claude/rules/interaction.md` | 가정 확인, 결론 먼저, 비유 설명 |
+| 코딩 스타일 | `.claude/rules/coding-style.md` | 불변성, 파일 크기, 에러 핸들링 |
+| Git 워크플로우 | `.claude/rules/git-workflow.md` | 커밋 형식, PR, 브랜치 전략 |
+| 에이전트 규칙 | `.claude/rules/agents.md` | 병렬 실행, 서브에이전트 vs Teams |
+
+---
+
+## 자동화 훅 (claude-forge 기반)
+
+> 출처: [claude-forge](https://github.com/sangrokjung/claude-forge) 선별 도입
+
+### 활성 훅
+
+| 훅 | 트리거 | 역할 |
+|---|--------|------|
+| `remote-command-guard.sh` | PreToolUse (Bash) | 파괴적 삭제, 시크릿 유출, 경로 순회, 명령 주입 차단 |
+| `db-guard.sh` | PreToolUse (Bash) | DROP/TRUNCATE/DELETE without WHERE 차단 |
+| `output-secret-filter.sh` | PostToolUse (전체) | 도구 출력에서 API 키/토큰 자동 마스킹 |
+| `security-auto-trigger.sh` | PostToolUse (Edit/Write) | 보안 민감 파일 수정 시 리뷰 권고 |
+
+### deny 패턴 (settings.local.json)
+
+`git push --force`, `git reset --hard`, `rm -rf /`, `rm -rf ~`, `chmod 777`, `mkfs`, `dd if=` 자동 차단
 
 ---
 
@@ -382,6 +410,7 @@ ai-dev-team/
 
 | 버전 | 날짜 | 변경 내용 |
 |------|------|----------|
+| 3.2.0 | 2026-03-14 | claude-forge 3-Phase 선별 도입: rules(6), hooks(4), commands(8), skills(3), deny 패턴 |
 | 3.1.0 | 2026-02-09 | Agent Teams 설정 및 운영 가이드 추가, 팀 협업 규칙 신설 |
 | 3.0.0 | 2026-02-09 | Claude 에이전트 팀 구조 전환, Monday.com 올인원 보드, QA 커맨드 신설 |
 | 2.2.0 | 2026-02-06 | 인공지능기본법 준수 가이드라인 추가, AI 컴플라이언스 품질 기준 신설 |
