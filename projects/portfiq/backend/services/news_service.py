@@ -54,6 +54,67 @@ def _get_gemini_client() -> genai.Client:
 
 
 # ──────────────────────────────────────────────
+# Keyword-based sentiment fallback
+# ──────────────────────────────────────────────
+
+_POSITIVE_WORDS = [
+    "상승", "호조", "성장", "급등", "반등", "최고", "호재", "수혜",
+    "surge", "rally", "gain", "rise", "jump", "soar", "record",
+    "beat", "exceed", "outperform", "bullish", "upgrade",
+]
+_NEGATIVE_WORDS = [
+    "하락", "급락", "폭락", "악재", "위기", "손실", "둔화", "우려",
+    "리스크", "제재", "규제", "관세", "파산", "디폴트",
+    "drop", "fall", "plunge", "crash", "decline", "loss", "risk",
+    "tariff", "sanction", "downgrade", "bearish", "recession", "layoff",
+]
+
+
+def _keyword_sentiment(text: str) -> str:
+    """Keyword-based sentiment fallback when Gemini is unavailable.
+
+    Returns:
+        "호재", "위험", or "중립".
+    """
+    t = text.lower()
+    pos = sum(1 for w in _POSITIVE_WORDS if w in t)
+    neg = sum(1 for w in _NEGATIVE_WORDS if w in t)
+    if pos > neg:
+        return "호재"
+    if neg > pos:
+        return "위험"
+    return "중립"
+
+
+_SENTIMENT_NORMALIZE: dict[str, str] = {
+    "호재": "호재",
+    "위험": "위험",
+    "중립": "중립",
+    "positive": "호재",
+    "negative": "위험",
+    "neutral": "중립",
+    "bullish": "호재",
+    "bearish": "위험",
+    "긍정": "호재",
+    "부정": "위험",
+}
+
+
+def _normalize_sentiment(raw: str) -> str:
+    """Normalize sentiment value from Gemini or other sources to Korean.
+
+    Handles English/Korean variants and returns "호재", "위험", or "중립".
+
+    Args:
+        raw: Raw sentiment string from any source.
+
+    Returns:
+        Normalized Korean sentiment: "호재", "위험", or "중립".
+    """
+    return _SENTIMENT_NORMALIZE.get(raw.strip().lower(), "중립")
+
+
+# ──────────────────────────────────────────────
 # RSS feeds — US financial news (primary)
 # ──────────────────────────────────────────────
 
@@ -107,6 +168,7 @@ def _build_mock_news() -> list[FeedItem]:
             ),
             source="Reuters",
             source_url="https://reuters.com/markets/fomc-2026",
+            sentiment="호재",
             published_at=_mock_ts(1),
             impacts=[
                 ETFImpact(etf_ticker="QQQ", level="High"),
@@ -124,6 +186,7 @@ def _build_mock_news() -> list[FeedItem]:
                 "데이터센터 부문이 전체 매출의 78%를 차지하며 기대치를 상회했습니다.\n"
                 "반도체 ETF(SOXL, SOXX)와 기술주 ETF(QQQ)에 즉각적 상승 압력이 예상됩니다."
             ),
+            sentiment="호재",
             source="Bloomberg",
             source_url="https://bloomberg.com/nvidia-earnings-2026",
             published_at=_mock_ts(3),
@@ -143,6 +206,7 @@ def _build_mock_news() -> list[FeedItem]:
                 "연간 배당수익률은 약 3.8%로, 인컴 투자자들에게 매력적입니다.\n"
                 "배당주 중심 포트폴리오 재편 수요가 증가할 수 있습니다."
             ),
+            sentiment="호재",
             source="Seeking Alpha",
             source_url="https://seekingalpha.com/schd-dividend-2026",
             published_at=_mock_ts(5),
@@ -160,6 +224,7 @@ def _build_mock_news() -> list[FeedItem]:
                 "자율주행 FSD V13 출시 기대감이 핵심 근거로 제시되었습니다.\n"
                 "ARKK ETF 내 Tesla 비중이 12%로 확대되며 변동성이 커질 수 있습니다."
             ),
+            sentiment="중립",
             source="CNBC",
             source_url="https://cnbc.com/ark-tesla-2026",
             published_at=_mock_ts(7),
@@ -177,6 +242,7 @@ def _build_mock_news() -> list[FeedItem]:
                 "WTI 유가가 $85를 넘기며 에너지 섹터 전반에 호재로 작용합니다.\n"
                 "에너지 ETF(XLE)의 상승과 함께 소비재 비용 부담으로 인한 VOO 하방 리스크도 존재합니다."
             ),
+            sentiment="위험",
             source="Financial Times",
             source_url="https://ft.com/oil-price-opec-2026",
             published_at=_mock_ts(9),
@@ -195,6 +261,7 @@ def _build_mock_news() -> list[FeedItem]:
                 "금리 하락은 장기 채권 가격 상승으로 이어져 TLT에 강한 호재입니다.\n"
                 "동시에 금리 민감 성장주(QQQ, ARKK)에도 긍정적 영향을 줍니다."
             ),
+            sentiment="호재",
             source="WSJ",
             source_url="https://wsj.com/treasury-yield-2026",
             published_at=_mock_ts(11),
@@ -213,6 +280,7 @@ def _build_mock_news() -> list[FeedItem]:
                 "AI 생산성 향상과 기업 실적 개선이 핵심 근거입니다.\n"
                 "S&P 500 추종 ETF(SPY, VOO, IVV) 모두에 긍정적 시그널입니다."
             ),
+            sentiment="호재",
             source="Goldman Sachs Research",
             source_url="https://goldmansachs.com/outlook-2026",
             published_at=_mock_ts(13),
@@ -232,6 +300,7 @@ def _build_mock_news() -> list[FeedItem]:
                 "미-중 기술 갈등 심화는 중국 인터넷 ETF(KWEB)에 하방 리스크를 높입니다.\n"
                 "반면 미국 반도체 기업 보호 정책 강화로 SOXL에는 복합적 영향이 예상됩니다."
             ),
+            sentiment="위험",
             source="South China Morning Post",
             source_url="https://scmp.com/deepseek-chips-2026",
             published_at=_mock_ts(15),
@@ -250,6 +319,7 @@ def _build_mock_news() -> list[FeedItem]:
                 "중앙은행 금 매수세가 지속되며 GLD ETF로의 자금 유입이 가속화되고 있습니다.\n"
                 "안전자산 선호가 강해지면 성장주 ETF에서 자금 이탈이 나타날 수 있습니다."
             ),
+            sentiment="중립",
             source="MarketWatch",
             source_url="https://marketwatch.com/gold-record-2026",
             published_at=_mock_ts(17),
@@ -268,6 +338,7 @@ def _build_mock_news() -> list[FeedItem]:
                 "커버드콜 전략의 안정적 수익 제공이 인기 요인으로 분석됩니다.\n"
                 "배당 투자 트렌드 지속으로 SCHD와 함께 자금 유입이 이어질 전망입니다."
             ),
+            sentiment="호재",
             source="ETF.com",
             source_url="https://etf.com/jepi-40b-2026",
             published_at=_mock_ts(20),
@@ -317,11 +388,11 @@ async def _translate_batch(headlines: list[str]) -> list[dict[str, str]]:
     Handles Gemini 429 rate limits with backoff.
     Retries up to 3 times with exponential backoff on timeout/transient errors.
     """
-    fallback = [{"ko": h, "impact_reason": "", "summary_3line": "", "sentiment": "중립"} for h in headlines]
+    fallback = [{"ko": h, "impact_reason": "", "summary_3line": f"• {h}", "sentiment": _keyword_sentiment(h)} for h in headlines]
 
     # Rate limit 상태면 즉시 fallback 반환 (대기하지 않음)
     if _is_gemini_rate_limited():
-        logger.info("Gemini rate limited, 원문 헤드라인 반환 (배치 %d건)", len(headlines))
+        logger.info("Gemini rate limited, 키워드 기반 sentiment 반환 (배치 %d건)", len(headlines))
         return fallback
 
     numbered = "\n".join(f"[{i}] {h}" for i, h in enumerate(headlines))
@@ -368,11 +439,11 @@ async def _translate_batch(headlines: list[str]) -> list[dict[str, str]]:
                         "ko": ko,
                         "impact_reason": reason,
                         "summary_3line": item.get("summary_3line", ""),
-                        "sentiment": item.get("sentiment", "중립"),
+                        "sentiment": _normalize_sentiment(item.get("sentiment", "중립")),
                     }
 
             return [
-                result_map.get(i, {"ko": h, "impact_reason": "", "summary_3line": "", "sentiment": "중립"})
+                result_map.get(i, {"ko": h, "impact_reason": "", "summary_3line": f"• {h}", "sentiment": "중립"})
                 for i, h in enumerate(headlines)
             ]
 
@@ -572,7 +643,8 @@ def _translate_cached_articles_sync() -> None:
                         if tr.get("impact_reason"):
                             article["summary"] = tr["impact_reason"]
                         article["summary_3line"] = tr.get("summary_3line", "")
-                        article["sentiment"] = tr.get("sentiment", "중립")
+                        raw_sentiment = tr.get("sentiment") or _keyword_sentiment(article.get("original_headline", article["headline"]))
+                        article["sentiment"] = _normalize_sentiment(raw_sentiment)
                         article["translated"] = True
 
                 logger.info("번역 배치 완료: %d~%d / %d", start, start + len(batch), len(headlines))
@@ -651,7 +723,7 @@ async def fetch_and_store_news() -> int:
         unique = _deduplicate(raw)
         logger.info("RSS 수집 %d건, 중복 제거 후 %d건", len(raw), len(unique))
 
-        # Impact classification (동기 → thread로 실행)
+        # Impact classification + 키워드 기반 sentiment/summary fallback (동기 → thread로 실행)
         def _classify_impacts() -> None:
             try:
                 from services.impact_service import impact_service
@@ -664,6 +736,11 @@ async def fetch_and_store_news() -> int:
                         {"etf_ticker": imp.etf_ticker, "level": imp.level}
                         for imp in impacts
                     ]
+                    # 번역 전 키워드 기반 sentiment/summary_3line fallback
+                    if not article.get("sentiment"):
+                        article["sentiment"] = _keyword_sentiment(headline)
+                    if not article.get("summary_3line"):
+                        article["summary_3line"] = f"• {headline}"
                 logger.info("영향 분류 완료: %d건", len(unique))
             except Exception as e:
                 logger.warning("영향 분류 실패, impacts 없이 진행: %s", e)
@@ -688,6 +765,8 @@ async def fetch_and_store_news() -> int:
                             "raw_data": {
                                 "headline_en": article.get("headline_en", ""),
                                 "impacts": article.get("impacts", []),
+                                "sentiment": article.get("sentiment", "중립"),
+                                "summary_3line": article.get("summary_3line", ""),
                             },
                         }
                         try:
@@ -754,7 +833,8 @@ async def fetch_and_store_news() -> int:
                             if item.get("impact_reason"):
                                 article["summary"] = item["impact_reason"]
                             article["summary_3line"] = item.get("summary_3line", "")
-                            article["sentiment"] = item.get("sentiment", "중립")
+                            raw_sentiment = item.get("sentiment") or _keyword_sentiment(article.get("original_headline", article["headline"]))
+                            article["sentiment"] = _normalize_sentiment(raw_sentiment)
                             article["translated"] = True
                     logger.info("번역 배치 완료: %d~%d / %d", start, start + len(batch), len(headlines))
                     _time_mod.sleep(1.5)  # rate limit 방지 — 배치 간 1.5초 대기
@@ -958,14 +1038,23 @@ class NewsService:
                 raw_data = row.get("raw_data") or {}
                 impacts = raw_data.get("impacts", []) if isinstance(raw_data, dict) else []
 
+                headline = row.get("headline", "")
+                sentiment = raw_data.get("sentiment", "중립") if isinstance(raw_data, dict) else "중립"
+                summary_3line = raw_data.get("summary_3line", "") if isinstance(raw_data, dict) else ""
+                # fallback: summary_3line이 비어있으면 headline 기반 1줄 요약
+                if not summary_3line and headline:
+                    summary_3line = f"• {headline}"
+
                 articles.append({
-                    "headline": row.get("headline", ""),
+                    "headline": headline,
                     "summary": row.get("impact_reason", ""),
                     "source": row.get("source", ""),
                     "source_url": row.get("source_url", ""),
                     "published_at": row.get("published_at", ""),
                     "impacts": impacts,
-                    "translated": True,  # Supabase에 저장된 건은 표시 가능
+                    "sentiment": sentiment,
+                    "summary_3line": summary_3line,
+                    "translated": True,
                 })
 
             logger.info("Supabase에서 뉴스 %d건 로드 (서버 재시작 복구)", len(articles))

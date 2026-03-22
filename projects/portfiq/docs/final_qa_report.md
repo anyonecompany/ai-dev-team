@@ -61,7 +61,7 @@
 - `/health` -> 200 OK, `{"status":"ok","version":"1.0.0","environment":"local"}`
 - `/api/v1/feed/latest` -> 200 OK, 정상 JSON 응답 (keys: items, total)
 - `/api/v1/etf/popular` -> 타임아웃 (10초 초과)
-  - 원인: news_service에서 Anthropic API로 뉴스 번역 배치 처리 (70건, 10건씩 배치)
+  - 원인: news_service에서 Gemini API로 뉴스 번역 배치 처리 (70건, 10건씩 배치)
   - 1배치당 약 60초 소요 -> 전체 약 7배치 = ~420초 예상
   - **운영 환경에서는 캐싱/사전 처리로 해결해야 할 성능 이슈**
 
@@ -78,7 +78,7 @@
 ## 잔여 이슈
 
 ### 성능 (P1)
-1. **ETF popular 엔드포인트 응답 시간**: 뉴스 번역이 실시간으로 Anthropic API를 호출하여 수 분 소요. 캐싱 레이어 또는 사전 번역 배치 작업 필요.
+1. **ETF popular 엔드포인트 응답 시간**: 뉴스 번역이 실시간으로 Gemini API를 호출하여 수 분 소요. 캐싱 레이어 또는 사전 번역 배치 작업 필요.
 
 ### 경고 (P2)
 2. **Android debug symbols strip 실패**: NDK 도구 설치 확인 필요. 앱 크기에 영향 있을 수 있으나 기능에는 무관.

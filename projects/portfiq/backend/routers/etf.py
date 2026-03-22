@@ -22,6 +22,19 @@ async def register_etfs(request: ETFRegisterRequest) -> dict:
     return {"device_id": request.device_id, "registered": registered, "total": len(registered)}
 
 
+class ETFUnregisterRequest(BaseModel):
+    """Request body for unregistering a single ETF."""
+    device_id: str = Field(..., description="디바이스 식별자")
+    ticker: str = Field(..., description="삭제할 ETF 티커")
+
+
+@router.delete("/unregister")
+async def unregister_etf(request: ETFUnregisterRequest) -> dict:
+    """Remove an ETF from a device's watchlist."""
+    success = await etf_service.unregister_etf(request.device_id, request.ticker)
+    return {"success": success, "device_id": request.device_id, "ticker": request.ticker.upper()}
+
+
 @router.get("/search")
 async def search_etfs(
     q: str = Query(..., min_length=1, description="Search query (ticker, name, or category)"),

@@ -83,7 +83,7 @@ async def get_sector_concentration(ticker: str) -> dict[str, Any]:
         weight = h.get("weight", 0)
         sector_map[sector] = sector_map.get(sector, 0) + weight
 
-    sectors = [{"name": k, "weight": round(v, 2)} for k, v in sorted(sector_map.items(), key=lambda x: -x[1])]
+    sectors = [{"name": k, "weight": round(v, 2), "percentage": round(v, 2)} for k, v in sorted(sector_map.items(), key=lambda x: -x[1])]
 
     # 단일 섹터 50% 초과 경고
     warning = None
@@ -148,10 +148,22 @@ async def get_macro_sensitivity(ticker: str) -> dict[str, Any]:
     else:
         summary = "전반적으로 거시경제 변수에 대한 민감도가 낮습니다."
 
+    # Frontend-compatible aliases (usd_strength→dollar, oil_price→oil)
+    _FE_KEY_ALIASES = {"usd_strength": "dollar", "oil_price": "oil"}
+
+    # Flat map for frontend compatibility (key → impact label, key_explanation → impact)
+    flat_map: dict[str, str] = {}
+    for s in sensitivities:
+        key = s["factor_key"]
+        fe_key = _FE_KEY_ALIASES.get(key, key)
+        flat_map[fe_key] = s["impact"]
+        flat_map[f"{fe_key}_explanation"] = s["impact"]
+
     return {
         "ticker": ticker,
         "sensitivities": sensitivities,
         "summary": summary,
+        **flat_map,
     }
 
 
@@ -186,13 +198,32 @@ async def get_etf_comparison(ticker: str) -> dict[str, Any]:
         return {"ticker": ticker, "comparisons": []}
 
     comparisons = []
+    current_expense = None
     for peer in (peers_result.data or []):
+        is_current = peer["ticker"] == ticker.upper()
+        if is_current:
+            current_expense = peer.get("expense_ratio", 0) or 0
         comparisons.append({
             "ticker": peer["ticker"],
             "name": peer.get("name", ""),
             "expense_ratio": peer.get("expense_ratio", 0),
-            "is_current": peer["ticker"] == ticker.upper(),
+            "is_current": is_current,
         })
+
+    # key_difference 생성 (보수율 비교 기반)
+    for comp in comparisons:
+        if comp["is_current"]:
+            comp["key_difference"] = "현재 보유 ETF"
+        elif current_expense is not None:
+            diff = (comp.get("expense_ratio", 0) or 0) - current_expense
+            if diff < 0:
+                comp["key_difference"] = f"보수율 {abs(diff):.2f}%p 낮음"
+            elif diff > 0:
+                comp["key_difference"] = f"보수율 {diff:.2f}%p 높음"
+            else:
+                comp["key_difference"] = "보수율 동일"
+        else:
+            comp["key_difference"] = ""
 
     return {
         "ticker": ticker,
@@ -339,7 +370,7 @@ _COMPARISON_GROUPS = _load_comparison_groups()
 _ETF_MASTER = _load_etf_master()
 
 # ──────────────────────────────────────────────
-# Claude API comparison cache
+# Gemini API comparison cache
 # ──────────────────────────────────────────────
 
 _comparison_cache: dict[str, tuple[datetime, str]] = {}
@@ -433,14 +464,14 @@ class EtfAnalysisService:
     async def compare_etfs(self, tickers: list[str]) -> dict:
         """2-3개 ETF의 구조적 차이를 3줄 한국어 요약으로 비교한다.
 
-        Claude API를 사용하여 비교 요약을 생성하며, 24시간 캐싱한다.
-        Claude API 사용 불가 시 시드 데이터의 사전 작성 비교문을 반환한다.
+        Gemini API를 사용하여 비교 요약을 생성하며, 24시간 캐싱한다.
+        Gemini API 사용 불가 시 시드 데이터의 사전 작성 비교문을 반환한다.
 
         Args:
             tickers: 비교할 ETF 티커 리스트 (2-3개).
 
         Returns:
-            {tickers: list, summary: str, source: "claude" | "seed" | "unavailable"}
+            {tickers: list, summary: str, source: "gemini" | "seed" | "unavailable"}
         """
         normalized = [t.upper() for t in tickers]
         cache_key = _cache_key_for_tickers(normalized)
@@ -541,6 +572,8 @@ class EtfAnalysisService:
         """시드 데이터에서 매칭되는 비교 그룹을 찾는다.
 
         입력 티커들이 특정 비교 그룹의 부분집합이면 해당 summary를 반환한다.
+        정확 매칭이 없으면 교집합이 가장 큰 그룹을 반환한다.
+        시드에도 없으면 ETF 마스터 데이터로 동적 비교 요약을 생성한다.
 
         Args:
             tickers: 비교할 ETF 티커 리스트.
@@ -549,11 +582,52 @@ class EtfAnalysisService:
             매칭된 비교 요약 또는 None.
         """
         ticker_set = set(tickers)
+
+        # 1) 정확 매칭 (기존 로직)
         for group in _COMPARISON_GROUPS:
             group_set = set(t.upper() for t in group.get("tickers", []))
             if ticker_set.issubset(group_set):
                 return group.get("summary")
-        return None
+
+        # 2) 교집합 기반 부분 매칭 (2개 이상 겹치면 사용)
+        best_group = None
+        best_overlap = 0
+        for group in _COMPARISON_GROUPS:
+            group_set = set(t.upper() for t in group.get("tickers", []))
+            overlap = len(ticker_set & group_set)
+            if overlap > best_overlap:
+                best_overlap = overlap
+                best_group = group
+        if best_overlap >= 2 and best_group:
+            return best_group.get("summary")
+
+        # 3) ETF 마스터 데이터로 동적 비교 생성
+        return self._build_dynamic_comparison(tickers)
+
+    def _build_dynamic_comparison(self, tickers: list[str]) -> str | None:
+        """ETF 마스터 시드 데이터로 동적 비교 요약을 생성한다.
+
+        Args:
+            tickers: 비교할 ETF 티커 리스트.
+
+        Returns:
+            비교 요약 문자열 또는 None.
+        """
+        infos = []
+        for t in tickers:
+            data = _ETF_MASTER.get(t)
+            if not data:
+                return None
+            name = data.get("name_kr") or data.get("name", t)
+            category = data.get("category", "N/A")
+            expense = data.get("expense_ratio", "N/A")
+            top3 = ", ".join(
+                h.get("name", "") for h in data.get("top_holdings", [])[:3]
+            )
+            infos.append(f"{t}({name}): 카테고리={category}, 보수율={expense}%, 상위종목={top3}")
+
+        lines = " | ".join(infos)
+        return f"ETF 비교: {lines}"
 
     async def get_holdings_changes(self, ticker: str) -> list[dict]:
         """주간 보유종목 비중 변동을 반환한다.

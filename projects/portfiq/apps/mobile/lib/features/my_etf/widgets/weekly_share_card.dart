@@ -93,7 +93,7 @@ class WeeklyShareCard extends StatelessWidget {
                   Text(
                     dateRange,
                     style: const TextStyle(
-                      fontFamily: 'Inter',
+                      fontFamily: 'Pretendard',
                       fontSize: 28,
                       fontWeight: FontWeight.w400,
                       color: PortfiqTheme.textSecondary,
@@ -173,9 +173,9 @@ class WeeklyShareCard extends StatelessWidget {
             child: Text(
               'P',
               style: TextStyle(
-                fontFamily: 'Inter',
+                fontFamily: 'Pretendard',
                 fontSize: 32,
-                fontWeight: FontWeight.w800,
+                fontWeight: FontWeight.w700,
                 color: PortfiqTheme.accent,
                 decoration: TextDecoration.none,
               ),
@@ -189,9 +189,9 @@ class WeeklyShareCard extends StatelessWidget {
             Text(
               'PORTFIQ',
               style: TextStyle(
-                fontFamily: 'Inter',
+                fontFamily: 'Pretendard',
                 fontSize: 28,
-                fontWeight: FontWeight.w800,
+                fontWeight: FontWeight.w700,
                 letterSpacing: 4,
                 color: PortfiqTheme.textPrimary,
                 decoration: TextDecoration.none,
@@ -239,7 +239,7 @@ class WeeklyShareCard extends StatelessWidget {
               child: Text(
                 etf.ticker,
                 style: const TextStyle(
-                  fontFamily: 'Inter',
+                  fontFamily: 'Pretendard',
                   fontSize: 34,
                   fontWeight: FontWeight.w700,
                   color: PortfiqTheme.textPrimary,
@@ -266,7 +266,7 @@ class WeeklyShareCard extends StatelessWidget {
             Text(
               '$sign${changePct.toStringAsFixed(2)}%',
               style: TextStyle(
-                fontFamily: 'Inter',
+                fontFamily: 'Pretendard',
                 fontSize: 34,
                 fontWeight: FontWeight.w700,
                 color: color,
@@ -309,9 +309,9 @@ class WeeklyShareCard extends StatelessWidget {
           Text(
             '$sign${avgChange.toStringAsFixed(2)}%',
             style: TextStyle(
-              fontFamily: 'Inter',
+              fontFamily: 'Pretendard',
               fontSize: 38,
-              fontWeight: FontWeight.w800,
+              fontWeight: FontWeight.w700,
               color: color,
               decoration: TextDecoration.none,
             ),
@@ -372,7 +372,7 @@ class WeeklyShareCard extends StatelessWidget {
               const Text(
                 'portfiq.com',
                 style: TextStyle(
-                  fontFamily: 'Inter',
+                  fontFamily: 'Pretendard',
                   fontSize: 22,
                   fontWeight: FontWeight.w400,
                   color: PortfiqTheme.textSecondary,

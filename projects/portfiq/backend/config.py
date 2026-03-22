@@ -36,17 +36,14 @@ class Settings:
     SUPABASE_KEY: str = os.getenv("SUPABASE_KEY", "")
     SUPABASE_SERVICE_KEY: str = os.getenv("SUPABASE_SERVICE_KEY", "")
 
-    # Anthropic (Claude API for briefing generation)
-    ANTHROPIC_API_KEY: str = os.getenv("ANTHROPIC_API_KEY", "")
-    ANTHROPIC_MODEL: str = os.getenv("ANTHROPIC_MODEL", "claude-sonnet-4-20250514")
-
-    # Gemini (Google AI for news translation/summarization)
-    GEMINI_API_KEY: str = os.getenv("GEMINI_API_KEY", "")
+    # Gemini (Google AI for news translation/summarization/briefing)
+    GEMINI_API_KEY: str = os.getenv("PORTFIQ_GEMINI_API_KEY", "") or os.getenv("GEMINI_API_KEY", "")
     GEMINI_MODEL: str = os.getenv("GEMINI_MODEL", "gemini-2.5-flash-lite")
 
     # External data APIs
     NEWS_API_KEY: str = os.getenv("NEWS_API_KEY", "")
     MARKET_DATA_API_KEY: str = os.getenv("MARKET_DATA_API_KEY", "")
+    FINNHUB_API_KEY: str = os.getenv("FINNHUB_API_KEY", "")
 
     # Push notifications (FCM / Firebase Admin SDK)
     FCM_SERVER_KEY: str = os.getenv("FCM_SERVER_KEY", "")

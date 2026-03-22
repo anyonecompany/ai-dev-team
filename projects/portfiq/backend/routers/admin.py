@@ -4,8 +4,6 @@
 배포 관련 엔드포인트는 ceo/cto 역할만 접근 가능하다.
 """
 
-from __future__ import annotations
-
 import logging
 from datetime import date, timedelta
 from typing import Any

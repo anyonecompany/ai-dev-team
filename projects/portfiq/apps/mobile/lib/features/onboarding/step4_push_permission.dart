@@ -26,17 +26,6 @@ class Step4PushPermission extends StatelessWidget {
       child: Column(
         mainAxisSize: MainAxisSize.min,
         children: [
-          // Drag handle
-          Container(
-            width: 40,
-            height: 4,
-            margin: const EdgeInsets.only(bottom: 24),
-            decoration: BoxDecoration(
-              color: PortfiqTheme.divider,
-              borderRadius: BorderRadius.circular(2),
-            ),
-          ),
-
           // Bell icon
           Container(
             width: 64,
@@ -88,12 +77,13 @@ class Step4PushPermission extends StatelessWidget {
                   EventTracker.instance.track('push_permission_granted', properties: {
                     'context': 'onboarding',
                   });
+                  onGranted();
                 } else {
                   EventTracker.instance.track('push_permission_denied', properties: {
                     'context': 'onboarding',
                   });
+                  onDenied();
                 }
-                onGranted();
               },
               child: const Text('알림 받기'),
             ),

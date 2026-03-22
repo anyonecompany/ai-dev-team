@@ -9,7 +9,7 @@ import '../../config/theme.dart';
 import '../../shared/tracking/event_tracker.dart';
 import '../../shared/widgets/glass_card.dart';
 import '../../shared/widgets/pressable_card.dart';
-import '../../shared/widgets/share_channel_sheet.dart';
+
 import '../briefing/share_service.dart';
 import 'add_etf_sheet.dart';
 import 'etf_models.dart';
@@ -78,14 +78,9 @@ class _MyEtfScreenState extends ConsumerState<MyEtfScreen>
     final state = ref.read(myEtfProvider);
     if (state.registeredEtfs.isEmpty) return;
 
-    // Show channel selection
-    final channel = await ShareChannelSheet.show(context);
-    if (channel == null || !mounted) return;
-
     setState(() => _isSharing = true);
 
-    EventTracker.instance.track('share_channel_selected', properties: {
-      'channel': channel.name,
+    EventTracker.instance.track('share_initiated', properties: {
       'content_type': 'weekly_performance',
     });
 
@@ -93,8 +88,9 @@ class _MyEtfScreenState extends ConsumerState<MyEtfScreen>
       'etf_count': state.registeredEtfs.length,
     });
 
-    // Wait for the share card to be laid out
-    await Future.delayed(const Duration(milliseconds: 100));
+    // Ensure the offscreen share card has been laid out and painted
+    await Future.delayed(const Duration(milliseconds: 300));
+    await WidgetsBinding.instance.endOfFrame;
 
     final success = await ShareService.captureAndShareWithText(
       _weeklyShareCardKey,
@@ -108,8 +104,15 @@ class _MyEtfScreenState extends ConsumerState<MyEtfScreen>
       if (success) {
         EventTracker.instance.track('share_card_shared', properties: {
           'content_type': 'weekly_performance',
-          'channel': channel.name,
+          'channel': 'system',
         });
+      } else {
+        ScaffoldMessenger.of(context).showSnackBar(
+          const SnackBar(
+            content: Text('공유 카드 생성에 실패했습니다. 다시 시도해주세요.'),
+            duration: Duration(seconds: 2),
+          ),
+        );
       }
     }
   }
@@ -155,17 +158,6 @@ class _MyEtfScreenState extends ConsumerState<MyEtfScreen>
           mainAxisSize: MainAxisSize.min,
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            Center(
-              child: Container(
-                width: 40,
-                height: 4,
-                decoration: BoxDecoration(
-                  color: PortfiqTheme.divider,
-                  borderRadius: BorderRadius.circular(2),
-                ),
-              ),
-            ),
-            const SizedBox(height: 16),
             Text(
               '기업으로 ETF 찾기',
               style: Theme.of(sheetContext).textTheme.titleLarge,
@@ -248,6 +240,7 @@ class _MyEtfScreenState extends ConsumerState<MyEtfScreen>
         ],
       ),
       body: Stack(
+        clipBehavior: Clip.none,
         children: [
           state.isLoading
               ? const Center(
@@ -275,7 +268,30 @@ class _MyEtfScreenState extends ConsumerState<MyEtfScreen>
                             lastUpdate: state.lastPriceUpdate,
                             isRefreshing: state.isRefreshingPrices,
                           ),
-                          const SizedBox(height: 12),
+                          const SizedBox(height: PortfiqSpacing.space16),
+                          // Section divider
+                          Padding(
+                            padding: const EdgeInsets.only(
+                              bottom: PortfiqSpacing.space12,
+                            ),
+                            child: Row(
+                              children: [
+                                Text(
+                                  '보유 ETF',
+                                  style: PortfiqTypography.label.copyWith(
+                                    color: PortfiqTheme.textTertiary,
+                                  ),
+                                ),
+                                const SizedBox(width: PortfiqSpacing.space8),
+                                const Expanded(
+                                  child: Divider(
+                                    color: PortfiqTheme.divider,
+                                    height: 1,
+                                  ),
+                                ),
+                              ],
+                            ),
+                          ),
                           // ETF list
                           ...state.registeredEtfs.map((etf) {
                             return Padding(
@@ -500,10 +516,15 @@ class _EtfCard extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final isPositive = (etf.changePct ?? 0) >= 0;
-    final changeColor =
-        isPositive ? PortfiqTheme.positive : PortfiqTheme.negative;
-    final sign = isPositive ? '+' : '';
+    final changePctValue = etf.changePct ?? 0;
+    final isPositive = changePctValue >= 0;
+    final isZero = changePctValue == 0;
+    final changeColor = isZero
+        ? PortfiqTheme.textSecondary
+        : isPositive
+            ? PortfiqTheme.positive
+            : PortfiqTheme.negative;
+    final sign = isZero ? '' : isPositive ? '+' : '';
 
     return PressableCard(
       onTap: onTap,
@@ -545,7 +566,7 @@ class _EtfCard extends StatelessWidget {
                         '\u20a9${_formatKrw(etf.priceKrw!)}',
                         style: Theme.of(context).textTheme.bodySmall?.copyWith(
                           color: Colors.white.withValues(alpha: 0.5),
-                          fontFamily: 'Inter',
+                          fontFamily: 'Pretendard',
                           fontSize: 12,
                         ),
                       ),
@@ -569,7 +590,7 @@ class _EtfCard extends StatelessWidget {
                         color: changeColor,
                         fontSize: 12,
                         fontWeight: FontWeight.w600,
-                        fontFamily: 'Inter',
+                        fontFamily: 'Pretendard',
                       ),
                     ),
                   ),

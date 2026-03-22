@@ -24,8 +24,8 @@ void main() async {
   }
   ApiClient.instance.init(deviceId: deviceId);
 
-  // Initialize event tracker with session management
-  EventTracker.instance.initialize(AppConfig.flavor, deviceId);
+  // Initialize event tracker with Hive persistence + 30s timer
+  await EventTracker.instance.initialize(AppConfig.flavor, deviceId);
   EventTracker.instance.track('app_opened', properties: {
     'is_first_open': isFirstOpen,
     'platform': defaultTargetPlatform.name,

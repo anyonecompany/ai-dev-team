@@ -4,6 +4,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:hive_flutter/hive_flutter.dart';
 import '../../config/constants.dart';
 import '../../config/theme.dart';
+import '../../shared/services/api_client.dart';
 import '../../shared/tracking/event_tracker.dart';
 import '../../shared/widgets/glass_card.dart';
 import '../my_etf/add_etf_sheet.dart';
@@ -62,6 +63,8 @@ class _SettingsScreenState extends ConsumerState<SettingsScreen> {
     setState(() {
       _registeredEtfs.removeAt(index);
     });
+    _saveToHive();
+    _syncDeleteToServer(removed.ticker);
     ScaffoldMessenger.of(context).showSnackBar(
       SnackBar(
         content: Text('${removed.ticker} 삭제됨'),
@@ -74,10 +77,25 @@ class _SettingsScreenState extends ConsumerState<SettingsScreen> {
             setState(() {
               _registeredEtfs.insert(index, removed);
             });
+            _saveToHive();
           },
         ),
       ),
     );
+  }
+
+  void _saveToHive() {
+    final box = Hive.box('settings');
+    box.put('registered_etfs', _registeredEtfs.map((e) => e.ticker).toList());
+  }
+
+  void _syncDeleteToServer(String ticker) {
+    final box = Hive.box('settings');
+    final deviceId = box.get('device_id', defaultValue: 'unknown') as String;
+    ApiClient.instance.dio.delete(
+      '/api/v1/etf/unregister',
+      data: {'device_id': deviceId, 'ticker': ticker.toUpperCase()},
+    ).then((_) {}).catchError((e) => null);
   }
 
   void _toggleNotification(String key, bool value) {
@@ -132,23 +150,23 @@ class _SettingsScreenState extends ConsumerState<SettingsScreen> {
           _buildSectionHeader('ETF 관리'),
           const SizedBox(height: 8),
           _buildEtfSection(),
-          const SizedBox(height: 24),
+          const SizedBox(height: PortfiqSpacing.space32),
 
           // Section 2: 알림 설정
           _buildSectionHeader('알림 설정'),
-          const SizedBox(height: 8),
+          const SizedBox(height: PortfiqSpacing.space8),
           _buildNotificationSection(),
-          const SizedBox(height: 24),
+          const SizedBox(height: PortfiqSpacing.space32),
 
           // Section 3: 앱 정보
           _buildSectionHeader('앱 정보'),
-          const SizedBox(height: 8),
+          const SizedBox(height: PortfiqSpacing.space8),
           _buildAppInfoSection(),
-          const SizedBox(height: 16),
+          const SizedBox(height: PortfiqSpacing.space24),
 
           // AI 서비스 고지
           _buildAiDisclosure(),
-          const SizedBox(height: 24),
+          const SizedBox(height: PortfiqSpacing.space32),
         ],
       ),
     );
@@ -158,9 +176,13 @@ class _SettingsScreenState extends ConsumerState<SettingsScreen> {
     return Padding(
       padding: const EdgeInsets.symmetric(horizontal: 16),
       child: Text(
-        title.toUpperCase(),
-        style: PortfiqTypography.label.copyWith(
-          color: PortfiqTheme.textTertiary,
+        title,
+        style: const TextStyle(
+          fontFamily: 'Pretendard',
+          fontSize: 13,
+          fontWeight: FontWeight.w600,
+          color: PortfiqTheme.textSecondary,
+          height: 1.3,
         ),
       ),
     );
@@ -214,7 +236,7 @@ class _SettingsScreenState extends ConsumerState<SettingsScreen> {
                           fontSize: 11,
                           fontWeight: FontWeight.w700,
                           color: PortfiqTheme.accent,
-                          fontFamily: 'Inter',
+                          fontFamily: 'Pretendard',
                         ),
                       ),
                     ),
@@ -295,7 +317,7 @@ class _SettingsScreenState extends ConsumerState<SettingsScreen> {
                   builder: (context, scrollController) =>
                       AddEtfSheet(scrollController: scrollController),
                 ),
-              );
+              ).then((_) => _loadRegisteredEtfs());
             },
           ),
         ],
@@ -304,44 +326,8 @@ class _SettingsScreenState extends ConsumerState<SettingsScreen> {
     );
   }
 
-  Future<void> _pickTime(BuildContext context, {required bool isMorning}) async {
-    final prefs = ref.read(settingsProvider);
-    final initial = isMorning
-        ? TimeOfDay(hour: prefs.morningHour, minute: prefs.morningMinute)
-        : TimeOfDay(hour: prefs.nightHour, minute: prefs.nightMinute);
-
-    final picked = await showTimePicker(
-      context: context,
-      initialTime: initial,
-      builder: (context, child) {
-        return Theme(
-          data: Theme.of(context).copyWith(
-            colorScheme: const ColorScheme.dark(
-              primary: PortfiqTheme.accent,
-              surface: PortfiqTheme.secondaryBg,
-              onSurface: PortfiqTheme.textPrimary,
-            ),
-          ),
-          child: child!,
-        );
-      },
-    );
-
-    if (picked == null) return;
-
-    final notifier = ref.read(settingsProvider.notifier);
-    if (isMorning) {
-      notifier.setMorningTime(picked.hour, picked.minute);
-    } else {
-      notifier.setNightTime(picked.hour, picked.minute);
-    }
-
-    EventTracker.instance.track('notification_time_changed', properties: {
-      'type': isMorning ? 'morning' : 'night',
-      'hour': picked.hour,
-      'minute': picked.minute,
-    });
-  }
+  // 알림 시간은 서버에서 고정 (아침 08:35 KST, 밤 22:00 KST).
+  // 개인별 시간 설정은 현재 지원하지 않음.
 
   Widget _buildNotificationSection() {
     final prefs = ref.watch(settingsProvider);
@@ -356,7 +342,7 @@ class _SettingsScreenState extends ConsumerState<SettingsScreen> {
             value: prefs.morningBriefing,
             onChanged: (v) => _toggleNotification('morning_briefing', v),
             trailing: prefs.morningBriefing
-                ? _buildTimeButton(prefs.morningTimeStr, isMorning: true)
+                ? _buildFixedTimeLabel('매일 08:35')
                 : null,
           ),
           const Divider(
@@ -370,7 +356,7 @@ class _SettingsScreenState extends ConsumerState<SettingsScreen> {
             value: prefs.nightCheckpoint,
             onChanged: (v) => _toggleNotification('night_checkpoint', v),
             trailing: prefs.nightCheckpoint
-                ? _buildTimeButton(prefs.nightTimeStr, isMorning: false)
+                ? _buildFixedTimeLabel('매일 22:00')
                 : null,
           ),
           const Divider(
@@ -390,23 +376,20 @@ class _SettingsScreenState extends ConsumerState<SettingsScreen> {
     );
   }
 
-  Widget _buildTimeButton(String timeStr, {required bool isMorning}) {
-    return GestureDetector(
-      onTap: () => _pickTime(context, isMorning: isMorning),
-      child: Container(
-        padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 4),
-        decoration: BoxDecoration(
-          color: PortfiqTheme.accent.withAlpha(26),
-          borderRadius: BorderRadius.circular(8),
-        ),
-        child: Text(
-          timeStr,
-          style: const TextStyle(
-            fontSize: 13,
-            fontWeight: FontWeight.w600,
-            color: PortfiqTheme.accent,
-            fontFamily: 'Inter',
-          ),
+  Widget _buildFixedTimeLabel(String timeStr) {
+    return Container(
+      padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 4),
+      decoration: BoxDecoration(
+        color: PortfiqTheme.surface,
+        borderRadius: BorderRadius.circular(8),
+      ),
+      child: Text(
+        timeStr,
+        style: const TextStyle(
+          fontSize: 12,
+          fontWeight: FontWeight.w500,
+          color: PortfiqTheme.textSecondary,
+          fontFamily: 'Pretendard',
         ),
       ),
     );
@@ -482,7 +465,7 @@ class _SettingsScreenState extends ConsumerState<SettingsScreen> {
               style: TextStyle(
                 fontSize: 14,
                 color: PortfiqTheme.textSecondary,
-                fontFamily: 'Inter',
+                fontFamily: 'Pretendard',
               ),
             ),
           ),
@@ -535,6 +518,47 @@ class _SettingsScreenState extends ConsumerState<SettingsScreen> {
               size: 20,
             ),
             onTap: () => _showLegalDialog('개인정보처리방침', _privacyText),
+          ),
+          const Divider(
+            height: 1,
+            indent: 16,
+            endIndent: 16,
+            color: PortfiqTheme.divider,
+          ),
+          ListTile(
+            dense: true,
+            contentPadding:
+                const EdgeInsets.symmetric(horizontal: 16, vertical: 2),
+            title: const Text(
+              '문의',
+              style: TextStyle(
+                fontSize: 15,
+                fontWeight: FontWeight.w500,
+                color: PortfiqTheme.textPrimary,
+              ),
+            ),
+            trailing: const Text(
+              'contact@anyonecompany.kr',
+              style: TextStyle(
+                fontSize: 13,
+                color: PortfiqTheme.accent,
+              ),
+            ),
+            onTap: () {
+              Clipboard.setData(
+                const ClipboardData(text: 'contact@anyonecompany.kr'),
+              );
+              ScaffoldMessenger.of(context).showSnackBar(
+                const SnackBar(
+                  content: Text(
+                    '이메일 주소가 복사되었습니다',
+                    style: TextStyle(color: PortfiqTheme.textPrimary),
+                  ),
+                  backgroundColor: PortfiqTheme.secondaryBg,
+                  behavior: SnackBarBehavior.floating,
+                ),
+              );
+            },
           ),
         ],
       ),
@@ -619,7 +643,7 @@ class _SettingsScreenState extends ConsumerState<SettingsScreen> {
 - 뉴스 분석 시 개인정보는 전달되지 않습니다
 
 5. 개인정보 삭제 요청
-앱 설정에서 데이터 초기화 또는 support@portfiq.com으로 요청
+앱 설정에서 데이터 초기화 또는 contact@anyonecompany.kr로 요청
 
 6. AI 서비스 고지
 본 앱은 AI(Google Gemini)를 활용하여 뉴스를 분석합니다.

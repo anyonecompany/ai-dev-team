@@ -33,7 +33,7 @@ class PortfiqTheme {
   static const Color warningLight = Color(0xFFFBBF24);
 
   // ─── Text ───────────────────────────────────────────────────
-  static const Color textPrimary = Color(0xFFF8FAFC);
+  static const Color textPrimary = Color(0xFFF9FAFB);
   static const Color textSecondary = Color(0xFF9CA3AF);
   static const Color textTertiary = Color(0xFF6B7280);
 
@@ -89,11 +89,11 @@ class PortfiqTheme {
         ),
         displayMedium: TextStyle(
           fontSize: 28,
-          fontWeight: FontWeight.w800,
+          fontWeight: FontWeight.w700,
           color: textPrimary,
           height: 1.2,
           letterSpacing: -0.5,
-          fontFamily: 'Inter',
+          fontFamily: 'Pretendard',
         ),
         displaySmall: TextStyle(
           fontSize: 24,
@@ -171,7 +171,7 @@ class PortfiqTheme {
           fontWeight: FontWeight.w400,
           color: textSecondary,
           height: 1.3,
-          fontFamily: 'Inter',
+          fontFamily: 'Pretendard',
         ),
         labelSmall: TextStyle(
           fontSize: 11,
@@ -179,7 +179,7 @@ class PortfiqTheme {
           color: textSecondary,
           height: 1.2,
           letterSpacing: 1.2,
-          fontFamily: 'Inter',
+          fontFamily: 'Pretendard',
         ),
       ),
 
@@ -372,16 +372,16 @@ class PortfiqTypography {
   PortfiqTypography._();
 
   static const display = TextStyle(
-    fontFamily: 'Inter',
+    fontFamily: 'Pretendard',
     fontSize: 28,
-    fontWeight: FontWeight.w800,
+    fontWeight: FontWeight.w700,
     letterSpacing: -0.5,
     height: 1.2,
     color: PortfiqTheme.textPrimary,
   );
 
   static const title = TextStyle(
-    fontFamily: 'Inter',
+    fontFamily: 'Pretendard',
     fontSize: 22,
     fontWeight: FontWeight.w700,
     letterSpacing: -0.3,
@@ -390,7 +390,7 @@ class PortfiqTypography {
   );
 
   static const subtitle = TextStyle(
-    fontFamily: 'Inter',
+    fontFamily: 'Pretendard',
     fontSize: 17,
     fontWeight: FontWeight.w600,
     height: 1.4,
@@ -398,7 +398,7 @@ class PortfiqTypography {
   );
 
   static const body = TextStyle(
-    fontFamily: 'Inter',
+    fontFamily: 'Pretendard',
     fontSize: 15,
     fontWeight: FontWeight.w400,
     height: 1.5,
@@ -406,7 +406,7 @@ class PortfiqTypography {
   );
 
   static const caption = TextStyle(
-    fontFamily: 'Inter',
+    fontFamily: 'Pretendard',
     fontSize: 12,
     fontWeight: FontWeight.w400,
     height: 1.3,
@@ -414,7 +414,7 @@ class PortfiqTypography {
   );
 
   static const label = TextStyle(
-    fontFamily: 'Inter',
+    fontFamily: 'Pretendard',
     fontSize: 11,
     fontWeight: FontWeight.w600,
     letterSpacing: 1.2,
@@ -541,9 +541,9 @@ class PortfiqShadows {
 
   /// Selected tab glow
   static const tabGlow = BoxShadow(
-    color: Color(0x666366F1), // rgba(99,102,241,0.4)
-    blurRadius: 12,
-    spreadRadius: 2,
+    color: Color(0x806366F1), // rgba(99,102,241,0.5)
+    blurRadius: 16,
+    spreadRadius: 3,
   );
 }
 

@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:lucide_icons/lucide_icons.dart';
 import '../../config/theme.dart';
 import '../../core/extensions.dart';
 import '../../features/feed/feed_models.dart';
@@ -20,6 +21,29 @@ class NewsCard extends StatelessWidget {
     this.onSourceTap,
   });
 
+  /// Background tint color per sentiment (5% opacity overlay).
+  Color _sentimentTint(NewsSentiment sentiment) {
+    switch (sentiment) {
+      case NewsSentiment.positive:
+        return PortfiqTheme.positive.withValues(alpha: 0.05);
+      case NewsSentiment.negative:
+        return PortfiqTheme.negative.withValues(alpha: 0.05);
+      case NewsSentiment.neutral:
+        return Colors.transparent;
+    }
+  }
+
+  /// Headline font weight: bold for positive/negative, medium for neutral.
+  FontWeight _headlineWeight(NewsSentiment sentiment) {
+    switch (sentiment) {
+      case NewsSentiment.positive:
+      case NewsSentiment.negative:
+        return FontWeight.w700;
+      case NewsSentiment.neutral:
+        return FontWeight.w500;
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     final sentiment = item.sentiment;
@@ -28,6 +52,15 @@ class NewsCard extends StatelessWidget {
       onTap: onTap,
       child: Stack(
         children: [
+          // Sentiment background tint overlay
+          Positioned.fill(
+            child: Container(
+              decoration: BoxDecoration(
+                color: _sentimentTint(sentiment),
+                borderRadius: BorderRadius.circular(PortfiqTheme.radiusCard),
+              ),
+            ),
+          ),
           GlassCard(
             enableBlur: true,
             padding: const EdgeInsets.fromLTRB(
@@ -39,6 +72,34 @@ class NewsCard extends StatelessWidget {
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
+                // Mock data banner
+                if (item.isMock) ...[
+                  Container(
+                    width: double.infinity,
+                    padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 6),
+                    decoration: BoxDecoration(
+                      color: const Color(0xFFF59E0B).withValues(alpha: 0.1),
+                      borderRadius: BorderRadius.circular(6),
+                      border: Border.all(color: const Color(0xFFF59E0B).withValues(alpha: 0.3)),
+                    ),
+                    child: const Row(
+                      children: [
+                        Icon(Icons.auto_awesome, size: 12, color: Color(0xFFF59E0B)),
+                        SizedBox(width: 4),
+                        Text(
+                          '샘플 뉴스 — 실시간 데이터 준비 중',
+                          style: TextStyle(fontSize: 11, fontWeight: FontWeight.w600, color: Color(0xFFF59E0B)),
+                        ),
+                      ],
+                    ),
+                  ),
+                  const SizedBox(height: PortfiqSpacing.space8),
+                ],
+
+                // Row 0: Sentiment icon indicator
+                _SentimentIcon(sentiment: sentiment),
+                const SizedBox(height: PortfiqSpacing.space8),
+
                 // Row 1: Sentiment badge + ETF tickers + time
                 Row(
                   children: [
@@ -79,13 +140,14 @@ class NewsCard extends StatelessWidget {
 
                 const SizedBox(height: PortfiqSpacing.space12),
 
-                // Row 2: Headline
+                // Row 2: Headline (bold for positive/negative, medium for neutral)
                 Text(
                   item.headline,
                   maxLines: 2,
                   overflow: TextOverflow.ellipsis,
                   style: PortfiqTypography.subtitle.copyWith(
                     color: PortfiqTheme.textPrimary,
+                    fontWeight: _headlineWeight(sentiment),
                   ),
                 ),
 
@@ -140,34 +202,54 @@ class NewsCard extends StatelessWidget {
             ),
           ),
 
-          // Left accent bar — gradient per MASTER.md (not solid!)
-          if (sentiment != NewsSentiment.neutral)
-            Positioned(
-              left: 0,
-              top: PortfiqSpacing.space12,
-              bottom: PortfiqSpacing.space12,
-              child: Container(
-                width: 3,
-                decoration: BoxDecoration(
-                  borderRadius: BorderRadius.circular(1.5),
-                  gradient: _sentimentGradient(sentiment),
-                ),
+          // Left accent bar — sentiment color (green=positive, red=negative, gray=neutral)
+          Positioned(
+            left: 0,
+            top: PortfiqSpacing.space12,
+            bottom: PortfiqSpacing.space12,
+            child: Container(
+              width: 3,
+              decoration: BoxDecoration(
+                borderRadius: BorderRadius.circular(1.5),
+                gradient: _sentimentGradient(sentiment),
               ),
             ),
+          ),
         ],
       ),
     );
   }
 
-  LinearGradient? _sentimentGradient(NewsSentiment sentiment) {
+  LinearGradient _sentimentGradient(NewsSentiment sentiment) {
     switch (sentiment) {
       case NewsSentiment.positive:
         return PortfiqGradients.positiveAccent;
       case NewsSentiment.negative:
         return PortfiqGradients.highImpact;
       case NewsSentiment.neutral:
-        return null;
+        return const LinearGradient(
+          begin: Alignment.topCenter,
+          end: Alignment.bottomCenter,
+          colors: [Color(0xFF9CA3AF), Color(0xFF6B7280)],
+        );
     }
+  }
+}
+
+/// Small sentiment icon shown at the top of the card.
+class _SentimentIcon extends StatelessWidget {
+  final NewsSentiment sentiment;
+  const _SentimentIcon({required this.sentiment});
+
+  @override
+  Widget build(BuildContext context) {
+    final (icon, color) = switch (sentiment) {
+      NewsSentiment.positive => (LucideIcons.trendingUp, PortfiqTheme.positive),
+      NewsSentiment.negative => (LucideIcons.trendingDown, PortfiqTheme.negative),
+      NewsSentiment.neutral => (LucideIcons.minus, PortfiqTheme.textTertiary),
+    };
+
+    return Icon(icon, size: 14, color: color);
   }
 }
 
