@@ -87,21 +87,25 @@ def _format_qa_report(
     manual = data.get("manual", 0)
     summary = data.get("summary", "")
 
-    emoji = {
-        "GO": "\U0001f7e2",
-        "CONDITIONAL GO": "\U0001f7e1",
-        "NO GO": "\U0001f534",
-    }.get(verdict, "\u26aa")
+    emoji_map = {"GO": "🟢", "CONDITIONAL GO": "🟡", "NO GO": "🔴"}
+    emoji = emoji_map.get(verdict, "⚪")
 
     notion_data = {
-        "title": f"[QA] {project} \u2014 {verdict}",
-        "category": "\ucf54\ub4dc\ud328\ud134",
-        "content": f"\ud310\uc815: {emoji} {verdict}\nP0: {p0} | P1: {p1} | P2: {p2}\n\uc790\ub3d9\uc218\uc815: {fixed}\uac74 | \uc218\ub3d9\ud544\uc694: {manual}\uac74\n\n{summary}",
+        "title": f"[QA] {project} — {verdict}",
+        "category": "코드패턴",
+        "content": (
+            f"판정: {emoji} {verdict}\n"
+            f"P0: {p0} | P1: {p1} | P2: {p2}\n"
+            f"자동수정: {fixed}건 | 수동필요: {manual}건\n\n{summary}"
+        ),
         "tags": ["qa", project],
         "project_name": project,
     }
 
-    slack_text = f"{emoji} *{project} QA \uc644\ub8cc*: {verdict}\nP0:{p0} P1:{p1} P2:{p2} | \uc790\ub3d9\uc218\uc815 {fixed}\uac74 | \uc218\ub3d9 {manual}\uac74"
+    slack_text = (
+        f"{emoji} *{project} QA 완료*: {verdict}\n"
+        f"P0:{p0} P1:{p1} P2:{p2} | 자동수정 {fixed}건 | 수동 {manual}건"
+    )
 
     return notion_data, slack_text
 
@@ -117,32 +121,23 @@ def _format_retrospective(
 
     content_parts = []
     if decisions:
-        content_parts.append(
-            f"\uc758\uc0ac\uacb0\uc815 {len(decisions)}\uac74: " + ", ".join(decisions)
-        )
+        content_parts.append(f"의사결정 {len(decisions)}건: " + ", ".join(decisions))
     if mistakes:
-        content_parts.append(
-            f"\uc2e4\uc218 \ud328\ud134 {len(mistakes)}\uac74: " + ", ".join(mistakes)
-        )
+        content_parts.append(f"실수 패턴 {len(mistakes)}건: " + ", ".join(mistakes))
     if patterns:
-        content_parts.append(
-            f"\ucf54\ub4dc \ud328\ud134 {len(patterns)}\uac74: " + ", ".join(patterns)
-        )
+        content_parts.append(f"코드 패턴 {len(patterns)}건: " + ", ".join(patterns))
 
-    content = (
-        "\n".join(content_parts)
-        or "\uc0c8\ub85c\uc6b4 \ud559\uc2b5 \ud56d\ubaa9 \uc5c6\uc74c"
-    )
+    content = "\n".join(content_parts) or "새로운 학습 항목 없음"
 
     notion_data = {
-        "title": f"[\ud68c\uace0] {project} \u2014 {timestamp[:10]}",
-        "category": "\ucf54\ub4dc\ud328\ud134",
+        "title": f"[회고] {project} — {timestamp[:10]}",
+        "category": "코드패턴",
         "content": content,
         "tags": ["retrospective", project],
         "project_name": project,
     }
 
-    slack_text = f"\U0001f4dd *{project} \ud68c\uace0*\n{content}"
+    slack_text = f"📝 *{project} 회고*\n{content}"
 
     return notion_data, slack_text
 
@@ -156,7 +151,10 @@ def _format_session_save(
     branch = data.get("branch", "")
     changed_files = data.get("changed_files", 0)
 
-    slack_text = f"\U0001f4be *\uc138\uc158 \uc800\uc7a5* ({branch})\n{summary}\n\n\ub2e4\uc74c \ud560 \uc77c: {next_actions}\n\ubcc0\uacbd \ud30c\uc77c: {changed_files}\uac1c"
+    slack_text = (
+        f"💾 *세션 저장* ({branch})\n{summary}\n\n"
+        f"다음 할 일: {next_actions}\n변경 파일: {changed_files}개"
+    )
 
     return None, slack_text
 
@@ -170,22 +168,20 @@ def _format_ci_fix(
     error_type = data.get("error_type", "")
     fixed = data.get("fixed", False)
 
-    emoji = "\u2705" if fixed else "\u274c"
-    status = (
-        "\uc790\ub3d9 \uc218\uc815 \uc644\ub8cc"
-        if fixed
-        else "\uc218\ub3d9 \uc218\uc815 \ud544\uc694"
-    )
+    emoji = "✅" if fixed else "❌"
+    status = "자동 수정 완료" if fixed else "수동 수정 필요"
 
     notion_data = {
-        "title": f"[CI] {project} \u2014 {status}",
-        "category": "\uc778\ud504\ub77c",
-        "content": f"\uc6cc\ud06c\ud50c\ub85c\uc6b0: {workflow}\n\uc5d0\ub7ec: {error_type}\n\uacb0\uacfc: {status}",
+        "title": f"[CI] {project} — {status}",
+        "category": "인프라",
+        "content": f"워크플로우: {workflow}\n에러: {error_type}\n결과: {status}",
         "tags": ["ci", project],
         "project_name": project,
     }
 
-    slack_text = f"{emoji} *CI \uc218\uc815* ({project}/{workflow})\n\uc5d0\ub7ec: {error_type}\n\uacb0\uacfc: {status}"
+    slack_text = (
+        f"{emoji} *CI 수정* ({project}/{workflow})\n에러: {error_type}\n결과: {status}"
+    )
 
     return notion_data, slack_text
 
@@ -200,9 +196,14 @@ def _format_benchmark(
     top_tools = data.get("top_tools", "")
 
     notion_data = {
-        "title": f"[\ubca4\uce58\ub9c8\ud06c] {timestamp[:10]}",
-        "category": "\ucf54\ub4dc\ud328\ud134",
-        "content": f"\ucd1d \ud638\ucd9c: {total_calls}\ud68c\nR/W \ube44\uc728: {read_write_ratio}\n\uc0c1\uc704 \uc5d0\uc774\uc804\ud2b8: {top_agents}\n\uc0c1\uc704 \ub3c4\uad6c: {top_tools}",
+        "title": f"[벤치마크] {timestamp[:10]}",
+        "category": "코드패턴",
+        "content": (
+            f"총 호출: {total_calls}회\n"
+            f"R/W 비율: {read_write_ratio}\n"
+            f"상위 에이전트: {top_agents}\n"
+            f"상위 도구: {top_tools}"
+        ),
         "tags": ["benchmark"],
     }
 
