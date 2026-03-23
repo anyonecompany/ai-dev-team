@@ -2,13 +2,13 @@
 
 | Item | Value |
 |------|-------|
-| Date | 2026-03-09 16:04:37 |
-| API URL | `http://localhost:8000/api/ask` |
+| Date | 2026-03-13 21:59:00 |
+| API URL | `http://localhost:8001/api/ask` |
 | Match Context | {"home_team": "Manchester United", "away_team": "Aston Villa", "match_date": "2026-03-15"} |
 | Total Scenarios | 20 |
-| Passed | 9 |
-| Failed | 11 |
-| Pass Rate | 45.0% |
+| Passed | 14 |
+| Failed | 6 |
+| Pass Rate | 70.0% |
 
 ---
 
@@ -18,37 +18,32 @@
 --------------------------------------------------------------------
  # | Pass | HTTP |    Time |  Conf | Src | Category       | Question
 --------------------------------------------------------------------
- 1 | PASS |  201 | 13220ms |  0.95 |   5 | season_narrati | 맨유의 현재 시즌 성적은 어떤가요?
- 2 | PASS |  201 |  8364ms |  0.85 |   5 | tactical_inten | 루번 아모림 감독의 전술 스타일은?
- 3 | PASS |  201 |  8890ms |  0.85 |   5 | player_form    | 맨유에서 가장 활약하고 있는 선수는 누구인가요?
- 4 | PASS |  201 | 13226ms |  0.85 |   5 | season_narrati | 맨유의 이번 시즌 이적 현황은?
- 5 | PASS |  201 |  8218ms |  0.85 |   5 | season_narrati | 맨유의 최근 5경기 결과는?
- 6 | FAIL |  ERR | 30006ms |   N/A | N/A | -              | 라시포드의 현재 상태는 어떤가요?
-   ↳ HTTP error: HTTPConnectionPool(host='localhost', port=8000): Read timed out. (read timeout=30)
- 7 | FAIL |  ERR | 30045ms |   N/A | N/A | -              | 맨유의 수비 문제점은 뭔가요?
-   ↳ HTTP error: HTTPConnectionPool(host='localhost', port=8000): Read timed out. (read timeout=30)
- 8 | FAIL |  201 | 26310ms |  0.85 |   5 | season_narrati | 맨유와 빌라의 최근 상대전적은?
-   ↳ Slow: 26310ms > 15000ms
- 9 | FAIL |  201 | 23726ms |  0.95 |   5 | season_narrati | 맨유의 UCL 진출 가능성은?
-   ↳ Slow: 23726ms > 15000ms
-10 | FAIL |  201 | 25214ms |  0.85 |   5 | player_form    | 맨유의 부상자 현황은?
-   ↳ Slow: 25214ms > 15000ms
-11 | FAIL |  ERR | 30008ms |   N/A | N/A | -              | 아스톤 빌라의 이번 시즌 성적은?
-   ↳ HTTP error: HTTPConnectionPool(host='localhost', port=8000): Read timed out. (read timeout=30)
-12 | FAIL |  201 | 26525ms |  0.85 |   5 | tactical_inten | 에메리 감독의 전술 특징은?
-   ↳ Slow: 26525ms > 15000ms
-13 | FAIL |  201 | 20376ms |  0.85 |   5 | player_info    | 빌라의 핵심 선수는 누구인가요?
-   ↳ Slow: 20376ms > 15000ms
-14 | PASS |  201 | 11466ms |  0.85 |   5 | season_narrati | 아스톤 빌라의 이적 시장 움직임은?
-15 | PASS |  201 | 14951ms |  0.85 |   5 | season_narrati | 빌라의 홈/원정 성적 차이는?
-16 | PASS |  201 | 10027ms |  0.85 |   5 | tactical_inten | 이번 맨유 vs 빌라 경기 예상 라인업은?
-17 | FAIL |  ERR | 30007ms |   N/A | N/A | -              | 맨유와 빌라 경기 승부 예측해줘
-   ↳ HTTP error: HTTPConnectionPool(host='localhost', port=8000): Read timed out. (read timeout=30)
-18 | FAIL |  201 | 20510ms |  0.75 |   5 | match_flow     | 이 경기에서 주목해야 할 포인트는?
-   ↳ Slow: 20510ms > 15000ms
-19 | FAIL |  201 | 15049ms |  0.30 |   5 | match_flow     | 오늘 날씨 어때?
-   ↳ Slow: 15049ms > 15000ms
-20 | PASS |  201 |  7291ms |  0.30 |   5 | match_flow     | 비트코인 가격이 어떻게 되나요?
+ 1 | PASS |  201 | 16295ms |  0.95 |   5 | season_narrati | 맨유의 현재 시즌 성적은 어떤가요?
+ 2 | PASS |  201 | 12605ms |  0.85 |   5 | tactical_inten | 루번 아모림 감독의 전술 스타일은?
+ 3 | PASS |  201 | 10072ms |  0.85 |   5 | player_form    | 맨유에서 가장 활약하고 있는 선수는 누구인가요?
+ 4 | PASS |  201 | 14174ms |  0.85 |   5 | season_narrati | 맨유의 이번 시즌 이적 현황은?
+ 5 | PASS |  201 |  9955ms |  0.85 |   5 | season_narrati | 맨유의 최근 5경기 결과는?
+ 6 | PASS |  201 |  8573ms |  0.95 |   5 | player_form    | 라시포드의 현재 상태는 어떤가요?
+ 7 | FAIL |  201 | 27927ms |  0.85 |   5 | tactical_inten | 맨유의 수비 문제점은 뭔가요?
+   ↳ Slow: 27927ms > 20000ms
+ 8 | PASS |  201 | 19126ms |  0.85 |   5 | season_narrati | 맨유와 빌라의 최근 상대전적은?
+ 9 | FAIL |  201 | 23749ms |  0.95 |   5 | season_narrati | 맨유의 UCL 진출 가능성은?
+   ↳ Slow: 23749ms > 20000ms
+10 | PASS |  201 | 16313ms |  0.85 |   5 | player_form    | 맨유의 부상자 현황은?
+11 | FAIL |  201 | 20743ms |  0.85 |   5 | season_narrati | 아스톤 빌라의 이번 시즌 성적은?
+   ↳ Slow: 20743ms > 20000ms
+12 | PASS |  201 | 11166ms |  0.85 |   5 | tactical_inten | 에메리 감독의 전술 특징은?
+13 | FAIL |  201 | 32741ms |  0.85 |   5 | player_info    | 빌라의 핵심 선수는 누구인가요?
+   ↳ Slow: 32741ms > 20000ms
+14 | PASS |  201 | 13482ms |  0.85 |   5 | season_narrati | 아스톤 빌라의 이적 시장 움직임은?
+15 | PASS |  201 |  9122ms |  0.85 |   5 | season_narrati | 빌라의 홈/원정 성적 차이는?
+16 | FAIL |  201 | 23306ms |  0.85 |   5 | tactical_inten | 이번 맨유 vs 빌라 경기 예상 라인업은?
+   ↳ Slow: 23306ms > 20000ms
+17 | PASS |  201 | 12040ms |  0.75 |   5 | season_narrati | 맨유와 빌라 경기 승부 예측해줘
+18 | FAIL |  201 | 23989ms |  0.75 |   5 | match_flow     | 이 경기에서 주목해야 할 포인트는?
+   ↳ Slow: 23989ms > 20000ms
+19 | PASS |  201 |   924ms |  1.00 |   0 | out_of_scope   | 오늘 날씨 어때?
+20 | PASS |  201 |   995ms |  0.95 |   0 | out_of_scope   | 비트코인 가격이 어떻게 되나요?
 --------------------------------------------------------------------
 ```
 
@@ -58,36 +53,33 @@
 
 | Metric | Value |
 |--------|-------|
-| Avg Response Time | 18671 ms |
-| Min Response Time | 7291 ms |
-| Max Response Time | 30045 ms |
-| Avg Confidence | 0.787 |
-| In-scope Pass Rate | 8/18 |
-| Out-of-scope Pass Rate | 1/2 |
+| Avg Response Time | 15364 ms |
+| Min Response Time | 924 ms |
+| Max Response Time | 32741 ms |
+| Avg Confidence | 0.867 |
+| In-scope Pass Rate | 12/18 |
+| Out-of-scope Pass Rate | 2/2 |
 
 ---
 
 ## Issues Found
 
-- **Q6**: HTTP error: HTTPConnectionPool(host='localhost', port=8000): Read timed out. (read timeout=30)
-- **Q7**: HTTP error: HTTPConnectionPool(host='localhost', port=8000): Read timed out. (read timeout=30)
-- **Q8**: Slow: 26310ms > 15000ms
-- **Q9**: Slow: 23726ms > 15000ms
-- **Q10**: Slow: 25214ms > 15000ms
-- **Q11**: HTTP error: HTTPConnectionPool(host='localhost', port=8000): Read timed out. (read timeout=30)
-- **Q12**: Slow: 26525ms > 15000ms
-- **Q13**: Slow: 20376ms > 15000ms
-- **Q17**: HTTP error: HTTPConnectionPool(host='localhost', port=8000): Read timed out. (read timeout=30)
-- **Q18**: Slow: 20510ms > 15000ms
-- **Q19**: Slow: 15049ms > 15000ms
+- **Q7**: Slow: 27927ms > 20000ms
+- **Q9**: Slow: 23749ms > 20000ms
+- **Q11**: Slow: 20743ms > 20000ms
+- **Q13**: Slow: 32741ms > 20000ms
+- **Q16**: Slow: 23306ms > 20000ms
+- **Q18**: Slow: 23989ms > 20000ms
 
 ---
 
 ## Recommendations
 
 - Average response time exceeds 10s — consider caching or optimizing RAG retrieval.
-- Some responses exceed 15s timeout — investigate slow queries.
-- 11 scenario(s) failed — review failures above and fix before production.
+- Some responses exceed 20s — investigate slow queries.
+- 6 scenario(s) failed — review failures above and fix before production.
+- Q19 (out-of-scope) has high confidence (1.00) — consider adding scope filtering.
+- Q20 (out-of-scope) has high confidence (0.95) — consider adding scope filtering.
 
 ---
 

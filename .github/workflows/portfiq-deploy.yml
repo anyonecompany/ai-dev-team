@@ -9,6 +9,12 @@ concurrency:
   group: portfiq-deploy
   cancel-in-progress: false
 
+permissions:
+  contents: read
+
+env:
+  FORCE_JAVASCRIPT_ACTIONS_TO_NODE24: true
+
 jobs:
   test:
     uses: ./.github/workflows/portfiq-backend.yml
@@ -18,9 +24,16 @@ jobs:
     needs: test
     environment: production
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v5
         with:
+          clean: false
+          fetch-depth: 1
+          persist-credentials: false
           submodules: false
+
+      - name: Prepare Git workspace
+        run: git config --global --add safe.directory "$GITHUB_WORKSPACE"
+        working-directory: ${{ github.workspace }}
 
       - name: Install Railway CLI
         run: npm install -g @railway/cli

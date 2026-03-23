@@ -12,3 +12,4 @@ backend/data/questions.db
 logs/
 data/*.json
 output/
+.vercel

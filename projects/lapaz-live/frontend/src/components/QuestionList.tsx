@@ -96,10 +96,10 @@ export default function QuestionList({
             aria-hidden="true"
           />
           <p className="text-sm font-heading font-medium text-[#6B6B6B]">
-            No questions yet
+            아직 질문이 없습니다
           </p>
           <p className="mt-1 text-xs font-body text-[#6B6B6B]">
-            Ask something about the match above
+            위에서 경기에 대해 질문해보세요
           </p>
         </div>
       ) : (

@@ -5,6 +5,12 @@ on:
     - cron: "0 0 * * *"  # 매일 UTC 00:00
   workflow_dispatch:       # 수동 실행 가능
 
+permissions:
+  contents: read
+
+env:
+  FORCE_JAVASCRIPT_ACTIONS_TO_NODE24: true
+
 defaults:
   run:
     working-directory: projects/la-paz
@@ -21,9 +27,16 @@ jobs:
 
     steps:
       - name: Checkout repository
-        uses: actions/checkout@v4
+        uses: actions/checkout@v5
         with:
+          clean: false
+          fetch-depth: 1
+          persist-credentials: false
           submodules: false
+
+      - name: Prepare Git workspace
+        run: git config --global --add safe.directory "$GITHUB_WORKSPACE"
+        working-directory: ${{ github.workspace }}
 
       - name: Set up Python 3.11
         uses: actions/setup-python@v5

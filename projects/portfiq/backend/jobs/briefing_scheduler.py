@@ -43,19 +43,19 @@ def start_scheduler() -> AsyncIOScheduler:
     global scheduler
     scheduler = AsyncIOScheduler()
 
-    # 1. 뉴스 수집: 10분마다 (별도 스레드에서 실행 — 메인 event loop 보호)
+    # 1. 뉴스 수집: 30분마다 (비용 절감 — 10분→30분)
     scheduler.add_job(
         _run_in_thread(_run_news_collection_async),
-        IntervalTrigger(minutes=10),
+        IntervalTrigger(minutes=30),
         id="news_collector",
         name="뉴스 수집",
         replace_existing=True,
     )
 
-    # 1.5. 미번역 뉴스 재번역: 5분마다
+    # 1.5. 미번역 뉴스 재번역: 30분마다 (비용 절감 — 5분→30분, Gemini 호출 최대 절감)
     scheduler.add_job(
         _run_in_thread(_retry_untranslated_news),
-        IntervalTrigger(minutes=5),
+        IntervalTrigger(minutes=30),
         id="translation_retry",
         name="미번역 뉴스 재번역",
         replace_existing=True,
@@ -162,7 +162,7 @@ def start_scheduler() -> AsyncIOScheduler:
 
     scheduler.start()
     logger.info(
-        "스케줄러 시작: 뉴스(10분), 재번역(5분), 아침(%02d:%02d KST), 밤(%02d:00 KST), "
+        "스케줄러 시작: 뉴스(30분), 재번역(30분), 아침(%02d:%02d KST), 밤(%02d:00 KST), "
         "집계(01:00 KST), 퍼널(01:30 KST), 주말(토08:35/일22:00 KST), 스냅샷(월01:00 KST)",
         settings.BRIEFING_MORNING_HOUR,
         settings.BRIEFING_MORNING_MINUTE,

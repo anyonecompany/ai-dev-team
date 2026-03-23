@@ -1,0 +1,69 @@
+{
+  "task_name": "Tactical GNN 실험 안정화 및 계층형 Temporal 전환",
+  "status": "🟡 진행중",
+  "summary": "실데이터 학습 실패 원인을 정리하고, 라벨 희소성/클래스 붕괴/체크포인트 로딩 오류를 수정했다. 이후 정상 학습 베이스라인(Acc 0.6085, Macro F1 0.4734)을 확보했고, 다음 단계로 계층형 분류와 3프레임 temporal window를 코드에 반영했다.",
+  "project_name": "World Cup Tactical AI",
+  "decisions": [
+    {
+      "title": "전술 분류를 경기 단위 분할 + 라벨 프레임 중심 학습으로 전환",
+      "category": "데이터",
+      "decision": "프레임 랜덤 분할과 unlabeled-majority 학습을 폐기하고, 경기 단위 train/val/test split 및 labeled-only 학습으로 전환",
+      "rationale": "기존 방식은 동일 경기 정보가 split 간에 섞이고, 전술 supervision이 전체 그래프의 극히 일부여서 학습 신호가 희석됐다.",
+      "alternatives": "기존 프레임 랜덤 분할 유지, unlabeled 프레임을 포함한 semi-supervised 멀티태스크 유지"
+    },
+    {
+      "title": "희소 클래스 붕괴 방지를 위해 이중 reweight 제거 및 active class 압축 적용",
+      "category": "아키텍처",
+      "decision": "weighted sampler와 class weight 동시 사용을 중단하고, 실제 데이터에 존재하는 클래스만 compact label space로 압축해 학습",
+      "rationale": "264경기 실험에서 모델이 세트피스 희소 클래스로 붕괴했다. 원인은 sampler와 loss weight의 이중 보정, 그리고 실제 4클래스 데이터에 13클래스 출력을 유지한 점이었다.",
+      "alternatives": "focal loss만 추가, sampler 유지, 13클래스 유지"
+    },
+    {
+      "title": "PyTorch 2.6 weights_only 정책 대응을 위해 체크포인트 메타데이터 직렬화 방식 변경",
+      "category": "기술선택",
+      "decision": "NotebookConfig 객체 저장을 중단하고 plain dict만 저장하도록 변경, torch.load는 weights_only=True 사용",
+      "rationale": "사용자 정의 클래스가 포함된 체크포인트는 PyTorch 2.6 기본 로딩 정책에서 UnpicklingError를 발생시켰다.",
+      "alternatives": "weights_only=False로 로드, safe_globals allowlist 추가"
+    },
+    {
+      "title": "다음 단계 성능 향상을 위해 계층형 분류 + 3프레임 temporal window 채택",
+      "category": "아키텍처",
+      "decision": "fine class와 coarse family를 동시 학습하고, current/prev1/prev2 그래프 임베딩을 GRU로 융합하는 temporal tactic encoder를 도입",
+      "rationale": "안정화된 베이스라인에서도 빌드업-크로스형 recall이 낮고, 단일 프레임만으로는 중앙 침투형과의 경계가 약했다. 계층형 제약과 시간 문맥이 필요한 구간이다.",
+      "alternatives": "단일 프레임 유지, focal loss 추가만 수행, post-hoc confusion 보정만 수행"
+    }
+  ],
+  "tech_refs": [
+    {
+      "title": "Tactical GNN 실험 이력과 시행착오 정리 (2026-03-16~17)",
+      "category": "도메인지식",
+      "tags": [
+        "tactical-gnn",
+        "world-cup-ai",
+        "experiment-log",
+        "failure-analysis"
+      ],
+      "content": "# 실험 요약\n- 100경기 초기 노트북 결과: 13,254 그래프 중 라벨 636개(4.8%), 변화점 12개(0.09%)로 supervision이 매우 희소했다.\n- 초기 결과는 중앙 침투형 편향이 심했고, 클래스별 성능이 무너졌다.\n\n# 첫 번째 수정\n- 경기 단위 분할로 leakage 방지\n- labeled-only 학습\n- macro F1 기준 early stopping\n- 체크포인트 직렬화 수정\n\n# 첫 번째 264경기 run 결과\n- Train 2,086 / Val 465 / Test 470 라벨 그래프 확보\n- 하지만 weighted sampler + class weight + 13클래스 출력 조합으로 세트피스 희소 클래스로 붕괴\n- Test Acc 0.0447, Macro F1 0.0441\n- 분류 리포트는 코너킥/프리킥 recall만 높고 빌드업 계열이 거의 0이었다.\n\n# 두 번째 수정\n- weighted sampler 제거\n- tempered class weight만 유지\n- active class 4개로 압축\n- link_weight 기본값 0.0\n- selection score를 macro/weighted F1 혼합으로 변경\n\n# 안정화 run 결과\n- Test Acc 0.6085\n- Macro F1 0.4734\n- Weighted F1 0.5761\n- 중앙 침투형 F1 0.73, 크로스형 F1 0.29, 코너킥 F1 0.53, 프리킥 F1 0.33\n- 분류는 정상화됐지만 크로스형과 중앙 침투형의 경계가 여전히 약함\n\n# 현재 코드 상태\n- 계층형 coarse/fine 분류 추가\n- current/prev1/prev2 3프레임 temporal GRU 추가\n- 노트북과 .py 동기화 완료\n\n# 운영 관점 메모\n- 현재는 특정 전술 subset 기반 실험 단계\n- 최종 목표는 lapaz-live와 결합해 모든 리그/모든 경기 대응 후, 대회 모드로 월드컵 특화 컨텍스트를 제공하는 구조"
+    }
+  ],
+  "new_tasks": [
+    {
+      "task_name": "계층형 Temporal Tactical GNN 재학습 및 confusion matrix 검증",
+      "priority": "🔴 P0",
+      "done_criteria": "계층형+3프레임 모델 재학습 1회 완료, test classification report와 confusion matrix 저장, 빌드업-크로스형 recall 개선 여부 판단",
+      "project_name": "World Cup Tactical AI"
+    },
+    {
+      "task_name": "lapaz-live를 fixture 중심 범용 경기 구조로 리팩터링",
+      "priority": "🔴 P0",
+      "done_criteria": "맨유/빌라/EPL 하드코딩 제거, competition/season/fixture 기반 API 스키마 반영, 임의 경기 질의응답 가능",
+      "project_name": "World Cup Tactical AI"
+    },
+    {
+      "task_name": "tactical_state API와 RAG 컨텍스트 결합 설계/구현",
+      "priority": "🟡 P1",
+      "done_criteria": "/api/tactics/live 또는 동등 엔드포인트 추가, rag_service가 구조화 전술 상태를 컨텍스트로 수용, 샘플 질의 5개 검증",
+      "project_name": "World Cup Tactical AI"
+    }
+  ]
+}

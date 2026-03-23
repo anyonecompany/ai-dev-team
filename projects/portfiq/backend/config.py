@@ -14,7 +14,7 @@ _env_candidates = [
 ]
 for _env_path in _env_candidates:
     if _env_path.exists():
-        load_dotenv(_env_path)
+        load_dotenv(_env_path, override=True)
         break
 else:
     load_dotenv()  # fallback: default .env search

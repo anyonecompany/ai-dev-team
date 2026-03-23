@@ -13,6 +13,7 @@ export interface Question {
   confidence: number;
   source_count: number;
   generation_time_ms: number;
+  total_time_ms?: number;
   status: "draft" | "published" | "archived";
   match_context?: MatchContext;
   created_at: string;
@@ -36,6 +37,7 @@ export interface AskResponse {
   confidence: number;
   source_count: number;
   generation_time_ms: number;
+  total_time_ms?: number;
   status: string;
 }
 

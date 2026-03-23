@@ -47,11 +47,14 @@ class AskResponse(BaseModel):
 @asynccontextmanager
 async def lifespan(app: FastAPI):
     missing = [
-        k for k in ("SUPABASE_URL", "SUPABASE_SERVICE_KEY", "ANTHROPIC_API_KEY")
+        k for k in ("SUPABASE_URL", "SUPABASE_SERVICE_KEY")
         if not os.getenv(k)
     ]
     if missing:
         logger.warning("누락된 환경변수: %s", ", ".join(missing))
+
+    if not os.getenv("GEMINI_API_KEY"):
+        logger.warning("GEMINI_API_KEY 미설정 — RAG 답변 생성 불가")
 
     if not os.getenv("OPENAI_API_KEY"):
         logger.warning("OPENAI_API_KEY 미설정 — 임베딩 검색이 실패할 수 있습니다.")

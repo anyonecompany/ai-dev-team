@@ -1,5 +1,12 @@
-# Skill: context-compact
-# 용도: 컨텍스트 한계 도달 전 세션 상태 저장 및 요약
+---
+name: context-compact
+description: "컨텍스트 한계 도달 전 세션 상태 저장 및 요약. /session-save 실행 시, 컨텍스트 50% 이하 감지 시 사용."
+user-invocable: false
+---
+
+# Context Compact
+
+컨텍스트 한계 도달 전 세션 상태를 저장하고 요약한다.
 
 ## 트리거
 - 컨텍스트 잔여량 50% 이하 감지 시
@@ -20,7 +27,7 @@
 - **관련 파일 경로** (새 세션에서 빠르게 로드할 수 있도록)
 
 ### 2. 코드맵 갱신
-변경된 파일이 있으면 `.claude/knowledge/codemap.md` 업데이트
+변경된 파일이 있으면 해당 프로젝트의 codemap 업데이트
 
 ### 3. 사용자에게 보고
 "세션 저장 완료: .claude/handoff/session-{timestamp}.md

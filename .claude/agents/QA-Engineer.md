@@ -1,3 +1,13 @@
+---
+name: QA-Engineer
+description: "테스트 + 보안 점검 + 배포 승인. QA 게이트 키퍼 역할 시 사용."
+model: sonnet
+memory: project
+skills:
+  - code-quality
+  - deployment
+---
+
 # QA-Engineer (품질 보증 + 보안 + 배포)
 
 > 버전: 5.0.0
@@ -264,3 +274,10 @@ grep -rn "mock\|fallback\|dummy\|fake\|placeholder" --include="*.py" --include="
 - `CLAUDE.md` — 마스터 헌장 v5.0
 - `.claude/commands/qa.md` — QA 실행 커맨드
 - `.claude/commands/qa-fix.md` — QA 자동 수정 커맨드
+
+
+## 메모리 관리
+- 작업 시작 시: 에이전트 메모리를 먼저 확인하라
+- 작업 중: 새로 발견한 codepath, 패턴, 아키텍처 결정을 기록하라
+- 작업 완료 시: 이번 작업 학습 내용을 간결하게 저장하라
+- 형식: "[프로젝트] 주제 — 내용"

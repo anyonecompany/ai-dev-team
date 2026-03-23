@@ -1,0 +1,7 @@
+participant_id,question_time,question_text,question_type,response_sent_time,response_time_sec,response_within_90s,source_used,answer_quality_1to5,user_reaction,aha_moment,follow_up_question,operator_note
+P1,2026-03-15 22:18,"왜 지금 맨유 빌드업이 안 풀려?",tactical,2026-03-15 22:19,61,Y,"structured+rag",4,aha,Y,Y,"상대 압박 구조 설명 포함"
+P1,,,,,,,,,,,,
+P2,,,,,,,,,,,,
+P2,,,,,,,,,,,,
+P3,,,,,,,,,,,,
+P3,,,,,,,,,,,,

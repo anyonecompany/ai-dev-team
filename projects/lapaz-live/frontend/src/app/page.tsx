@@ -7,10 +7,9 @@ import type {
   Question,
   MatchInfo as MatchInfoType,
   MatchPreviewData,
-  AskResponse,
 } from "@/types";
 import {
-  askQuestion,
+  askQuestionStream,
   getQuestions,
   updateQuestionStatus,
   getMatchInfo,
@@ -22,6 +21,39 @@ import StandingsTable from "@/components/StandingsTable";
 import QuestionInput from "@/components/QuestionInput";
 import AnswerCard from "@/components/AnswerCard";
 import QuestionList from "@/components/QuestionList";
+import ServiceStatusBanner from "@/components/ServiceStatusBanner";
+
+const OUT_OF_SCOPE_MARKERS = ["축구와 관련된 질문", "out of scope", "범위를 벗어"];
+
+function buildHistory(
+  questions: Question[],
+  latestAnswer: Question | null
+): Array<{ role: string; content: string }> {
+  // Collect completed Q&A items (latestAnswer first if present, then questions)
+  const candidates: Question[] = [];
+  if (latestAnswer && latestAnswer.answer && !latestAnswer.id.startsWith("streaming-")) {
+    candidates.push(latestAnswer);
+  }
+  for (const q of questions) {
+    if (candidates.length >= 3) break;
+    // Skip duplicates (latestAnswer may already be in questions)
+    if (candidates.some((c) => c.id === q.id)) continue;
+    // Skip entries without a real answer
+    if (!q.answer || q.answer.trim() === "") continue;
+    // Skip out-of-scope responses
+    if (OUT_OF_SCOPE_MARKERS.some((m) => q.answer.includes(m))) continue;
+    candidates.push(q);
+  }
+
+  // Take max 3 turns, ordered oldest-first for chronological history
+  const turns = candidates.slice(0, 3).reverse();
+  const history: Array<{ role: string; content: string }> = [];
+  for (const t of turns) {
+    history.push({ role: "user", content: t.question });
+    history.push({ role: "assistant", content: t.answer });
+  }
+  return history;
+}
 
 export default function Dashboard() {
   const [questions, setQuestions] = useState<Question[]>([]);
@@ -58,9 +90,10 @@ export default function Dashboard() {
   }, []);
 
   useEffect(() => {
-    fetchQuestions();
-    fetchMatch();
-    fetchPreview();
+    const loadInitial = async () => {
+      await Promise.all([fetchQuestions(), fetchMatch(), fetchPreview()]);
+    };
+    void loadInitial();
     const questionsInterval = setInterval(fetchQuestions, 5000);
     const previewInterval = setInterval(fetchPreview, 300000);
     return () => {
@@ -71,20 +104,200 @@ export default function Dashboard() {
 
   const handleAsk = async (question: string) => {
     setError(null);
+    const nowIso = new Date().toISOString();
+    const matchContext = matchInfo
+      ? {
+          home_team: matchInfo.home_team,
+          away_team: matchInfo.away_team,
+          match_date: matchInfo.match_date,
+          current_minute: matchInfo.current_minute,
+        }
+      : undefined;
+    const tempId = `streaming-${Date.now()}`;
+    let streamedAnswer = "";
+
+    setLatestAnswer({
+      id: tempId,
+      question,
+      answer: "",
+      category: "match_flow",
+      confidence: 0,
+      source_count: 0,
+      generation_time_ms: 0,
+      total_time_ms: 0,
+      status: "draft",
+      match_context: matchContext,
+      created_at: nowIso,
+      updated_at: nowIso,
+    });
+
+    const history = buildHistory(questions, latestAnswer);
+
     try {
-      const resp: AskResponse = await askQuestion(question);
-      const newQ: Question = {
-        ...resp,
-        status: resp.status as Question["status"],
-        created_at: new Date().toISOString(),
-        updated_at: new Date().toISOString(),
-      };
-      setLatestAnswer(newQ);
-      setQuestions((prev) => [newQ, ...prev]);
+      await askQuestionStream(question, matchContext, {
+        onMetadata: ({ category, confidence }) => {
+          setLatestAnswer((prev) =>
+            prev
+              ? {
+                  ...prev,
+                  category,
+                  confidence,
+                }
+              : prev
+          );
+        },
+        onChunk: (text) => {
+          streamedAnswer += text;
+          setLatestAnswer((prev) =>
+            prev
+              ? {
+                  ...prev,
+                  answer: streamedAnswer,
+                  updated_at: new Date().toISOString(),
+                }
+              : prev
+          );
+        },
+        onAnswer: (text) => {
+          streamedAnswer += text;
+          setLatestAnswer((prev) =>
+            prev
+              ? {
+                  ...prev,
+                  answer: streamedAnswer,
+                  updated_at: new Date().toISOString(),
+                }
+              : prev
+          );
+        },
+        onDone: ({ id, status, source_count, generation_time_ms, total_time_ms, cleaned_answer }) => {
+          const finalQuestion: Question = {
+            id,
+            question,
+            answer: cleaned_answer || streamedAnswer,
+            category: latestAnswer?.category || "match_flow",
+            confidence: latestAnswer?.confidence || 0,
+            source_count,
+            generation_time_ms: generation_time_ms ?? 0,
+            total_time_ms: total_time_ms ?? generation_time_ms ?? 0,
+            status: status as Question["status"],
+            match_context: matchContext,
+            created_at: nowIso,
+            updated_at: new Date().toISOString(),
+          };
+          setLatestAnswer(finalQuestion);
+          setQuestions((prev) => [
+            finalQuestion,
+            ...prev.filter((item) => item.id !== id && item.id !== tempId),
+          ]);
+        },
+      }, { history });
     } catch (e) {
-      setError(
-        e instanceof Error ? e.message : "Failed to generate answer"
-      );
+      setLatestAnswer(null);
+      const msg = e instanceof Error ? e.message : "답변 생성에 실패했습니다.";
+      if (msg.includes("timed out") || msg.includes("AbortError") || msg.includes("시간이 초과")) {
+        setError("응답 시간이 초과되었습니다. 잠시 후 다시 질문해주세요.");
+      } else if (msg.includes("Failed to fetch") || msg.includes("NetworkError") || msg.includes("연결")) {
+        setError("서버에 연결할 수 없습니다. 네트워크 연결을 확인해주세요.");
+      } else {
+        setError(msg);
+      }
+    }
+  };
+
+  const handleForceFootball = async (questionText: string) => {
+    setError(null);
+    const nowIso = new Date().toISOString();
+    const matchContext = matchInfo
+      ? {
+          home_team: matchInfo.home_team,
+          away_team: matchInfo.away_team,
+          match_date: matchInfo.match_date,
+          current_minute: matchInfo.current_minute,
+        }
+      : undefined;
+    const tempId = `streaming-${Date.now()}`;
+    let streamedAnswer = "";
+    const history = buildHistory(questions, latestAnswer);
+
+    setLatestAnswer({
+      id: tempId,
+      question: questionText,
+      answer: "",
+      category: "general_football",
+      confidence: 0,
+      source_count: 0,
+      generation_time_ms: 0,
+      total_time_ms: 0,
+      status: "draft",
+      match_context: matchContext,
+      created_at: nowIso,
+      updated_at: nowIso,
+    });
+
+    try {
+      await askQuestionStream(questionText, matchContext, {
+        onMetadata: ({ category, confidence }) => {
+          setLatestAnswer((prev) =>
+            prev
+              ? {
+                  ...prev,
+                  category,
+                  confidence,
+                }
+              : prev
+          );
+        },
+        onChunk: (text) => {
+          streamedAnswer += text;
+          setLatestAnswer((prev) =>
+            prev
+              ? {
+                  ...prev,
+                  answer: streamedAnswer,
+                  updated_at: new Date().toISOString(),
+                }
+              : prev
+          );
+        },
+        onAnswer: (text) => {
+          streamedAnswer += text;
+          setLatestAnswer((prev) =>
+            prev
+              ? {
+                  ...prev,
+                  answer: streamedAnswer,
+                  updated_at: new Date().toISOString(),
+                }
+              : prev
+          );
+        },
+        onDone: ({ id, status, source_count, generation_time_ms, total_time_ms, cleaned_answer }) => {
+          const finalQuestion: Question = {
+            id,
+            question: questionText,
+            answer: cleaned_answer || streamedAnswer,
+            category: latestAnswer?.category || "general_football",
+            confidence: latestAnswer?.confidence || 0,
+            source_count,
+            generation_time_ms: generation_time_ms ?? 0,
+            total_time_ms: total_time_ms ?? generation_time_ms ?? 0,
+            status: status as Question["status"],
+            match_context: matchContext,
+            created_at: nowIso,
+            updated_at: new Date().toISOString(),
+          };
+          setLatestAnswer(finalQuestion);
+          setQuestions((prev) => [
+            finalQuestion,
+            ...prev.filter((item) => item.id !== id && item.id !== tempId),
+          ]);
+        },
+      }, { force_football: true, history });
+    } catch (e) {
+      setLatestAnswer(null);
+      const msg = e instanceof Error ? e.message : "답변 생성에 실패했습니다.";
+      setError(msg);
     }
   };
 
@@ -106,7 +319,7 @@ export default function Dashboard() {
         );
       }
     } catch {
-      setError("Failed to update status");
+      setError("상태 업데이트에 실패했습니다.");
     }
   };
 
@@ -114,6 +327,9 @@ export default function Dashboard() {
     <main className="min-h-screen bg-[#0A0A0A] text-[#F5F5F5]">
       <div className="mx-auto max-w-[800px] px-6 py-8">
         <div className="space-y-6">
+          {/* Service Status Banner */}
+          <ServiceStatusBanner />
+
           {/* Header */}
           <header className="flex items-center justify-between">
             <div className="flex items-center gap-3">
@@ -180,6 +396,7 @@ export default function Dashboard() {
               <AnswerCard
                 question={latestAnswer}
                 onStatusChange={handleStatusChange}
+                onForceFootball={handleForceFootball}
                 highlight
               />
             </section>

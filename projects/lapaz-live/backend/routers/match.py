@@ -27,8 +27,37 @@ router = APIRouter()
 
 @router.get("/match/live", response_model=MatchInfoResponse)
 async def get_live_match() -> MatchInfoResponse:
-    """현재 라이브 경기 정보를 반환한다."""
+    """현재 라이브 경기 정보를 반환한다.
+
+    환경변수 기반 정보를 football-data.org 스코어 및 API-Football
+    fixture 조회로 보정한다. football-data.org가 느릴 경우
+    API-Football에서 라이브 fixture가 발견되면 status를 "live"로 덮어쓴다.
+    """
     info = await match_service.get_match_info()
+
+    # football-data.org 스코어로 상태/분 보정
+    score = await get_match_score(config.MATCH_ID_FD)
+    if score:
+        if score.get("status") in ("live", "halftime"):
+            info["status"] = score["status"]
+            info["current_minute"] = score.get("minute")
+        elif score.get("status") == "finished":
+            info["status"] = "finished"
+            info["current_minute"] = 90
+
+    # football-data.org가 아직 upcoming인데 API-Football에 라이브 fixture가 있으면 덮어쓴다
+    if info["status"] == "upcoming":
+        fixture_id = await find_fixture_id()
+        if fixture_id:
+            live_data = await get_live_state(fixture_id)
+            # live_state에 이벤트가 있으면 경기가 진행 중인 것
+            if live_data.get("events"):
+                info["status"] = "live"
+                logger.info(
+                    "football-data.org 지연 감지 — API-Football 기준 live로 보정 (fixture=%s)",
+                    fixture_id,
+                )
+
     return MatchInfoResponse(**info)
 
 
@@ -85,18 +114,18 @@ async def get_match_live_state() -> dict:
     # 1. football-data.org에서 스코어
     score = await get_match_score(config.MATCH_ID_FD)
 
-    # 2. 라이브 경기인 경우만 API-Football 이벤트 로드
+    # 2. 라이브/예정 경기 모두 API-Football 데이터 조회 (라인업은 경기 ~1시간 전 발표)
     live_data: dict = {}
-    if score.get("status") in ("live", "halftime"):
-        fixture_id = await find_fixture_id()
-        if fixture_id:
-            live_data = await get_live_state(fixture_id)
+    fixture_id = await find_fixture_id()
+    if fixture_id:
+        live_data = await get_live_state(fixture_id)
 
     return {
         "score": score,
         "events": live_data.get("events", []),
         "lineups": live_data.get("lineups", {}),
         "statistics": live_data.get("statistics", {}),
+        "referee": live_data.get("referee"),
     }
 
 

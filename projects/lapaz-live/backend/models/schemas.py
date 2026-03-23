@@ -2,7 +2,7 @@
 
 from __future__ import annotations
 
-from typing import Literal
+from typing import List, Literal, Optional
 
 from pydantic import BaseModel, Field
 
@@ -19,6 +19,11 @@ class MatchContext(BaseModel):
 class AskRequest(BaseModel):
     question: str = Field(..., min_length=1)
     match_context: MatchContext | None = None
+    user_name: str | None = None
+    force_football: bool = False
+    history: Optional[List[dict]] = None
+    # 각 항목: {"role": "user"|"assistant", "content": "텍스트"}
+    # 최대 3턴 (6개 항목)
 
 
 class StatusUpdateRequest(BaseModel):
@@ -35,6 +40,7 @@ class AskResponse(BaseModel):
     confidence: float
     source_count: int
     generation_time_ms: int
+    total_time_ms: int = 0
     status: str
 
 
@@ -46,7 +52,9 @@ class QuestionResponse(BaseModel):
     confidence: float
     source_count: int
     generation_time_ms: int
+    total_time_ms: int = 0
     status: str
+    user_name: str | None = None
     match_context: dict | None = None
     created_at: str
     updated_at: str

@@ -21,14 +21,26 @@ if RAG_SRC_DIR not in sys.path:
     sys.path.insert(0, RAG_SRC_DIR)
 
 # SQLite DB 경로
-DB_DIR = BACKEND_DIR / "data"
-DB_DIR.mkdir(exist_ok=True)
-DB_PATH = str(DB_DIR / "questions.db")
+DB_PATH = os.getenv("QUESTIONS_DB_PATH", "")
+if not DB_PATH:
+    if os.getenv("VERCEL"):
+        DB_PATH = "/tmp/questions.db"
+    else:
+        DB_DIR = BACKEND_DIR / "data"
+        DB_DIR.mkdir(exist_ok=True)
+        DB_PATH = str(DB_DIR / "questions.db")
 
 # CORS 허용 origins
-CORS_ORIGINS: list[str] = [
-    "http://localhost:3000",
-]
+_cors_origins_env = os.getenv("CORS_ORIGINS", "").strip()
+CORS_ORIGINS: list[str] = (
+    [origin.strip() for origin in _cors_origins_env.split(",") if origin.strip()]
+    if _cors_origins_env
+    else ["http://localhost:3000"]
+)
+CORS_ORIGIN_REGEX: str | None = (
+    os.getenv("CORS_ORIGIN_REGEX")
+    or r"https://.*\.vercel\.app"
+)
 
 # --- football-data.org ---
 FOOTBALL_DATA_TOKEN: str = os.getenv("FOOTBALL_DATA_TOKEN", "")

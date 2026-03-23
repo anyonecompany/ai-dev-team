@@ -2,51 +2,127 @@
   {
     "question": "가르나초 어떤 선수야?",
     "category": "player_info",
-    "keywords": ["가르나초", "Garnacho", "선수 정보"]
+    "keywords": ["가르나초", "Garnacho", "선수 정보"],
+    "complexity": "simple"
   },
   {
     "question": "왓킨스 커리어가 어떻게 돼?",
     "category": "player_info",
-    "keywords": ["왓킨스", "Watkins", "커리어", "경력"]
+    "keywords": ["왓킨스", "Watkins", "커리어", "경력"],
+    "complexity": "detailed"
   },
   {
     "question": "브루노가 왜 자꾸 밑으로 내려와?",
     "category": "tactical_intent",
-    "keywords": ["브루노 페르난데스", "Bruno Fernandes", "위치", "전술"]
+    "keywords": ["브루노 페르난데스", "Bruno Fernandes", "위치", "전술"],
+    "complexity": "detailed"
   },
   {
     "question": "왜 갑자기 3백으로 바꿨어?",
     "category": "tactical_intent",
-    "keywords": ["3백", "포메이션", "전술 변경"]
+    "keywords": ["3백", "포메이션", "전술 변경"],
+    "complexity": "detailed"
   },
   {
     "question": "우리가 지금 밀리고 있는 거야?",
     "category": "match_flow",
-    "keywords": ["경기 흐름", "주도권", "압박"]
+    "keywords": ["경기 흐름", "주도권", "압박"],
+    "complexity": "simple"
   },
   {
     "question": "호일룬 요즘 진짜 좋아진 거야?",
     "category": "player_form",
-    "keywords": ["호일룬", "Højlund", "폼", "성장"]
+    "keywords": ["호일룬", "Højlund", "폼", "성장"],
+    "complexity": "simple"
   },
   {
     "question": "왜 지르크제 안 넣어?",
     "category": "fan_simulation",
-    "keywords": ["지르크제", "Zirkzee", "교체", "기용"]
+    "keywords": ["지르크제", "Zirkzee", "교체", "기용"],
+    "complexity": "simple"
   },
   {
     "question": "이거 지면 UCL 힘들어?",
     "category": "season_narrative",
-    "keywords": ["UCL", "챔피언스리그", "순위", "시즌"]
+    "keywords": ["UCL", "챔피언스리그", "순위", "시즌"],
+    "complexity": "simple"
   },
   {
     "question": "저거 왜 옐로 아니야?",
     "category": "rules_judgment",
-    "keywords": ["옐로카드", "파울", "심판"]
+    "keywords": ["옐로카드", "파울", "심판"],
+    "complexity": "simple"
   },
   {
     "question": "오프사이드 맞아? VAR 안 봐?",
     "category": "rules_judgment",
-    "keywords": ["오프사이드", "VAR", "판정"]
+    "keywords": ["오프사이드", "VAR", "판정"],
+    "complexity": "simple"
+  },
+  {
+    "question": "아마드 디알로 2025-2026 PL 수비 지표 알려줘",
+    "category": "tactical_intent",
+    "keywords": ["아마드 디알로", "Amad Diallo", "수비 지표", "PL"],
+    "complexity": "detailed"
+  },
+  {
+    "question": "살라 이번 시즌 골/어시스트 기록",
+    "category": "player_form",
+    "keywords": ["살라", "Salah", "골", "어시스트", "시즌"],
+    "complexity": "detailed"
+  },
+  {
+    "question": "손흥민 올시즌 xG 대비 실제 골",
+    "category": "player_form",
+    "keywords": ["손흥민", "Son Heung-min", "xG", "골"],
+    "complexity": "detailed"
+  },
+  {
+    "question": "브루노 페르난데스 vs 외데가르 올시즌 비교",
+    "category": "player_form",
+    "keywords": ["브루노 페르난데스", "외데가르", "비교", "시즌"],
+    "complexity": "detailed"
+  },
+  {
+    "question": "홀란드랑 이사크 누가 더 잘해?",
+    "category": "player_form",
+    "keywords": ["홀란드", "이사크", "비교", "성적"],
+    "complexity": "detailed"
+  },
+  {
+    "question": "맨유 세트피스 득점 순위",
+    "category": "tactical_intent",
+    "keywords": ["맨유", "세트피스", "득점", "순위"],
+    "complexity": "detailed"
+  },
+  {
+    "question": "아스날 패스 성공률 리그 순위",
+    "category": "tactical_intent",
+    "keywords": ["아스날", "패스 성공률", "리그", "순위"],
+    "complexity": "detailed"
+  },
+  {
+    "question": "이번 라운드 xG 상위 팀",
+    "category": "season_narrative",
+    "keywords": ["라운드", "xG", "상위", "팀"],
+    "complexity": "detailed"
+  },
+  {
+    "question": "오늘 날씨 어때?",
+    "category": "out_of_scope",
+    "keywords": ["날씨"],
+    "complexity": "simple"
+  },
+  {
+    "question": "맛집 추천해줘",
+    "category": "out_of_scope",
+    "keywords": ["맛집"],
+    "complexity": "simple"
+  },
+  {
+    "question": "파이썬 코드 짜줘",
+    "category": "out_of_scope",
+    "keywords": ["파이썬", "코드"],
+    "complexity": "simple"
   }
 ]

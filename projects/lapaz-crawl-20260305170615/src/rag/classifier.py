@@ -1,11 +1,11 @@
-"""질문 분류기: Claude Sonnet으로 7개 카테고리 분류 + 키워드 추출."""
+"""질문 분류기: Gemini Flash로 7개 카테고리 분류 + 키워드 추출."""
 
 import json
 import logging
 import os
 from pathlib import Path
 
-import anthropic
+from google import genai
 from dotenv import load_dotenv
 
 load_dotenv(os.path.join(os.path.dirname(__file__), "..", "..", ".env"))
@@ -28,7 +28,7 @@ VALID_CATEGORIES = [
     "rules_judgment",
 ]
 
-MODEL = "claude-sonnet-4-5-20250929"
+MODEL = "gemini-2.5-flash"
 
 
 def _build_few_shot_section() -> str:
@@ -52,23 +52,17 @@ async def classify(question: str) -> dict:
     Returns:
         {"category": str, "keywords": list[str], "confidence": float}
     """
-    client = anthropic.AsyncAnthropic()
+    client = genai.Client(api_key=os.getenv("GEMINI_API_KEY"))
 
     prompt = CLASSIFIER_PROMPT.replace("{question}", question)
     few_shot = _build_few_shot_section()
 
-    response = await client.messages.create(
+    response = await client.aio.models.generate_content(
         model=MODEL,
-        max_tokens=256,
-        messages=[
-            {
-                "role": "user",
-                "content": f"{few_shot}\n\n{prompt}",
-            }
-        ],
+        contents=f"{few_shot}\n\n{prompt}",
     )
 
-    text = response.content[0].text.strip()
+    text = response.text.strip()
     # JSON 블록 파싱 (```json ... ``` 형태 대응)
     if "```" in text:
         text = text.split("```json")[-1].split("```")[0].strip()

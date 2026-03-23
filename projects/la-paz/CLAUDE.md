@@ -168,3 +168,51 @@ Global Football Intelligence Infrastructure
 가 되는 것을 목표로 한다.
 
 모든 개발은 이 방향을 벗어나지 않는다.
+
+---
+
+# 13. 기술 스택 (실제 코드 기반)
+
+### 백엔드 (Python)
+- FastAPI, uvicorn, pydantic
+- openai SDK (DeepSeek V3.2 / Gemini 게이트웨이)
+- supabase (PostgreSQL — 벡터 저장소 포함)
+- sentence-transformers (임베딩)
+- soccerdata, statsbombpy, understatapi (축구 데이터)
+- feedparser, ddgs (뉴스/웹 검색)
+- pandas, scikit-learn
+
+### 프론트엔드 (Next.js)
+- TypeScript, Tailwind CSS
+- 국제화 (messages/ 디렉토리)
+- Playwright E2E 테스트
+
+### 데이터
+- `data/raw/` — 원시 수집 데이터
+- `data/processed/` — 가공 데이터
+- `ai/vectorstore/` — 벡터 인덱스
+- `evaluation/` — RAG 평가 결과
+
+### 스크립트
+- `scripts/daily_crawl.py` — 일일 데이터 수집
+- `scripts/generate_transfer_rumors.py` — 이적 루머 생성
+
+---
+
+# 14. 수정 금지 영역
+
+- `ai/vectorstore/` — 벡터 인덱스 파일. 재빌드 스크립트로만 갱신
+- `data/processed/` — 가공 완료 데이터. 수동 편집 금지
+- `evaluation/` — 평가 결과 아카이브. 덮어쓰기 금지 (히스토리 보존)
+- `supabase/` — DB 설정/마이그레이션. 기존 파일 수정 금지
+- `docs/fan_intelligence_architecture.md` — 티어/확장 전략 문서. 비즈니스 승인 없이 변경 금지
+
+---
+
+# 15. 자주 하는 실수
+
+1. **리그 종속 코드 작성** — 특정 리그(EPL 등)에 하드코딩된 로직 작성. 글로벌 확장 원칙 위반. 리그 정보는 레지스트리에서 관리
+2. **LLM 단독 통계 생성** — Retrieval 없이 "~골, ~어시스트" 등 수치를 LLM이 생성. 환각 원인. 반드시 구조화 데이터 기반
+3. **팬 로그 저장 누락** — 질의 처리 성공 후 로그 저장을 빼먹으면 팬 인텔리전스 데이터 유실. 로그 저장 실패 = 요청 미완료
+4. **openai SDK 의존** — requirements.txt에 openai SDK가 존재하지만, 이는 DeepSeek/Gemini 호환 게이트웨이용. 실제 OpenAI API 호출은 금지 (전 프로젝트 Gemini 정책)
+5. **벡터 인덱스 무검증 배포** — 벡터스토어 갱신 후 RAG 안정성 검증 없이 배포하면 fallback 비율 급증

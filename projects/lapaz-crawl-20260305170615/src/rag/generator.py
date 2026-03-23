@@ -1,11 +1,11 @@
-"""답변 생성기: Claude Sonnet으로 한국어 3~4문장 답변 생성."""
+"""답변 생성기: Gemini Flash로 한국어 3~4문장 답변 생성."""
 
 import logging
 import os
 import time
 from pathlib import Path
 
-import anthropic
+from google import genai
 from dotenv import load_dotenv
 
 load_dotenv(os.path.join(os.path.dirname(__file__), "..", "..", ".env"))
@@ -15,7 +15,7 @@ logger = logging.getLogger(__name__)
 PROMPTS_DIR = Path(__file__).parent / "prompts"
 SYSTEM_PROMPT = (PROMPTS_DIR / "system_prompt.txt").read_text(encoding="utf-8")
 
-MODEL = "claude-sonnet-4-5-20250929"
+MODEL = "gemini-2.5-flash"
 
 
 def _format_documents(docs: list[dict]) -> str:
@@ -47,21 +47,21 @@ async def generate(
         {"answer": str, "source_docs": list[int], "generation_time_ms": int}
     """
     start = time.monotonic()
-    client = anthropic.AsyncAnthropic()
+    client = genai.Client(api_key=os.getenv("GEMINI_API_KEY"))
 
     formatted_docs = _format_documents(documents)
     system = SYSTEM_PROMPT.replace(
         "{match_context}", match_context or "(경기 컨텍스트 없음)"
     ).replace("{retrieved_documents}", formatted_docs)
 
-    response = await client.messages.create(
+    prompt = f"{system}\n\n사용자 질문: {question}"
+
+    response = await client.aio.models.generate_content(
         model=MODEL,
-        max_tokens=1024,
-        system=system,
-        messages=[{"role": "user", "content": question}],
+        contents=prompt,
     )
 
-    answer = response.content[0].text.strip()
+    answer = response.text.strip()
     elapsed_ms = int((time.monotonic() - start) * 1000)
 
     source_ids = [doc.get("id") for doc in documents if doc.get("id")]

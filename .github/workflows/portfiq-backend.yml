@@ -13,6 +13,12 @@ concurrency:
   group: portfiq-backend-${{ github.ref }}
   cancel-in-progress: true
 
+permissions:
+  contents: read
+
+env:
+  FORCE_JAVASCRIPT_ACTIONS_TO_NODE24: true
+
 jobs:
   lint-and-test:
     runs-on: ubuntu-latest
@@ -27,9 +33,16 @@ jobs:
       ENVIRONMENT: "ci"
       DEBUG: "false"
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v5
         with:
+          clean: false
+          fetch-depth: 1
+          persist-credentials: false
           submodules: false
+
+      - name: Prepare Git workspace
+        run: git config --global --add safe.directory "$GITHUB_WORKSPACE"
+        working-directory: ${{ github.workspace }}
 
       - uses: actions/setup-python@v5
         with:

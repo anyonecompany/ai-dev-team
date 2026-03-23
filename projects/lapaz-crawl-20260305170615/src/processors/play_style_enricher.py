@@ -1,6 +1,6 @@
 """play_style 보강기.
 
-나무위키 크롤링 → 실패 시 Claude LLM fallback으로 play_style/fun_facts 보강.
+나무위키 크롤링 → 실패 시 Gemini LLM fallback으로 play_style/fun_facts 보강.
 """
 
 import logging
@@ -16,7 +16,7 @@ class PlayStyleEnricher:
 
     def __init__(self, delay: float = 2.5):
         self.crawler = NamuWikiSeleniumCrawler()
-        self._anthropic_client = None
+        self._gemini_client = None
 
     def enrich(self, players: list[dict]) -> list[dict]:
         """전체 선수 목록의 play_style/fun_facts 보강."""
@@ -76,16 +76,16 @@ class PlayStyleEnricher:
         return players, stats
 
     def _generate_play_style_llm(self, player: dict) -> str:
-        """Claude claude-sonnet-4-5-20250929으로 play_style 생성."""
-        api_key = os.environ.get("ANTHROPIC_API_KEY")
+        """Gemini gemini-2.5-flash로 play_style 생성."""
+        api_key = os.environ.get("GEMINI_API_KEY")
         if not api_key:
-            logger.warning("ANTHROPIC_API_KEY 없음 - LLM fallback 불가")
+            logger.warning("GEMINI_API_KEY 없음 - LLM fallback 불가")
             return ""
 
         try:
-            if self._anthropic_client is None:
-                import anthropic
-                self._anthropic_client = anthropic.Anthropic()
+            if self._gemini_client is None:
+                from google import genai
+                self._gemini_client = genai.Client(api_key=api_key)
 
             prompt = (
                 f"아래 축구 선수의 플레이스타일을 한국 축구 팬이 30초 안에 이해할 수 있도록 "
@@ -97,12 +97,11 @@ class PlayStyleEnricher:
                 f"커리어 요약: {player.get('career_summary', '')}\n"
             )
 
-            response = self._anthropic_client.messages.create(
-                model="claude-sonnet-4-5-20250929",
-                max_tokens=300,
-                messages=[{"role": "user", "content": prompt}],
+            response = self._gemini_client.models.generate_content(
+                model="gemini-2.5-flash",
+                contents=prompt,
             )
-            return response.content[0].text
+            return response.text
 
         except Exception as e:
             logger.error(f"LLM 생성 실패: {player['name_kr']} - {e}")

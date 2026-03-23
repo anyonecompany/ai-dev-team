@@ -12,6 +12,12 @@ concurrency:
   group: portfiq-flutter-${{ github.ref }}
   cancel-in-progress: true
 
+permissions:
+  contents: read
+
+env:
+  FORCE_JAVASCRIPT_ACTIONS_TO_NODE24: true
+
 jobs:
   analyze-and-test:
     runs-on: ubuntu-latest
@@ -19,9 +25,16 @@ jobs:
       run:
         working-directory: projects/portfiq/apps/mobile
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v5
         with:
+          clean: false
+          fetch-depth: 1
+          persist-credentials: false
           submodules: false
+
+      - name: Prepare Git workspace
+        run: git config --global --add safe.directory "$GITHUB_WORKSPACE"
+        working-directory: ${{ github.workspace }}
 
       - uses: subosito/flutter-action@v2
         with:
@@ -29,7 +42,7 @@ jobs:
           cache: true
 
       - name: Cache pub dependencies
-        uses: actions/cache@v4
+        uses: actions/cache@v5
         with:
           path: |
             ~/.pub-cache
@@ -57,11 +70,18 @@ jobs:
       run:
         working-directory: projects/portfiq/apps/mobile
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v5
         with:
+          clean: false
+          fetch-depth: 1
+          persist-credentials: false
           submodules: false
 
-      - uses: actions/setup-java@v4
+      - name: Prepare Git workspace
+        run: git config --global --add safe.directory "$GITHUB_WORKSPACE"
+        working-directory: ${{ github.workspace }}
+
+      - uses: actions/setup-java@v5
         with:
           distribution: temurin
           java-version: '17'
@@ -72,7 +92,7 @@ jobs:
           cache: true
 
       - name: Cache pub dependencies
-        uses: actions/cache@v4
+        uses: actions/cache@v5
         with:
           path: |
             ~/.pub-cache
@@ -103,9 +123,16 @@ jobs:
       run:
         working-directory: projects/portfiq/apps/mobile
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v5
         with:
+          clean: false
+          fetch-depth: 1
+          persist-credentials: false
           submodules: false
+
+      - name: Prepare Git workspace
+        run: git config --global --add safe.directory "$GITHUB_WORKSPACE"
+        working-directory: ${{ github.workspace }}
 
       - uses: subosito/flutter-action@v2
         with:
@@ -113,7 +140,7 @@ jobs:
           cache: true
 
       - name: Cache pub dependencies
-        uses: actions/cache@v4
+        uses: actions/cache@v5
         with:
           path: |
             ~/.pub-cache

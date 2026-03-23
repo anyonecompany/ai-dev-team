@@ -1,13 +1,14 @@
 "use client";
 
 import { useState } from "react";
-import { Copy, Check, CheckCircle, Archive, FileText, Clock } from "lucide-react";
+import { Copy, Check, CheckCircle, Archive, FileText, Clock, RefreshCw } from "lucide-react";
 import type { Question } from "@/types";
 import StatusBadge from "./StatusBadge";
 
 interface AnswerCardProps {
   question: Question;
   onStatusChange?: (id: string, status: string) => void;
+  onForceFootball?: (question: string) => void;
   highlight?: boolean;
 }
 
@@ -19,11 +20,13 @@ const categoryLabels: Record<string, string> = {
   fan_simulation: "Fan Q&A",
   season_narrative: "Season",
   rules_judgment: "Rules",
+  out_of_scope_check: "Scope Check",
 };
 
 export default function AnswerCard({
   question: q,
   onStatusChange,
+  onForceFootball,
   highlight,
 }: AnswerCardProps) {
   const [copied, setCopied] = useState(false);
@@ -54,9 +57,18 @@ export default function AnswerCard({
         <div className="my-3 h-px bg-[#2A2A2A]" />
 
         {/* Answer */}
-        <p className="whitespace-pre-wrap text-[16px] font-body leading-relaxed text-[#F5F5F5]">
-          {q.answer}
-        </p>
+        {q.answer ? (
+          <p className="whitespace-pre-wrap text-[16px] font-body leading-relaxed text-[#F5F5F5]">
+            {q.answer}
+          </p>
+        ) : (
+          <div className="flex items-center gap-2 py-2">
+            <div className="h-2 w-2 rounded-full bg-[#00E5A0] animate-pulse" />
+            <p className="text-sm font-body text-[#6B6B6B]">
+              답변을 생성하고 있습니다...
+            </p>
+          </div>
+        )}
 
         {/* Meta row */}
         <div className="mt-4 flex flex-wrap items-center gap-2">
@@ -87,7 +99,7 @@ export default function AnswerCard({
           {/* Generation time */}
           <span className="flex items-center gap-1 stat-number text-[12px] text-[#6B6B6B]">
             <Clock className="h-3 w-3" strokeWidth={1.5} aria-hidden="true" />
-            {(q.generation_time_ms / 1000).toFixed(1)}s
+            {((q.total_time_ms ?? q.generation_time_ms) / 1000).toFixed(1)}s
           </span>
 
           <StatusBadge status={q.status} />
@@ -136,6 +148,19 @@ export default function AnswerCard({
             </button>
           )}
         </div>
+
+        {/* Out-of-scope 재분류 버튼 */}
+        {q.category === "out_of_scope_check" && onForceFootball && (
+          <div className="mt-3">
+            <button
+              onClick={() => onForceFootball(q.question)}
+              className="flex items-center gap-2 rounded-[2px] bg-[rgba(0,229,160,0.1)] px-4 py-2 text-sm font-heading font-medium text-[#00E5A0] transition-all duration-200 cursor-pointer hover:bg-[rgba(0,229,160,0.2)]"
+            >
+              <RefreshCw className="h-4 w-4" strokeWidth={1.5} aria-hidden="true" />
+              네, 축구 질문이에요
+            </button>
+          </div>
+        )}
 
         {/* AI disclaimer */}
         <div className="mt-3 pt-3 border-t border-[#2A2A2A]">

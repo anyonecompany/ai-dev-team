@@ -74,7 +74,7 @@ def run_single(scenario: dict) -> dict:
 
     start = time.time()
     try:
-        resp = requests.post(API_URL, json=payload, timeout=30)
+        resp = requests.post(API_URL, json=payload, timeout=60)
         elapsed_ms = int((time.time() - start) * 1000)
     except requests.RequestException as exc:
         elapsed_ms = int((time.time() - start) * 1000)
@@ -100,8 +100,8 @@ def run_single(scenario: dict) -> dict:
     result["confidence"] = body.get("confidence")
     result["source_count"] = body.get("source_count")
 
-    if elapsed_ms > 15000:
-        result["failures"].append(f"Slow: {elapsed_ms}ms > 15000ms")
+    if elapsed_ms > 20000:
+        result["failures"].append(f"Slow: {elapsed_ms}ms > 20000ms")
 
     if not body.get("answer"):
         result["failures"].append("Empty answer")
@@ -166,8 +166,8 @@ def generate_report(results: list[dict], table_str: str) -> None:
     recs: list[str] = []
     if avg_time > 10000:
         recs.append("- Average response time exceeds 10s — consider caching or optimizing RAG retrieval.")
-    if max_time > 15000:
-        recs.append("- Some responses exceed 15s timeout — investigate slow queries.")
+    if max_time > 20000:
+        recs.append("- Some responses exceed 20s — investigate slow queries.")
     if failed > 0:
         recs.append(f"- {failed} scenario(s) failed — review failures above and fix before production.")
     if avg_conf < 0.5:

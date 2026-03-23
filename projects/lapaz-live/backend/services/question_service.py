@@ -21,6 +21,7 @@ async def init_db() -> None:
                 confidence REAL NOT NULL DEFAULT 0.0,
                 source_count INTEGER NOT NULL DEFAULT 0,
                 generation_time_ms INTEGER NOT NULL DEFAULT 0,
+                total_time_ms INTEGER NOT NULL DEFAULT 0,
                 status TEXT NOT NULL DEFAULT 'draft',
                 match_context TEXT,
                 created_at TEXT NOT NULL,
@@ -33,6 +34,14 @@ async def init_db() -> None:
         await db.execute(
             "CREATE INDEX IF NOT EXISTS idx_questions_created_at ON questions(created_at DESC)"
         )
+        existing_columns = {
+            row[1]
+            for row in await db.execute_fetchall("PRAGMA table_info(questions)")
+        }
+        if "total_time_ms" not in existing_columns:
+            await db.execute(
+                "ALTER TABLE questions ADD COLUMN total_time_ms INTEGER NOT NULL DEFAULT 0"
+            )
         await db.commit()
 
 
@@ -54,8 +63,8 @@ async def create_question(data: dict) -> dict:
         await db.execute(
             """INSERT INTO questions
                (id, question, answer, category, confidence, source_count,
-                generation_time_ms, status, match_context, created_at, updated_at)
-               VALUES (?, ?, ?, ?, ?, ?, ?, 'draft', ?, ?, ?)""",
+                generation_time_ms, total_time_ms, status, match_context, created_at, updated_at)
+               VALUES (?, ?, ?, ?, ?, ?, ?, ?, 'draft', ?, ?, ?)""",
             (
                 question_id,
                 data["question"],
@@ -64,6 +73,7 @@ async def create_question(data: dict) -> dict:
                 data["confidence"],
                 data["source_count"],
                 data["generation_time_ms"],
+                data.get("total_time_ms", data.get("generation_time_ms", 0)),
                 match_ctx,
                 now,
                 now,
@@ -79,6 +89,7 @@ async def create_question(data: dict) -> dict:
         "confidence": data["confidence"],
         "source_count": data["source_count"],
         "generation_time_ms": data["generation_time_ms"],
+        "total_time_ms": data.get("total_time_ms", data.get("generation_time_ms", 0)),
         "status": "draft",
     }
 
@@ -91,7 +102,7 @@ async def get_questions(
     """질문 목록을 조회한다."""
     columns = [
         "id", "question", "answer", "category", "confidence",
-        "source_count", "generation_time_ms", "status",
+        "source_count", "generation_time_ms", "total_time_ms", "status",
         "match_context", "created_at", "updated_at",
     ]
 
@@ -139,7 +150,7 @@ async def get_question_by_id(question_id: str) -> dict | None:
     """ID로 질문을 조회한다."""
     columns = [
         "id", "question", "answer", "category", "confidence",
-        "source_count", "generation_time_ms", "status",
+        "source_count", "generation_time_ms", "total_time_ms", "status",
         "match_context", "created_at", "updated_at",
     ]
 
