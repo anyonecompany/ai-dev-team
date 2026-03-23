@@ -13,3 +13,21 @@
 2. 진입점, 핵심 모듈, API 맵, DB 스키마 추출
 3. `.claude/knowledge/codemap-{project}.md` 저장
 4. 기존 파일 있으면 diff 후 갱신된 항목만 보고
+
+## 자동 갱신 로직
+
+### 프로젝트 감지
+인자가 있으면 해당 프로젝트만, 없으면 신선도 체크 후 오래된 것만 갱신:
+```bash
+./scripts/codemap-freshness.sh
+```
+
+### 갱신 범위
+- 디렉토리 맵: 실제 파일 구조 재스캔
+- 핵심 진입점: 변경된 파일 기준으로 업데이트
+- 최근 변경 이력: git log -15 재생성
+- Gotchas: 에이전트 메모리 + knowledge/mistakes에서 추가 반영
+
+### 갱신 후
+- codemap-index.md의 갱신일 업데이트
+- `git commit -m "chore: refresh codemap for {프로젝트} $(date +%Y-%m-%d)"`

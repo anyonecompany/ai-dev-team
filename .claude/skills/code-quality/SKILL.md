@@ -57,3 +57,10 @@ dart format . 2>&1                    # Dart
 - [ ] 에러 핸들링이 있는가 (사용자 친화적 메시지)
 - [ ] 환경변수는 .env에서 가져오는가
 - [ ] 입력 검증이 있는가 (pydantic / zod)
+
+## 프로젝트간 일관성 체크
+
+작업 시 다른 프로젝트의 유사 패턴을 참조하라:
+- 캐시 전략 → `.claude/knowledge/cross-reference.md`의 "캐시 전략" 섹션
+- API 비용 → `.claude/knowledge/cross-reference.md`의 "API 비용 최적화" 섹션
+- 한 프로젝트에서 해결한 문제가 다른 프로젝트에도 적용 가능한지 확인

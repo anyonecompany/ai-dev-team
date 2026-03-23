@@ -444,3 +444,50 @@ ai-dev-team/
 4. 사용 가능한 스킬 목록
 → 서브에이전트는 summary만 반환, 전체 덤프 금지
 
+---
+
+## 인프라 가이드 (Phase 1-3)
+
+### 새 세션 시작 시
+1. **자동** → SessionStart 훅이 codemap 신선도 + 비용 체크
+2. **수동** → `/session-restore`로 이전 세션 이어받기
+3. **수동** → `/mcp-status`로 MCP 상태 확인
+
+### 작업 중
+- `skill-suggest` 훅이 관련 스킬 자동 추천
+- `auto-format` 훅이 파일 저장 시 자동 포맷팅
+- `tool-usage-logger`가 모든 도구 호출 기록
+- `agent-activity-logger`가 서브에이전트 활동 기록
+
+### 작업 완료 시
+1. `verify-on-stop` 훅이 검증 넛지
+2. `/retrospective`로 knowledge 자동 축적
+3. `/session-save`로 핸드오프 문서 갱신
+
+### 모니터링 커맨드
+| 커맨드 | 용도 |
+|--------|------|
+| `/usage-report` | 도구 사용량 리포트 |
+| `/benchmark` | 에이전트 성능 벤치마크 |
+| `/cross-ref` | 프로젝트간 공통 패턴 조회 |
+| `/ci-fix` | CI 실패 자동 진단 + 수정 |
+
+### 모니터링 스크립트
+| 스크립트 | 용도 |
+|---------|------|
+| `./scripts/codemap-freshness.sh` | codemap 신선도 체크 |
+| `./scripts/cost-alert.sh` | 비용 알림 |
+| `./scripts/agent-benchmark.sh` | 에이전트 벤치마크 |
+| `./scripts/token-report.sh` | 토큰 사용량 리포트 |
+| `./scripts/load-project-context.sh` | 프로젝트 컨텍스트 로더 |
+
+### 훅 이벤트 (8개)
+| 이벤트 | 훅 | 역할 |
+|--------|-----|------|
+| PreToolUse | remote-command-guard, db-guard | 파괴적 명령/DB 조작 차단 |
+| PostToolUse | output-secret-filter, security-auto-trigger, auto-format, tool-usage-logger | 시크릿 마스킹, 보안 리뷰, 자동 포맷, 사용 로깅 |
+| Stop | verify-on-stop | lint/테스트/회고 넛지 |
+| UserPromptSubmit | skill-suggest | 관련 스킬 자동 추천 |
+| SessionStart | session-start-check | codemap 신선도 + 비용 체크 |
+| SubagentStart/Stop | agent-activity-logger | 에이전트 활동 기록 |
+
