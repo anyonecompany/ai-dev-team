@@ -11,6 +11,6 @@ touch "/tmp/stop_hook_${SESSION_ID}"
 
 cat << 'EOF'
 {
-  "feedback": "작업 완료 전 확인: 1) 변경 파일 lint 에러 없는지 2) 테스트 통과하는지 3) 메모리에 학습 내용 저장했는지. 하나라도 안 했으면 수행하라."
+  "feedback": "작업 완료 전 확인: 1) lint/테스트 통과 2) 메모리에 학습 저장 3) 새로운 실수/패턴/결정이 있었으면 knowledge/에 기록 (또는 /retrospective 실행). 모두 완료했으면 진행."
 }
 EOF

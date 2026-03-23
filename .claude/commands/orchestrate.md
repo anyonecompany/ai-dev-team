@@ -69,6 +69,47 @@ Agent Teams API로 여러 에이전트가 동시에 작업합니다.
 report_task_done("orchestrate: [작업]", "✅ 완료", "팀원 N명, Wave M개, 태스크 K개 완료")
 ```
 
+## 프로젝트 컨텍스트 자동 주입
+
+/orchestrate 실행 시 아래 순서로 프로젝트를 감지하고 컨텍스트를 주입하라:
+
+### 1. 프로젝트 감지
+사용자의 작업 지시에서 프로젝트를 추론:
+- "portfiq", "포트픽", "ETF", "브리핑" → portfiq
+- "la paz", "라파즈", "축구", "실시간" → lapaz
+- "서로연" → seoroyeon
+- "adaptfit" → adaptfitai
+- 파일 경로 언급 시 → 해당 프로젝트
+- 감지 불가 시 → 사용자에게 확인
+
+### 2. 컨텍스트 로드
+감지된 프로젝트에 따라 아래를 읽어라:
+- `.claude/knowledge/codemap-{프로젝트}.md`
+- `projects/{프로젝트}/CLAUDE.md`
+- 관련 스킬 (portfiq → portfiq-dev, lapaz → lapaz-dev)
+
+컨텍스트 로딩 스크립트:
+```bash
+./scripts/load-project-context.sh {프로젝트명}
+```
+
+### 3. 에이전트별 컨텍스트 전달
+각 teammate/서브에이전트에게 위임할 때 다음을 포함:
+- **PURPOSE**: 이 태스크를 왜 하는지 (전체 목표와의 관계)
+- **SCOPE**: 수정 가능/금지 범위 (CLAUDE.md에서 추출)
+- **ENTRY POINTS**: 작업 시작점 (codemap에서 추출)
+- **DEPENDENCIES**: 다른 에이전트 작업과의 의존성
+- **RETURN FORMAT**: summary만 (코드 덤프 금지)
+
+### 4. 에이전트 매핑 규칙
+| 작업 유형 | 주담당 에이전트 | 스킬 프리로드 |
+|---|---|---|
+| 백엔드 API | BE-Developer | {프로젝트}-dev, code-quality |
+| 프론트엔드 | FE-Developer | {프로젝트}-dev, code-quality |
+| AI/ML | AI-Engineer | {프로젝트}-dev |
+| 테스트/배포 | QA-DevOps | code-quality, deployment |
+| 보안 | Security-Developer | security-review |
+
 ## 사용 예시
 
 ```bash
