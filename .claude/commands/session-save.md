@@ -58,3 +58,15 @@ cp .claude/handoff/current.md ".claude/handoff/history/$(date +%Y%m%d_%H%M%S).md
 git add .claude/handoff/ .claude/knowledge/
 git commit -m "chore: session handoff $(date +%Y-%m-%d_%H:%M)"
 ```
+
+## 외부 보고
+
+핸드오프 저장 후 Slack에 자동 보고:
+```bash
+./scripts/report-to-external.sh session_save '{
+  "summary": "{이번 세션 작업 요약}",
+  "next_actions": "{다음 할 일}",
+  "branch": "{현재 브랜치}",
+  "changed_files": {변경 파일 수}
+}'
+```

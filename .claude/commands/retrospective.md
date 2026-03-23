@@ -63,3 +63,17 @@ description: "작업 회고. 완료된 작업에서 의사결정, 실수, 패턴
 - 기존 항목과 중복이면 추가하지 않음
 - 번호(ADR-N, M-N, P-N)는 기존 파일에서 마지막 번호 확인 후 +1
 - 추가 후 `git add .claude/knowledge/ && git commit -m "chore: auto-retrospective {날짜}"`
+
+## 외부 보고
+
+회고 완료 후 Notion/Slack에 자동 보고:
+```bash
+./scripts/report-to-external.sh retrospective '{
+  "project": "{감지된 프로젝트}",
+  "decisions": ["{새 ADR 제목 목록}"],
+  "mistakes": ["{새 실수 패턴 제목 목록}"],
+  "patterns": ["{새 패턴 제목 목록}"]
+}'
+```
+
+환경변수 미설정 시 자동 스킵되므로 에러 없음.

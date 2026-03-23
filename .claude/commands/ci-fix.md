@@ -48,6 +48,18 @@ $ARGUMENTS
 수정 완료 후 .claude/knowledge/mistakes/README.md에 이번 CI 실패를 기록:
 - 증상, 원인, 수정 방법, 예방책
 
+### 외부 보고
+
+CI 수정 완료 후 Notion/Slack에 자동 보고:
+```bash
+./scripts/report-to-external.sh ci_fix '{
+  "project": "{프로젝트}",
+  "workflow": "{실패한 워크플로우}",
+  "error_type": "{에러 유형}",
+  "fixed": true
+}'
+```
+
 ## gh CLI 없을 때
 
 사용자가 실패 로그를 직접 붙여넣을 수 있다.

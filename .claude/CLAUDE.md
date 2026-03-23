@@ -491,3 +491,14 @@ ai-dev-team/
 | SessionStart | session-start-check | codemap 신선도 + 비용 체크 |
 | SubagentStart/Stop | agent-activity-logger | 에이전트 활동 기록 |
 
+### 외부 보고 (Notion/Slack)
+- `/retrospective` → Notion + Slack 자동 보고
+- `/session-save` → Slack 핸드오프 알림
+- `/ci-fix` → Notion + Slack CI 수정 보고
+- `/benchmark` → Notion 벤치마크 기록
+- `/qa-report` → Notion + Slack QA 결과 보고
+- 스크립트: `./scripts/report-to-external.sh <event_type> '<json>'`
+- 디스패처: `integrations/shared/report_dispatcher.py`
+- 환경변수: `NOTION_API_KEY`, `SLACK_WEBHOOK_URL`
+- 미설정 시 보고 자동 스킵 — 에러 없음
+

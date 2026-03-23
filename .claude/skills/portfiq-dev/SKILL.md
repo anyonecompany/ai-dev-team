@@ -52,6 +52,11 @@ Read `.claude/knowledge/codemap-portfiq.md`
 - Flutter 빌드: `flutter pub run build_runner build` 후 테스트
 - 어드민 Next.js: Pretendard 폰트 미전환 상태 (미해결)
 
+## 외부 보고
+- QA 완료, 회고, CI 수정, 벤치마크 시 Notion/Slack 자동 보고
+- 스크립트: `./scripts/report-to-external.sh`
+- 환경변수 미설정 시 자동 스킵 (에러 없음)
+
 ## References
 - [cache-architecture.md](references/cache-architecture.md)
 - [api-conventions.md](references/api-conventions.md)
