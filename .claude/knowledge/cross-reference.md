@@ -27,11 +27,11 @@
 | 프로젝트 | 주 LLM | 모델 | SDK | fallback | 정책 위반 |
 |----------|--------|------|-----|----------|----------|
 | **portfiq** | Gemini | 2.5 Flash Lite | `google-genai` | Flash -> Pro (Gemini 내) | 없음 |
-| **lapaz-live** | Gemini | 2.5 Flash (생성), 2.5 Flash Lite (분류) | `google-genai` | `gemini-2.0-flash-lite` | **openai 패키지 잔존** (임베딩용) |
-| **lapaz-crawl** | Gemini | 2.5 Flash (enricher, generator) | `google-genai` | 없음 | **openai 패키지 잔존** (임베딩용) |
+| **lapaz-live** | Gemini | 2.5 Flash (생성), 2.5 Flash Lite (분류) | `google-genai` | `gemini-2.0-flash-lite` | ✅ 해결 (2026-03-23, requirements에서 제거) |
+| **lapaz-crawl** | Gemini | 2.5 Flash (enricher, generator) | `google-genai` | 없음 | ✅ 해결 (2026-03-23, requirements에서 제거) |
 | **la-paz** | Gemini | 2.0 Flash (via OpenAI SDK) | `openai` (Gemini OpenAI-compatible endpoint) | DeepSeek V3.2 | **openai 패키지 사용** (Gemini 호환 엔드포인트), **DeepSeek fallback** |
 | **adaptfitai** | Claude CLI | sonnet/opus | `subprocess` (claude CLI) | opus fallback | **Claude CLI 직접 호출** (anthropic 패키지는 아님, 비공식 경로) |
-| **lapaz-dashboard** | Anthropic | - | `anthropic` | - | **anthropic 패키지 직접 의존** |
+| **lapaz-dashboard** | 없음 | - | - | - | ✅ FALSE POSITIVE (실제 anthropic 의존성 없음, 2026-03-23 확인) |
 | **foundloop-landing** | 없음 | - | - | - | - |
 | **seroyeon** | 없음 | - | - | - | - |
 
@@ -139,19 +139,19 @@ ccec84b fix: 백엔드 event loop 블로킹 해결 — 뉴스 수집 asyncio.to_
 
 > 정책: "모든 프로젝트의 AI API는 Google Gemini로 통일 — Anthropic/OpenAI 절대 금지"
 
-### CRITICAL (anthropic 패키지 직접 의존)
+### ~~CRITICAL (anthropic 패키지 직접 의존)~~ — 2026-03-23 FALSE POSITIVE 확인
 
-| 프로젝트 | 파일 | 내용 | 조치 |
+| 프로젝트 | 상태 | 비고 |
+|----------|------|------|
+| **lapaz-dashboard** | ✅ 이슈 없음 | 실제 코드/requirements에 anthropic 의존성 없음. 초기 분석 오류. |
+
+### HIGH (openai 패키지 잔존 — 임베딩용) — 2건 해결
+
+| 프로젝트 | 파일 | 상태 | 비고 |
 |----------|------|------|------|
-| **lapaz-dashboard** | `backend/requirements.txt` | `anthropic>=0.42.0` | google-genai로 교체 필요 |
-
-### HIGH (openai 패키지 잔존 — 임베딩용)
-
-| 프로젝트 | 파일 | 내용 | 조치 |
-|----------|------|------|------|
-| **lapaz-live** | `requirements.txt` | `openai>=1.50.0` | 임베딩을 Voyage 또는 Gemini Embedding으로 전환 후 제거 |
-| **lapaz-crawl** | `requirements.txt` | `openai>=1.50.0` | 동일 — 임베딩 전환 후 제거 |
-| **la-paz** | `requirements.txt` | `openai>=1.50.0` | Gemini OpenAI 호환 엔드포인트 + DeepSeek fallback 용. `google-genai` 직접 사용으로 전환 필요 |
+| **lapaz-live** | `requirements.txt` | ✅ 해결 (2026-03-23) | openai 제거. 임베딩은 voyageai 사용. indexer.py는 조건부 import (openai 없어도 동작) |
+| **lapaz-crawl** | `requirements.txt` | ✅ 해결 (2026-03-23) | openai 제거. 동일 구조. |
+| **la-paz** | `requirements.txt` | ⚠️ 유지 | DeepSeek V3.2를 OpenAI SDK로 호출 — 의도적 사용. `google-genai` 직접 전환 검토 가능하나 현재 동작에 문제 없음 |
 
 ### MEDIUM (Claude CLI 직접 호출)
 
