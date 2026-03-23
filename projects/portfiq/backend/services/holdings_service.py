@@ -54,11 +54,15 @@ def _fetch_yfinance_holdings(ticker: str) -> list[dict] | None:
             if holdings_df is not None and not holdings_df.empty:
                 result = []
                 for symbol, row in holdings_df.iterrows():
-                    result.append({
-                        "name": str(row.get("Name", symbol)),
-                        "ticker": str(symbol).replace(".US", ""),
-                        "weight": round(float(row.get("Holding Percent", 0)) * 100, 2),
-                    })
+                    result.append(
+                        {
+                            "name": str(row.get("Name", symbol)),
+                            "ticker": str(symbol).replace(".US", ""),
+                            "weight": round(
+                                float(row.get("Holding Percent", 0)) * 100, 2
+                            ),
+                        }
+                    )
                 return result[:20]  # Top 20
         except Exception:
             pass
@@ -139,13 +143,15 @@ class HoldingsService:
                 # Ticker exact match OR company name partial match
                 if h_ticker == query_upper or query_lower in h_name:
                     weight = h.get("weight", 0)
-                    results.append({
-                        "etf_ticker": etf_ticker,
-                        "etf_name": "",  # Will be filled by router
-                        "weight": weight,
-                        "holding_name": h.get("name", ""),
-                        "holding_ticker": h.get("ticker", ""),
-                    })
+                    results.append(
+                        {
+                            "etf_ticker": etf_ticker,
+                            "etf_name": "",  # Will be filled by router
+                            "weight": weight,
+                            "holding_name": h.get("name", ""),
+                            "holding_ticker": h.get("ticker", ""),
+                        }
+                    )
                     break
 
         # Sort by weight descending

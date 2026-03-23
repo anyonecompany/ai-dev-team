@@ -65,7 +65,13 @@ async def get_sector_concentration(ticker: str) -> dict[str, Any]:
 
     try:
         sb = get_supabase()
-        result = sb.table("etf_master").select("top_holdings, category").eq("ticker", ticker.upper()).single().execute()
+        result = (
+            sb.table("etf_master")
+            .select("top_holdings, category")
+            .eq("ticker", ticker.upper())
+            .single()
+            .execute()
+        )
     except Exception as e:
         logger.warning("섹터 집중도 조회 실패 (%s): %s", ticker, e)
         return {"ticker": ticker, "sectors": [], "concentration_warning": None}
@@ -83,7 +89,10 @@ async def get_sector_concentration(ticker: str) -> dict[str, Any]:
         weight = h.get("weight", 0)
         sector_map[sector] = sector_map.get(sector, 0) + weight
 
-    sectors = [{"name": k, "weight": round(v, 2), "percentage": round(v, 2)} for k, v in sorted(sector_map.items(), key=lambda x: -x[1])]
+    sectors = [
+        {"name": k, "weight": round(v, 2), "percentage": round(v, 2)}
+        for k, v in sorted(sector_map.items(), key=lambda x: -x[1])
+    ]
 
     # 단일 섹터 50% 초과 경고
     warning = None
@@ -134,12 +143,14 @@ async def get_macro_sensitivity(ticker: str) -> dict[str, Any]:
 
     sensitivities = []
     for key, value in sensitivity.items():
-        sensitivities.append({
-            "factor": LABELS.get(key, key),
-            "factor_key": key,
-            "impact": IMPACT_LABELS.get(value, value),
-            "impact_key": value,
-        })
+        sensitivities.append(
+            {
+                "factor": LABELS.get(key, key),
+                "factor_key": key,
+                "impact": IMPACT_LABELS.get(value, value),
+                "impact_key": value,
+            }
+        )
 
     # 강한 영향 요인 요약
     strong = [s for s in sensitivities if "high" in s["impact_key"]]
@@ -185,30 +196,44 @@ async def get_etf_comparison(ticker: str) -> dict[str, Any]:
         sb = get_supabase()
 
         # 해당 ETF의 카테고리 조회
-        result = sb.table("etf_master").select("*").eq("ticker", ticker.upper()).single().execute()
+        result = (
+            sb.table("etf_master")
+            .select("*")
+            .eq("ticker", ticker.upper())
+            .single()
+            .execute()
+        )
         if not result.data:
             return {"ticker": ticker, "comparisons": []}
 
         category = result.data.get("category", "")
 
         # 같은 카테고리 ETF 조회
-        peers_result = sb.table("etf_master").select("ticker, name, category, expense_ratio").eq("category", category).limit(5).execute()
+        peers_result = (
+            sb.table("etf_master")
+            .select("ticker, name, category, expense_ratio")
+            .eq("category", category)
+            .limit(5)
+            .execute()
+        )
     except Exception as e:
         logger.warning("ETF 비교 조회 실패 (%s): %s", ticker, e)
         return {"ticker": ticker, "comparisons": []}
 
     comparisons = []
     current_expense = None
-    for peer in (peers_result.data or []):
+    for peer in peers_result.data or []:
         is_current = peer["ticker"] == ticker.upper()
         if is_current:
             current_expense = peer.get("expense_ratio", 0) or 0
-        comparisons.append({
-            "ticker": peer["ticker"],
-            "name": peer.get("name", ""),
-            "expense_ratio": peer.get("expense_ratio", 0),
-            "is_current": is_current,
-        })
+        comparisons.append(
+            {
+                "ticker": peer["ticker"],
+                "name": peer.get("name", ""),
+                "expense_ratio": peer.get("expense_ratio", 0),
+                "is_current": is_current,
+            }
+        )
 
     # key_difference 생성 (보수율 비교 기반)
     for comp in comparisons:
@@ -231,71 +256,204 @@ async def get_etf_comparison(ticker: str) -> dict[str, Any]:
         "comparisons": sorted(comparisons, key=lambda x: x.get("expense_ratio", 0)),
     }
 
+
 # ──────────────────────────────────────────────
 # 섹터 매핑 (ticker → sector)
 # ──────────────────────────────────────────────
 
 _COMPANY_SECTOR_MAP: dict[str, str] = {
     # 기술
-    "AAPL": "기술", "MSFT": "기술", "NVDA": "기술", "AVGO": "기술",
-    "GOOG": "기술", "GOOGL": "기술", "META": "기술", "TSLA": "기술",
-    "AMD": "기술", "INTC": "기술", "QCOM": "기술", "TXN": "기술",
-    "CRM": "기술", "ADBE": "기술", "ORCL": "기술", "CSCO": "기술",
-    "AMAT": "기술", "LRCX": "기술", "KLAC": "기술", "MRVL": "기술",
-    "MU": "기술", "SNPS": "기술", "CDNS": "기술", "PANW": "기술",
-    "NOW": "기술", "PLTR": "기술", "CRWD": "기술", "NET": "기술",
-    "MSTR": "기술", "COIN": "기술", "SQ": "기술", "SHOP": "기술",
-    "SNOW": "기술", "DDOG": "기술", "ZS": "기술", "FTNT": "기술",
-    "NFLX": "기술", "INTU": "기술", "ISRG": "기술", "ANET": "기술",
-    "ARM": "기술", "ASML": "기술", "TSM": "기술", "SMCI": "기술",
-    "DELL": "기술", "HPE": "기술", "KEYS": "기술", "ON": "기술",
-    "ADI": "기술", "NXPI": "기술",
+    "AAPL": "기술",
+    "MSFT": "기술",
+    "NVDA": "기술",
+    "AVGO": "기술",
+    "GOOG": "기술",
+    "GOOGL": "기술",
+    "META": "기술",
+    "TSLA": "기술",
+    "AMD": "기술",
+    "INTC": "기술",
+    "QCOM": "기술",
+    "TXN": "기술",
+    "CRM": "기술",
+    "ADBE": "기술",
+    "ORCL": "기술",
+    "CSCO": "기술",
+    "AMAT": "기술",
+    "LRCX": "기술",
+    "KLAC": "기술",
+    "MRVL": "기술",
+    "MU": "기술",
+    "SNPS": "기술",
+    "CDNS": "기술",
+    "PANW": "기술",
+    "NOW": "기술",
+    "PLTR": "기술",
+    "CRWD": "기술",
+    "NET": "기술",
+    "MSTR": "기술",
+    "COIN": "기술",
+    "SQ": "기술",
+    "SHOP": "기술",
+    "SNOW": "기술",
+    "DDOG": "기술",
+    "ZS": "기술",
+    "FTNT": "기술",
+    "NFLX": "기술",
+    "INTU": "기술",
+    "ISRG": "기술",
+    "ANET": "기술",
+    "ARM": "기술",
+    "ASML": "기술",
+    "TSM": "기술",
+    "SMCI": "기술",
+    "DELL": "기술",
+    "HPE": "기술",
+    "KEYS": "기술",
+    "ON": "기술",
+    "ADI": "기술",
+    "NXPI": "기술",
     # 소비재
-    "AMZN": "소비재(임의)", "COST": "소비재(필수)", "WMT": "소비재(필수)",
-    "HD": "소비재(임의)", "NKE": "소비재(임의)", "SBUX": "소비재(임의)",
-    "TGT": "소비재(임의)", "LOW": "소비재(임의)", "MCD": "소비재(임의)",
-    "PG": "소비재(필수)", "KO": "소비재(필수)", "PEP": "소비재(필수)",
-    "CL": "소비재(필수)", "MDLZ": "소비재(필수)", "PM": "소비재(필수)",
-    "MO": "소비재(필수)", "EL": "소비재(임의)", "LULU": "소비재(임의)",
-    "BKNG": "소비재(임의)", "ABNB": "소비재(임의)", "CMG": "소비재(임의)",
+    "AMZN": "소비재(임의)",
+    "COST": "소비재(필수)",
+    "WMT": "소비재(필수)",
+    "HD": "소비재(임의)",
+    "NKE": "소비재(임의)",
+    "SBUX": "소비재(임의)",
+    "TGT": "소비재(임의)",
+    "LOW": "소비재(임의)",
+    "MCD": "소비재(임의)",
+    "PG": "소비재(필수)",
+    "KO": "소비재(필수)",
+    "PEP": "소비재(필수)",
+    "CL": "소비재(필수)",
+    "MDLZ": "소비재(필수)",
+    "PM": "소비재(필수)",
+    "MO": "소비재(필수)",
+    "EL": "소비재(임의)",
+    "LULU": "소비재(임의)",
+    "BKNG": "소비재(임의)",
+    "ABNB": "소비재(임의)",
+    "CMG": "소비재(임의)",
     "DPZ": "소비재(임의)",
     # 금융
-    "JPM": "금융", "BAC": "금융", "WFC": "금융", "GS": "금융",
-    "MS": "금융", "C": "금융", "BLK": "금융", "SCHW": "금융",
-    "AXP": "금융", "V": "금융", "MA": "금융", "PYPL": "금융",
-    "BRK.B": "금융", "BRK-B": "금융", "USB": "금융", "PNC": "금융",
-    "TFC": "금융", "COF": "금융", "AIG": "금융", "MET": "금융",
+    "JPM": "금융",
+    "BAC": "금융",
+    "WFC": "금융",
+    "GS": "금융",
+    "MS": "금융",
+    "C": "금융",
+    "BLK": "금융",
+    "SCHW": "금융",
+    "AXP": "금융",
+    "V": "금융",
+    "MA": "금융",
+    "PYPL": "금융",
+    "BRK.B": "금융",
+    "BRK-B": "금융",
+    "USB": "금융",
+    "PNC": "금융",
+    "TFC": "금융",
+    "COF": "금융",
+    "AIG": "금융",
+    "MET": "금융",
     # 헬스케어
-    "JNJ": "헬스케어", "UNH": "헬스케어", "PFE": "헬스케어", "MRK": "헬스케어",
-    "ABBV": "헬스케어", "LLY": "헬스케어", "TMO": "헬스케어", "ABT": "헬스케어",
-    "DHR": "헬스케어", "BMY": "헬스케어", "AMGN": "헬스케어", "GILD": "헬스케어",
-    "VRTX": "헬스케어", "REGN": "헬스케어", "MRNA": "헬스케어", "BIIB": "헬스케어",
-    "MDT": "헬스케어", "SYK": "헬스케어", "CI": "헬스케어", "ELV": "헬스케어",
+    "JNJ": "헬스케어",
+    "UNH": "헬스케어",
+    "PFE": "헬스케어",
+    "MRK": "헬스케어",
+    "ABBV": "헬스케어",
+    "LLY": "헬스케어",
+    "TMO": "헬스케어",
+    "ABT": "헬스케어",
+    "DHR": "헬스케어",
+    "BMY": "헬스케어",
+    "AMGN": "헬스케어",
+    "GILD": "헬스케어",
+    "VRTX": "헬스케어",
+    "REGN": "헬스케어",
+    "MRNA": "헬스케어",
+    "BIIB": "헬스케어",
+    "MDT": "헬스케어",
+    "SYK": "헬스케어",
+    "CI": "헬스케어",
+    "ELV": "헬스케어",
     # 에너지
-    "XOM": "에너지", "CVX": "에너지", "COP": "에너지", "SLB": "에너지",
-    "EOG": "에너지", "MPC": "에너지", "PSX": "에너지", "VLO": "에너지",
-    "OXY": "에너지", "HAL": "에너지", "DVN": "에너지", "FANG": "에너지",
-    "PXD": "에너지", "HES": "에너지", "BKR": "에너지",
+    "XOM": "에너지",
+    "CVX": "에너지",
+    "COP": "에너지",
+    "SLB": "에너지",
+    "EOG": "에너지",
+    "MPC": "에너지",
+    "PSX": "에너지",
+    "VLO": "에너지",
+    "OXY": "에너지",
+    "HAL": "에너지",
+    "DVN": "에너지",
+    "FANG": "에너지",
+    "PXD": "에너지",
+    "HES": "에너지",
+    "BKR": "에너지",
     # 산업재
-    "BA": "산업재", "CAT": "산업재", "HON": "산업재", "UPS": "산업재",
-    "RTX": "산업재", "LMT": "산업재", "GE": "산업재", "DE": "산업재",
-    "MMM": "산업재", "UNP": "산업재", "FDX": "산업재", "WM": "산업재",
-    "ETN": "산업재", "EMR": "산업재", "GD": "산업재", "NOC": "산업재",
+    "BA": "산업재",
+    "CAT": "산업재",
+    "HON": "산업재",
+    "UPS": "산업재",
+    "RTX": "산업재",
+    "LMT": "산업재",
+    "GE": "산업재",
+    "DE": "산업재",
+    "MMM": "산업재",
+    "UNP": "산업재",
+    "FDX": "산업재",
+    "WM": "산업재",
+    "ETN": "산업재",
+    "EMR": "산업재",
+    "GD": "산업재",
+    "NOC": "산업재",
     # 통신
-    "T": "통신", "VZ": "통신", "TMUS": "통신", "CMCSA": "통신",
-    "DIS": "통신", "CHTR": "통신", "NWSA": "통신", "PARA": "통신",
+    "T": "통신",
+    "VZ": "통신",
+    "TMUS": "통신",
+    "CMCSA": "통신",
+    "DIS": "통신",
+    "CHTR": "통신",
+    "NWSA": "통신",
+    "PARA": "통신",
     # 유틸리티
-    "NEE": "유틸리티", "DUK": "유틸리티", "SO": "유틸리티", "D": "유틸리티",
-    "AEP": "유틸리티", "SRE": "유틸리티", "XEL": "유틸리티", "EXC": "유틸리티",
+    "NEE": "유틸리티",
+    "DUK": "유틸리티",
+    "SO": "유틸리티",
+    "D": "유틸리티",
+    "AEP": "유틸리티",
+    "SRE": "유틸리티",
+    "XEL": "유틸리티",
+    "EXC": "유틸리티",
     # 부동산
-    "AMT": "부동산", "PLD": "부동산", "CCI": "부동산", "EQIX": "부동산",
-    "SPG": "부동산", "O": "부동산", "DLR": "부동산", "WELL": "부동산",
+    "AMT": "부동산",
+    "PLD": "부동산",
+    "CCI": "부동산",
+    "EQIX": "부동산",
+    "SPG": "부동산",
+    "O": "부동산",
+    "DLR": "부동산",
+    "WELL": "부동산",
     # 소재
-    "LIN": "소재", "APD": "소재", "SHW": "소재", "ECL": "소재",
-    "NEM": "소재", "FCX": "소재", "DOW": "소재", "DD": "소재",
+    "LIN": "소재",
+    "APD": "소재",
+    "SHW": "소재",
+    "ECL": "소재",
+    "NEM": "소재",
+    "FCX": "소재",
+    "DOW": "소재",
+    "DD": "소재",
     # 귀금속/광업 (GDX 등)
-    "NEM.US": "소재", "GOLD": "소재", "AEM": "소재", "FNV": "소재",
-    "WPM": "소재", "RGLD": "소재",
+    "NEM.US": "소재",
+    "GOLD": "소재",
+    "AEM": "소재",
+    "FNV": "소재",
+    "WPM": "소재",
+    "RGLD": "소재",
 }
 
 # ──────────────────────────────────────────────
@@ -395,6 +553,7 @@ def _cache_key_for_tickers(tickers: list[str]) -> str:
 # Service class
 # ──────────────────────────────────────────────
 
+
 class EtfAnalysisService:
     """ETF 분석 서비스 — 섹터 집중도, 매크로 민감도, ETF 비교, 보유종목 변동."""
 
@@ -433,7 +592,10 @@ class EtfAnalysisService:
 
         # 정렬 후 반환
         sectors = sorted(
-            [{"name": name, "weight_pct": round(w, 1)} for name, w in sector_weights.items()],
+            [
+                {"name": name, "weight_pct": round(w, 1)}
+                for name, w in sector_weights.items()
+            ],
             key=lambda x: x["weight_pct"],
             reverse=True,
         )
@@ -624,7 +786,9 @@ class EtfAnalysisService:
             top3 = ", ".join(
                 h.get("name", "") for h in data.get("top_holdings", [])[:3]
             )
-            infos.append(f"{t}({name}): 카테고리={category}, 보수율={expense}%, 상위종목={top3}")
+            infos.append(
+                f"{t}({name}): 카테고리={category}, 보수율={expense}%, 상위종목={top3}"
+            )
 
         lines = " | ".join(infos)
         return f"ETF 비교: {lines}"
@@ -644,6 +808,7 @@ class EtfAnalysisService:
         t = ticker.upper()
         try:
             from services.supabase_client import get_supabase
+
             sb = get_supabase()
 
             # 7일 전 날짜
@@ -688,13 +853,15 @@ class EtfAnalysisService:
             change = current_weight - previous_weight
 
             if abs(change) >= 1.0:
-                changes.append({
-                    "name": h.get("name", ""),
-                    "ticker": h_ticker,
-                    "current_weight": round(current_weight, 2),
-                    "previous_weight": round(previous_weight, 2),
-                    "change_pct": round(change, 2),
-                })
+                changes.append(
+                    {
+                        "name": h.get("name", ""),
+                        "ticker": h_ticker,
+                        "current_weight": round(current_weight, 2),
+                        "previous_weight": round(previous_weight, 2),
+                        "change_pct": round(change, 2),
+                    }
+                )
 
         # 변동폭 큰 순서로 정렬
         changes.sort(key=lambda x: abs(x["change_pct"]), reverse=True)

@@ -58,15 +58,55 @@ def _get_gemini_client() -> genai.Client:
 # ──────────────────────────────────────────────
 
 _POSITIVE_WORDS = [
-    "상승", "호조", "성장", "급등", "반등", "최고", "호재", "수혜",
-    "surge", "rally", "gain", "rise", "jump", "soar", "record",
-    "beat", "exceed", "outperform", "bullish", "upgrade",
+    "상승",
+    "호조",
+    "성장",
+    "급등",
+    "반등",
+    "최고",
+    "호재",
+    "수혜",
+    "surge",
+    "rally",
+    "gain",
+    "rise",
+    "jump",
+    "soar",
+    "record",
+    "beat",
+    "exceed",
+    "outperform",
+    "bullish",
+    "upgrade",
 ]
 _NEGATIVE_WORDS = [
-    "하락", "급락", "폭락", "악재", "위기", "손실", "둔화", "우려",
-    "리스크", "제재", "규제", "관세", "파산", "디폴트",
-    "drop", "fall", "plunge", "crash", "decline", "loss", "risk",
-    "tariff", "sanction", "downgrade", "bearish", "recession", "layoff",
+    "하락",
+    "급락",
+    "폭락",
+    "악재",
+    "위기",
+    "손실",
+    "둔화",
+    "우려",
+    "리스크",
+    "제재",
+    "규제",
+    "관세",
+    "파산",
+    "디폴트",
+    "drop",
+    "fall",
+    "plunge",
+    "crash",
+    "decline",
+    "loss",
+    "risk",
+    "tariff",
+    "sanction",
+    "downgrade",
+    "bearish",
+    "recession",
+    "layoff",
 ]
 
 
@@ -121,13 +161,25 @@ def _normalize_sentiment(raw: str) -> str:
 RSS_FEEDS_EN: list[tuple[str, str]] = [
     ("https://finance.yahoo.com/news/rssindex", "Yahoo Finance"),
     ("https://feeds.marketwatch.com/marketwatch/topstories", "MarketWatch"),
-    ("https://search.cnbc.com/rs/search/combinedcms/view.xml?partnerId=wrss01&id=10001147", "CNBC"),
+    (
+        "https://search.cnbc.com/rs/search/combinedcms/view.xml?partnerId=wrss01&id=10001147",
+        "CNBC",
+    ),
     ("https://www.investing.com/rss/news.rss", "Investing.com"),
-    ("https://search.cnbc.com/rs/search/combinedcms/view.xml?partnerId=wrss01&id=20910258", "CNBC ETF"),
+    (
+        "https://search.cnbc.com/rs/search/combinedcms/view.xml?partnerId=wrss01&id=20910258",
+        "CNBC ETF",
+    ),
     ("https://feeds.marketwatch.com/marketwatch/marketpulse", "MarketWatch Pulse"),
     ("https://feeds.bloomberg.com/markets/news.rss", "Bloomberg Markets"),
-    ("https://search.cnbc.com/rs/search/combinedcms/view.xml?partnerId=wrss01&id=10000664", "CNBC Tech"),
-    ("https://search.cnbc.com/rs/search/combinedcms/view.xml?partnerId=wrss01&id=19836768", "CNBC Earnings"),
+    (
+        "https://search.cnbc.com/rs/search/combinedcms/view.xml?partnerId=wrss01&id=10000664",
+        "CNBC Tech",
+    ),
+    (
+        "https://search.cnbc.com/rs/search/combinedcms/view.xml?partnerId=wrss01&id=19836768",
+        "CNBC Earnings",
+    ),
     ("https://feeds.reuters.com/reuters/businessNews", "Reuters Business"),
 ]
 
@@ -381,7 +433,9 @@ JSON 배열로 응답하세요:
 """
 
 
-_BATCH_SIZE = 10  # 한 번에 번역할 헤드라인 수 (summary_3line+sentiment 추가로 출력 증가)
+_BATCH_SIZE = (
+    10  # 한 번에 번역할 헤드라인 수 (summary_3line+sentiment 추가로 출력 증가)
+)
 
 
 async def _translate_batch(headlines: list[str]) -> list[dict[str, str]]:
@@ -391,11 +445,22 @@ async def _translate_batch(headlines: list[str]) -> list[dict[str, str]]:
     Handles Gemini 429 rate limits with backoff.
     Retries up to 3 times with exponential backoff on timeout/transient errors.
     """
-    fallback = [{"ko": h, "impact_reason": "", "summary_3line": f"• {h}", "sentiment": _keyword_sentiment(h)} for h in headlines]
+    fallback = [
+        {
+            "ko": h,
+            "impact_reason": "",
+            "summary_3line": f"• {h}",
+            "sentiment": _keyword_sentiment(h),
+        }
+        for h in headlines
+    ]
 
     # Rate limit 상태면 즉시 fallback 반환 (대기하지 않음)
     if _is_gemini_rate_limited():
-        logger.info("Gemini rate limited, 키워드 기반 sentiment 반환 (배치 %d건)", len(headlines))
+        logger.info(
+            "Gemini rate limited, 키워드 기반 sentiment 반환 (배치 %d건)",
+            len(headlines),
+        )
         return fallback
 
     numbered = "\n".join(f"[{i}] {h}" for i, h in enumerate(headlines))
@@ -419,9 +484,11 @@ async def _translate_batch(headlines: list[str]) -> list[dict[str, str]]:
                     timeout=30,
                 )
             except asyncio.TimeoutError:
-                logger.warning("Gemini 번역 배치 타임아웃 (30s, attempt %d/3)", attempt + 1)
+                logger.warning(
+                    "Gemini 번역 배치 타임아웃 (30s, attempt %d/3)", attempt + 1
+                )
                 if attempt < 2:
-                    await asyncio.sleep(2 ** attempt)
+                    await asyncio.sleep(2**attempt)
                     continue
                 return fallback
 
@@ -442,11 +509,21 @@ async def _translate_batch(headlines: list[str]) -> list[dict[str, str]]:
                         "ko": ko,
                         "impact_reason": reason,
                         "summary_3line": item.get("summary_3line", ""),
-                        "sentiment": _normalize_sentiment(item.get("sentiment", "중립")),
+                        "sentiment": _normalize_sentiment(
+                            item.get("sentiment", "중립")
+                        ),
                     }
 
             return [
-                result_map.get(i, {"ko": h, "impact_reason": "", "summary_3line": f"• {h}", "sentiment": "중립"})
+                result_map.get(
+                    i,
+                    {
+                        "ko": h,
+                        "impact_reason": "",
+                        "summary_3line": f"• {h}",
+                        "sentiment": "중립",
+                    },
+                )
                 for i, h in enumerate(headlines)
             ]
 
@@ -458,7 +535,7 @@ async def _translate_batch(headlines: list[str]) -> list[dict[str, str]]:
                 return fallback
             logger.error("번역 배치 실패 (attempt %d/3): %s", attempt + 1, e)
             if attempt < 2:
-                await asyncio.sleep(2 ** attempt)
+                await asyncio.sleep(2**attempt)
                 continue
             return fallback
 
@@ -485,7 +562,7 @@ async def _translate_and_summarize(headlines: list[str]) -> list[dict[str, str]]
 
     results: list[dict[str, str]] = []
     for start in range(0, len(headlines), _BATCH_SIZE):
-        batch = headlines[start:start + _BATCH_SIZE]
+        batch = headlines[start : start + _BATCH_SIZE]
         logger.info("번역 배치 %d~%d / %d", start, start + len(batch), len(headlines))
         translated = await _translate_batch(batch)
         results.extend(translated)
@@ -496,6 +573,7 @@ async def _translate_and_summarize(headlines: list[str]) -> list[dict[str, str]]
 # ──────────────────────────────────────────────
 # RSS collection
 # ──────────────────────────────────────────────
+
 
 async def _collect_rss_fast() -> list[dict]:
     """Collect RSS articles WITHOUT translation (fast, ~3 seconds).
@@ -516,9 +594,10 @@ async def _collect_rss_fast() -> list[dict]:
             success = False
             for attempt in range(3):  # 최초 1회 + 재시도 2회
                 try:
-                    resp = await client.get(feed_url, headers={
-                        "User-Agent": "Mozilla/5.0 (compatible; Portfiq/1.0)"
-                    })
+                    resp = await client.get(
+                        feed_url,
+                        headers={"User-Agent": "Mozilla/5.0 (compatible; Portfiq/1.0)"},
+                    )
                     resp.raise_for_status()
                     feed = await asyncio.to_thread(feedparser.parse, resp.text)
 
@@ -526,44 +605,58 @@ async def _collect_rss_fast() -> list[dict]:
                         published = entry.get("published_parsed")
                         pub_dt = (
                             datetime(
-                                published[0], published[1], published[2],
-                                published[3], published[4], published[5],
+                                published[0],
+                                published[1],
+                                published[2],
+                                published[3],
+                                published[4],
+                                published[5],
                                 tzinfo=timezone.utc,
                             )
                             if published
                             else datetime.now(timezone.utc)
                         )
 
-                        articles.append({
-                            "headline_en": entry.get("title", ""),
-                            "headline": entry.get("title", ""),
-                            "summary": entry.get("summary", ""),
-                            "source": source_name,
-                            "source_url": entry.get("link", ""),
-                            "published_at": pub_dt.isoformat(),
-                            "translated": False,
-                        })
+                        articles.append(
+                            {
+                                "headline_en": entry.get("title", ""),
+                                "headline": entry.get("title", ""),
+                                "summary": entry.get("summary", ""),
+                                "source": source_name,
+                                "source_url": entry.get("link", ""),
+                                "published_at": pub_dt.isoformat(),
+                                "translated": False,
+                            }
+                        )
                     success = True
                     feed_success_count += 1
                     break
                 except httpx.TimeoutException as e:
                     logger.error(
                         "RSS 타임아웃 (%s, attempt %d/3): %s",
-                        source_name, attempt + 1, e,
+                        source_name,
+                        attempt + 1,
+                        e,
                     )
                     if attempt < 2:
                         await asyncio.sleep(3)
                 except httpx.HTTPStatusError as e:
                     logger.error(
                         "RSS HTTP 에러 (%s, attempt %d/3): status=%d, %s",
-                        source_name, attempt + 1, e.response.status_code, e,
+                        source_name,
+                        attempt + 1,
+                        e.response.status_code,
+                        e,
                     )
                     if attempt < 2:
                         await asyncio.sleep(3)
                 except Exception as e:
                     logger.error(
                         "RSS 수집 실패 (%s, attempt %d/3): %s: %s",
-                        source_name, attempt + 1, type(e).__name__, e,
+                        source_name,
+                        attempt + 1,
+                        type(e).__name__,
+                        e,
                     )
                     if attempt < 2:
                         await asyncio.sleep(3)
@@ -576,7 +669,10 @@ async def _collect_rss_fast() -> list[dict]:
 
     logger.info(
         "RSS 수집 결과: 성공=%d/%d, 실패=%d, 기사=%d건",
-        feed_success_count, len(RSS_FEEDS_EN), feed_fail_count, len(articles),
+        feed_success_count,
+        len(RSS_FEEDS_EN),
+        feed_fail_count,
+        len(articles),
     )
     return articles
 
@@ -616,7 +712,7 @@ def _translate_cached_articles_sync() -> None:
                 logger.info("Gemini rate limited, 남은 배치 스킵")
                 break
 
-            batch = headlines[start:start + _BATCH_SIZE]
+            batch = headlines[start : start + _BATCH_SIZE]
             numbered = "\n".join(f"[{i}] {h}" for i, h in enumerate(batch))
             prompt = _TRANSLATE_SUMMARISE_PROMPT.format(headlines=numbered)
 
@@ -639,29 +735,42 @@ def _translate_cached_articles_sync() -> None:
                         result_map[idx] = item
 
                 # Update cache in-place
-                for i, article in enumerate(untranslated[start:start + len(batch)]):
+                for i, article in enumerate(untranslated[start : start + len(batch)]):
                     tr = result_map.get(i)
                     if tr:
                         article["headline"] = tr["ko"]
                         if tr.get("impact_reason"):
                             article["summary"] = tr["impact_reason"]
                         article["summary_3line"] = tr.get("summary_3line", "")
-                        raw_sentiment = tr.get("sentiment") or _keyword_sentiment(article.get("original_headline", article["headline"]))
+                        raw_sentiment = tr.get("sentiment") or _keyword_sentiment(
+                            article.get("original_headline", article["headline"])
+                        )
                         article["sentiment"] = _normalize_sentiment(raw_sentiment)
                         article["translated"] = True
 
-                logger.info("번역 배치 완료: %d~%d / %d", start, start + len(batch), len(headlines))
+                logger.info(
+                    "번역 배치 완료: %d~%d / %d",
+                    start,
+                    start + len(batch),
+                    len(headlines),
+                )
                 _time_mod.sleep(1.5)  # rate limit 방지 — 배치 간 1.5초 대기
 
             except Exception as e:
                 err_str = str(e).lower()
-                if "429" in err_str or "resource_exhausted" in err_str or "rate" in err_str:
+                if (
+                    "429" in err_str
+                    or "resource_exhausted" in err_str
+                    or "rate" in err_str
+                ):
                     _set_gemini_rate_limited(60)
                     break  # rate limited — 남은 배치 스킵
                 logger.error("번역 배치 실패 (%d~%d): %s", start, start + len(batch), e)
 
         translated_count = sum(1 for a in _news_cache if a.get("translated"))
-        logger.info("백그라운드 번역 완료: %d / %d건", translated_count, len(_news_cache))
+        logger.info(
+            "백그라운드 번역 완료: %d / %d건", translated_count, len(_news_cache)
+        )
 
     finally:
         with _translation_lock:
@@ -730,6 +839,7 @@ async def fetch_and_store_news() -> int:
         def _classify_impacts() -> None:
             try:
                 from services.impact_service import impact_service
+
                 for article in unique:
                     headline = article.get("headline", "")
                     summary = article.get("summary", "")
@@ -754,7 +864,10 @@ async def fetch_and_store_news() -> int:
         def _store_to_supabase() -> int:
             count = 0
             try:
-                from services.supabase_client import get_supabase_service as get_supabase
+                from services.supabase_client import (
+                    get_supabase_service as get_supabase,
+                )
+
                 sb = get_supabase()
 
                 for article in unique:
@@ -804,7 +917,9 @@ async def fetch_and_store_news() -> int:
 
         # 번역 실행 (동기 Gemini + Supabase → thread로 실행)
         def _translate_and_update() -> None:
-            if not (unique and settings.GEMINI_API_KEY and not _is_gemini_rate_limited()):
+            if not (
+                unique and settings.GEMINI_API_KEY and not _is_gemini_rate_limited()
+            ):
                 return
 
             headlines = [a.get("headline_en", a.get("headline", "")) for a in unique]
@@ -814,7 +929,7 @@ async def fetch_and_store_news() -> int:
                     logger.info("Gemini rate limited, 남은 번역 배치 스킵")
                     break
 
-                batch = headlines[start:start + _BATCH_SIZE]
+                batch = headlines[start : start + _BATCH_SIZE]
                 numbered = "\n".join(f"[{i}] {h}" for i, h in enumerate(batch))
                 prompt = _TRANSLATE_SUMMARISE_PROMPT.format(headlines=numbered)
                 try:
@@ -836,24 +951,40 @@ async def fetch_and_store_news() -> int:
                             if item.get("impact_reason"):
                                 article["summary"] = item["impact_reason"]
                             article["summary_3line"] = item.get("summary_3line", "")
-                            raw_sentiment = item.get("sentiment") or _keyword_sentiment(article.get("original_headline", article["headline"]))
+                            raw_sentiment = item.get("sentiment") or _keyword_sentiment(
+                                article.get("original_headline", article["headline"])
+                            )
                             article["sentiment"] = _normalize_sentiment(raw_sentiment)
                             article["translated"] = True
-                    logger.info("번역 배치 완료: %d~%d / %d", start, start + len(batch), len(headlines))
+                    logger.info(
+                        "번역 배치 완료: %d~%d / %d",
+                        start,
+                        start + len(batch),
+                        len(headlines),
+                    )
                     _time_mod.sleep(1.5)  # rate limit 방지 — 배치 간 1.5초 대기
                 except Exception as e:
                     err_str = str(e).lower()
-                    if "429" in err_str or "resource_exhausted" in err_str or "rate" in err_str:
+                    if (
+                        "429" in err_str
+                        or "resource_exhausted" in err_str
+                        or "rate" in err_str
+                    ):
                         _set_gemini_rate_limited(60)
                         break
-                    logger.error("번역 배치 실패 (%d~%d): %s", start, start + len(batch), e)
+                    logger.error(
+                        "번역 배치 실패 (%d~%d): %s", start, start + len(batch), e
+                    )
 
             translated_count = sum(1 for a in unique if a.get("translated"))
             logger.info("번역 완료: %d / %d건", translated_count, len(unique))
 
             # 번역된 헤드라인을 Supabase에 업데이트
             try:
-                from services.supabase_client import get_supabase_service as get_supabase
+                from services.supabase_client import (
+                    get_supabase_service as get_supabase,
+                )
+
                 sb_update = get_supabase()
                 update_count = 0
                 for article in unique:
@@ -863,9 +994,9 @@ async def fetch_and_store_news() -> int:
                                 "headline": article["headline"],
                                 "impact_reason": article.get("summary", ""),
                             }
-                            sb_update.table("news").update(
-                                update_row
-                            ).eq("source_url", article["source_url"]).execute()
+                            sb_update.table("news").update(update_row).eq(
+                                "source_url", article["source_url"]
+                            ).execute()
                             update_count += 1
                         except Exception:
                             pass
@@ -884,6 +1015,7 @@ async def fetch_and_store_news() -> int:
         # 피드 캐시 무효화 — 번역된 데이터로 재생성되도록
         try:
             from services.cache import clear_cache as _clear
+
             _clear()
             logger.info("피드 캐시 무효화 완료 (번역 반영)")
         except Exception:
@@ -898,6 +1030,7 @@ async def fetch_and_store_news() -> int:
 # ──────────────────────────────────────────────
 # Service class (기존 API 호환)
 # ──────────────────────────────────────────────
+
 
 def _is_within_24h(published_at: str | None) -> bool:
     """Check if the published_at timestamp is within the last 24 hours."""
@@ -1019,12 +1152,15 @@ class NewsService:
         """
         try:
             from services.supabase_client import get_supabase_service as get_supabase
+
             sb = get_supabase()
 
             cutoff = (datetime.now(timezone.utc) - timedelta(hours=24)).isoformat()
             resp = (
                 sb.table("news")
-                .select("id,headline,impact_reason,source,source_url,published_at,raw_data")
+                .select(
+                    "id,headline,impact_reason,source,source_url,published_at,raw_data"
+                )
                 .gte("published_at", cutoff)
                 .order("published_at", desc=True)
                 .limit(100)
@@ -1039,26 +1175,38 @@ class NewsService:
             for row in resp.data:
                 # impacts는 raw_data JSONB 안에 저장됨
                 raw_data = row.get("raw_data") or {}
-                impacts = raw_data.get("impacts", []) if isinstance(raw_data, dict) else []
+                impacts = (
+                    raw_data.get("impacts", []) if isinstance(raw_data, dict) else []
+                )
 
                 headline = row.get("headline", "")
-                sentiment = raw_data.get("sentiment", "중립") if isinstance(raw_data, dict) else "중립"
-                summary_3line = raw_data.get("summary_3line", "") if isinstance(raw_data, dict) else ""
+                sentiment = (
+                    raw_data.get("sentiment", "중립")
+                    if isinstance(raw_data, dict)
+                    else "중립"
+                )
+                summary_3line = (
+                    raw_data.get("summary_3line", "")
+                    if isinstance(raw_data, dict)
+                    else ""
+                )
                 # fallback: summary_3line이 비어있으면 headline 기반 1줄 요약
                 if not summary_3line and headline:
                     summary_3line = f"• {headline}"
 
-                articles.append({
-                    "headline": headline,
-                    "summary": row.get("impact_reason", ""),
-                    "source": row.get("source", ""),
-                    "source_url": row.get("source_url", ""),
-                    "published_at": row.get("published_at", ""),
-                    "impacts": impacts,
-                    "sentiment": sentiment,
-                    "summary_3line": summary_3line,
-                    "translated": True,
-                })
+                articles.append(
+                    {
+                        "headline": headline,
+                        "summary": row.get("impact_reason", ""),
+                        "source": row.get("source", ""),
+                        "source_url": row.get("source_url", ""),
+                        "published_at": row.get("published_at", ""),
+                        "impacts": impacts,
+                        "sentiment": sentiment,
+                        "summary_3line": summary_3line,
+                        "translated": True,
+                    }
+                )
 
             logger.info("Supabase에서 뉴스 %d건 로드 (서버 재시작 복구)", len(articles))
             return articles
@@ -1094,7 +1242,7 @@ class NewsService:
                 set_cached(cache_key, all_items)
 
         total = len(all_items)
-        page = all_items[offset:offset + limit]
+        page = all_items[offset : offset + limit]
         return page, total
 
     async def _get_all_items_no_time_filter(self) -> list[FeedItem]:
@@ -1176,11 +1324,14 @@ class NewsService:
         """
         try:
             from services.supabase_client import get_supabase_service as get_supabase
+
             sb = get_supabase()
 
             resp = (
                 sb.table("news")
-                .select("id,headline,impact_reason,source,source_url,published_at,raw_data")
+                .select(
+                    "id,headline,impact_reason,source,source_url,published_at,raw_data"
+                )
                 .order("published_at", desc=True)
                 .limit(500)
                 .execute()
@@ -1192,16 +1343,20 @@ class NewsService:
             articles: list[dict] = []
             for row in resp.data:
                 raw_data = row.get("raw_data") or {}
-                impacts = raw_data.get("impacts", []) if isinstance(raw_data, dict) else []
-                articles.append({
-                    "headline": row.get("headline", ""),
-                    "summary": row.get("impact_reason", ""),
-                    "source": row.get("source", ""),
-                    "source_url": row.get("source_url", ""),
-                    "published_at": row.get("published_at", ""),
-                    "impacts": impacts,
-                    "translated": True,
-                })
+                impacts = (
+                    raw_data.get("impacts", []) if isinstance(raw_data, dict) else []
+                )
+                articles.append(
+                    {
+                        "headline": row.get("headline", ""),
+                        "summary": row.get("impact_reason", ""),
+                        "source": row.get("source", ""),
+                        "source_url": row.get("source_url", ""),
+                        "published_at": row.get("published_at", ""),
+                        "impacts": impacts,
+                        "translated": True,
+                    }
+                )
             return articles
 
         except Exception as e:
