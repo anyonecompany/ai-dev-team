@@ -1,0 +1,73 @@
+name: Portfiq Environment Check
+
+on:
+  push:
+    branches: [main]
+    paths:
+      - 'projects/portfiq/backend/**/*.py'
+      - 'projects/portfiq/backend/.env.example'
+  pull_request:
+    branches: [main]
+    paths:
+      - 'projects/portfiq/backend/**/*.py'
+
+concurrency:
+  group: portfiq-env-check-${{ github.ref }}
+  cancel-in-progress: true
+
+permissions:
+  contents: read
+
+env:
+  FORCE_JAVASCRIPT_ACTIONS_TO_NODE24: true
+
+jobs:
+  env-check:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v5
+        with:
+          clean: false
+          fetch-depth: 1
+          persist-credentials: false
+          submodules: false
+
+      - name: Extract env vars from code
+        run: |
+          grep -rn "os.environ\|os.getenv" projects/portfiq/backend/ \
+            --include="*.py" | \
+            grep -oP '(?<=["\x27])[A-Z][A-Z0-9_]+(?=["\x27])' | \
+            sort -u > /tmp/env_code.txt
+          echo "코드에서 참조하는 환경변수:"
+          cat /tmp/env_code.txt
+
+      - name: Extract env vars from .env.example
+        run: |
+          cat projects/portfiq/.env.example 2>/dev/null | \
+            grep -oP '^[A-Z][A-Z0-9_]+' | sort -u > /tmp/env_defined.txt
+          echo "정의된 환경변수:"
+          cat /tmp/env_defined.txt
+
+      - name: Check for missing vars
+        run: |
+          MISSING=$(comm -23 /tmp/env_code.txt /tmp/env_defined.txt 2>/dev/null || true)
+          if [ -n "$MISSING" ]; then
+            echo "::warning::환경변수 누락 발견:"
+            echo "$MISSING"
+          else
+            echo "✅ 환경변수 일치"
+          fi
+
+      - name: Check for secrets in code
+        run: |
+          LEAKS=$(grep -rn 'sk-\|api_key\s*=\s*["'"'"'][^"'"'"']\{10\}' \
+            projects/portfiq/ --include="*.py" --include="*.dart" \
+            --include="*.ts" | grep -v ".env" | grep -v "example" | \
+            grep -v "test" | grep -v "node_modules" || true)
+          if [ -n "$LEAKS" ]; then
+            echo "::error::시크릿 누출 의심:"
+            echo "$LEAKS"
+            exit 1
+          else
+            echo "✅ 시크릿 안전"
+          fi

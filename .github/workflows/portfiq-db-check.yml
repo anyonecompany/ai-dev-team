@@ -1,0 +1,63 @@
+name: Portfiq DB Schema Check
+
+on:
+  push:
+    branches: [main]
+    paths:
+      - 'projects/portfiq/backend/models/**'
+      - 'projects/portfiq/backend/services/**'
+      - 'projects/portfiq/backend/migrations/**'
+  pull_request:
+    branches: [main]
+    paths:
+      - 'projects/portfiq/backend/models/**'
+      - 'projects/portfiq/backend/services/**'
+
+concurrency:
+  group: portfiq-db-check-${{ github.ref }}
+  cancel-in-progress: true
+
+permissions:
+  contents: read
+
+env:
+  FORCE_JAVASCRIPT_ACTIONS_TO_NODE24: true
+
+jobs:
+  schema-check:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v5
+        with:
+          clean: false
+          fetch-depth: 1
+          persist-credentials: false
+          submodules: false
+
+      - name: Extract table references from code
+        run: |
+          grep -rn '\.table(' projects/portfiq/backend/ \
+            --include="*.py" | \
+            grep -oP '(?<=\.table\(["\x27])[a-z_]+(?=["\x27])' | \
+            sort -u > /tmp/tables.txt
+          echo "참조 테이블:"
+          cat /tmp/tables.txt
+
+      - name: Check service_role usage
+        run: |
+          echo "service_role 사용 위치:"
+          grep -rn "service_role\|get_supabase_service\|SERVICE_KEY" \
+            projects/portfiq/backend/ --include="*.py" | \
+            grep -v "test\|#\|example" || echo "직접 참조 없음 ✅"
+
+      - name: Migration files check
+        run: |
+          MIGRATION_DIR="projects/portfiq/backend/migrations"
+          if [ -d "$MIGRATION_DIR" ]; then
+            echo "마이그레이션 파일:"
+            ls -la "$MIGRATION_DIR"/*.sql 2>/dev/null || echo "SQL 파일 없음"
+            LAST_NUM=$(ls "$MIGRATION_DIR"/*.sql 2>/dev/null | sort -V | tail -1 | grep -oP '\d+' | head -1)
+            echo "마지막 마이그레이션 번호: ${LAST_NUM:-없음}"
+          else
+            echo "ℹ️ 마이그레이션 디렉토리 없음"
+          fi

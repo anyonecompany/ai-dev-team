@@ -106,15 +106,61 @@ jobs:
       - name: Run code generation
         run: dart run build_runner build --delete-conflicting-outputs
 
+      - name: Decode keystore
+        if: env.KEYSTORE_BASE64 != ''
+        run: |
+          echo "$KEYSTORE_BASE64" | base64 -d > android/app/keystore.jks
+          cat > android/key.properties << EOF
+          storeFile=keystore.jks
+          storePassword=$KEYSTORE_PASSWORD
+          keyAlias=$KEY_ALIAS
+          keyPassword=$KEY_PASSWORD
+          EOF
+        env:
+          KEYSTORE_BASE64: ${{ secrets.KEYSTORE_BASE64 }}
+          KEYSTORE_PASSWORD: ${{ secrets.KEYSTORE_PASSWORD }}
+          KEY_ALIAS: ${{ secrets.KEY_ALIAS }}
+          KEY_PASSWORD: ${{ secrets.KEY_PASSWORD }}
+
       - name: Build Android App Bundle
         run: flutter build appbundle --release
 
-      - name: Upload APK artifact
+      - name: Build APK
+        run: flutter build apk --release
+
+      - name: Upload artifacts
         uses: actions/upload-artifact@v4
         with:
-          name: android-appbundle
-          path: projects/portfiq/apps/mobile/build/app/outputs/bundle/release/*.aab
-          retention-days: 7
+          name: portfiq-android-release
+          path: |
+            projects/portfiq/apps/mobile/build/app/outputs/flutter-apk/app-release.apk
+            projects/portfiq/apps/mobile/build/app/outputs/bundle/release/*.aab
+          retention-days: 30
+
+      - name: Upload to Play Store (internal)
+        if: env.PLAY_STORE_JSON_KEY != ''
+        run: |
+          cd android
+          gem install bundler
+          bundle init
+          echo "gem 'fastlane'" >> Gemfile
+          bundle install
+          bundle exec fastlane internal
+        env:
+          PLAY_STORE_JSON_KEY: ${{ secrets.PLAY_STORE_JSON_KEY }}
+          ANDROID_PACKAGE_NAME: ${{ secrets.ANDROID_PACKAGE_NAME }}
+
+      - name: Notify Slack
+        if: always()
+        run: |
+          if [ -n "${{ secrets.SLACK_WEBHOOK_URL }}" ]; then
+            STATUS="${{ job.status }}"
+            EMOJI="📱"
+            [ "$STATUS" != "success" ] && EMOJI="🔴"
+            curl -s -X POST "${{ secrets.SLACK_WEBHOOK_URL }}" \
+              -H 'Content-Type: application/json' \
+              -d "{\"text\":\"${EMOJI} Portfiq Flutter 빌드: ${STATUS}\"}" || true
+          fi
 
   build-ios:
     runs-on: macos-latest

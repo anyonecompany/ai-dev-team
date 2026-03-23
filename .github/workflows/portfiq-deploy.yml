@@ -43,3 +43,23 @@ jobs:
         working-directory: projects/portfiq/backend
         env:
           RAILWAY_TOKEN: ${{ secrets.RAILWAY_TOKEN }}
+
+      - name: Health check
+        if: success()
+        run: |
+          sleep 30
+          curl -f "${{ secrets.RAILWAY_URL }}/health" --max-time 10 \
+            && echo "✅ Health check passed" \
+            || echo "⚠️ Health check failed — 배포는 성공했으나 서버 응답 없음"
+
+      - name: Notify Slack
+        if: always()
+        run: |
+          if [ -n "${{ secrets.SLACK_WEBHOOK_URL }}" ]; then
+            STATUS="${{ job.status }}"
+            EMOJI="🚀"
+            [ "$STATUS" != "success" ] && EMOJI="🔴"
+            curl -s -X POST "${{ secrets.SLACK_WEBHOOK_URL }}" \
+              -H 'Content-Type: application/json' \
+              -d "{\"text\":\"${EMOJI} Portfiq 백엔드 Railway 배포: ${STATUS}\"}" || true
+          fi

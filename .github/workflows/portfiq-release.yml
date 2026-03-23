@@ -1,0 +1,72 @@
+name: Portfiq Release
+
+on:
+  workflow_dispatch:
+    inputs:
+      version:
+        description: '버전 (예: 1.0.0)'
+        required: true
+      release_notes:
+        description: '릴리스 노트'
+        required: false
+        default: 'Portfiq release'
+
+permissions:
+  contents: write
+
+env:
+  FORCE_JAVASCRIPT_ACTIONS_TO_NODE24: true
+
+jobs:
+  release:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v5
+        with:
+          fetch-depth: 0
+          persist-credentials: true
+
+      - name: Configure git
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "github-actions[bot]@users.noreply.github.com"
+
+      - name: Create tag
+        run: |
+          git tag -a "v${{ github.event.inputs.version }}" \
+            -m "${{ github.event.inputs.release_notes }}"
+          git push origin "v${{ github.event.inputs.version }}"
+
+      - name: Generate changelog
+        run: |
+          PREV_TAG=$(git describe --tags --abbrev=0 HEAD^ 2>/dev/null || echo "")
+          if [ -n "$PREV_TAG" ]; then
+            echo "## Changes since $PREV_TAG" > /tmp/changelog.md
+            echo "" >> /tmp/changelog.md
+            git log ${PREV_TAG}..HEAD --pretty=format:"- %s (%h)" \
+              -- projects/portfiq/ >> /tmp/changelog.md
+          else
+            echo "## Initial Release" > /tmp/changelog.md
+            echo "" >> /tmp/changelog.md
+            git log --oneline -20 -- projects/portfiq/ >> /tmp/changelog.md
+          fi
+
+      - name: Create GitHub Release
+        uses: softprops/action-gh-release@v2
+        with:
+          tag_name: "v${{ github.event.inputs.version }}"
+          name: "Portfiq v${{ github.event.inputs.version }}"
+          body_path: /tmp/changelog.md
+          draft: false
+          prerelease: false
+
+      - name: Notify Slack
+        if: always()
+        run: |
+          if [ -n "${{ secrets.SLACK_WEBHOOK_URL }}" ]; then
+            curl -s -X POST "${{ secrets.SLACK_WEBHOOK_URL }}" \
+              -H 'Content-Type: application/json' \
+              -d '{
+                "text": "🎉 *Portfiq v${{ github.event.inputs.version }}* 릴리스 완료\n${{ github.event.inputs.release_notes }}"
+              }' || true
+          fi
