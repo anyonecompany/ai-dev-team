@@ -281,3 +281,6 @@ grep -rn "mock\|fallback\|dummy\|fake\|placeholder" --include="*.py" --include="
 - 작업 중: 새로 발견한 codepath, 패턴, 아키텍처 결정을 기록하라
 - 작업 완료 시: 이번 작업 학습 내용을 간결하게 저장하라
 - 형식: "[프로젝트] 주제 — 내용"
+
+## 규율
+.claude/rules/workflow-discipline.md의 규칙을 준수하라.

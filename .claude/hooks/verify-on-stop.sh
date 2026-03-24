@@ -9,8 +9,22 @@ if [ -f "/tmp/stop_hook_${SESSION_ID}" ]; then
 fi
 touch "/tmp/stop_hook_${SESSION_ID}"
 
-cat << 'EOF'
-{
-  "feedback": "작업 완료 전 확인: 1) lint/테스트 통과 2) 메모리에 학습 저장 3) 새로운 실수/패턴/결정이 있었으면 knowledge/에 기록 (또는 /retrospective 실행). 모두 완료했으면 진행. 주요 작업이었으면 외부 보고도 확인 (/retrospective가 자동 보고함)."
-}
+MSGS="작업 완료 전: 1) lint/테스트 통과 2) 메모리 저장 3) /retrospective"
+
+# phase-loop 미완료 체크
+if [ -f ".planning/STATE.md" ]; then
+    CURRENT=$(grep -A1 "## 현재 작업" .planning/STATE.md 2>/dev/null | tail -1)
+    if [ -n "$CURRENT" ] && [ "$CURRENT" != "없음" ]; then
+        MSGS="${MSGS} | phase-loop 미완료: ${CURRENT}"
+    fi
+fi
+
+# 미커밋 변경 체크
+UNCOMMITTED=$(git status --short 2>/dev/null | wc -l | tr -d ' ')
+if [ "$UNCOMMITTED" -gt 0 ]; then
+    MSGS="${MSGS} | 미커밋 ${UNCOMMITTED}건"
+fi
+
+cat << EOF
+{"feedback": "${MSGS}"}
 EOF

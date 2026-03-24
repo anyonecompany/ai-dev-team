@@ -1,7 +1,7 @@
 # Knowledge Library
 
-> 버전: 2.0.0
-> 최종 갱신: 2026-03-23
+> 버전: 3.0.0
+> 최종 갱신: 2026-03-24
 
 ## 개요
 
@@ -17,6 +17,7 @@
 ├── codemap-lapaz.md             # La Paz 프로젝트 코드맵
 ├── codemap-portfiq.md           # Portfiq 프로젝트 코드맵
 ├── codemap-others.md            # 기타 프로젝트 코드맵
+├── cross-reference.md           # 프로젝트 간 공통 패턴 크로스 레퍼런스
 ├── decisions/                   # 기술 선택 및 아키텍처 의사결정
 │   ├── README.md                # ADR 7건 (인프라 마이그레이션, LLM 전환 등)
 │   └── tech-choices.md          # 초기 기술 스택 선택 (Python/FastAPI/React 등)
@@ -34,7 +35,7 @@
 
 ## 파일별 용도
 
-### Codemap (탐색 비용 최소화)
+### Codemap (탐색 비용 최소화) - 4개
 
 | 파일 | 용도 |
 |------|------|
@@ -43,7 +44,7 @@
 | `codemap-portfiq.md` | Portfiq 프로젝트 파일/모듈 맵 |
 | `codemap-others.md` | 기타 프로젝트 및 인프라 파일 맵 |
 
-### Decisions (왜 이렇게 결정했는가)
+### Decisions (왜 이렇게 결정했는가) - ADR 7건
 
 | 파일 | 내용 | 건수 |
 |------|------|------|
@@ -52,7 +53,7 @@
 
 주요 ADR: Railway→Fly.io 마이그레이션, Anthropic→Gemini LLM 전환, OAuth 인증 전환, claude-forge 도입
 
-### Mistakes (같은 실수를 반복하지 마라)
+### Mistakes (같은 실수를 반복하지 마라) - 7건
 
 | 파일 | 내용 | 건수 |
 |------|------|------|
@@ -61,7 +62,7 @@
 
 핵심 교훈: OAuth는 전용 콜백 페이지 분리, 무거운 백그라운드 작업은 별도 스레드, 캐시 무효화 잊지 말 것
 
-### Patterns (이렇게 하면 된다)
+### Patterns (이렇게 하면 된다) - 6건
 
 | 파일 | 내용 | 건수 |
 |------|------|------|
@@ -71,6 +72,12 @@
 | `patterns/crud-service.md` | 서비스 레이어 CRUD 추상화 | - |
 | `patterns/auth-supabase.md` | Supabase Auth 통합 패턴 | - |
 | `patterns/react-api-client.md` | 타입 안전 API 클라이언트 패턴 | - |
+
+### Cross-reference - 1건
+
+| 파일 | 내용 |
+|------|------|
+| `cross-reference.md` | 프로젝트 간 공통 패턴 크로스 레퍼런스 |
 
 ## 사용 방법
 
@@ -115,5 +122,6 @@ bash .claude/scripts/save-pattern.sh <패턴명> <카테고리>
 
 | 날짜 | 변경 내용 |
 |------|----------|
+| 2026-03-24 | v3.0.0 — cross-reference.md 반영, 수치 정확화 (Codemap 4, ADR 7, Mistakes 7, Patterns 6, Cross-ref 1) |
 | 2026-03-23 | v2.0.0 — git log 분석 기반 decisions/mistakes/patterns README 신규 작성, 인덱스 전면 개편 |
 | 2026-02-03 | v1.0.0 — 초기 라이브러리 생성 (5개 패턴) |
