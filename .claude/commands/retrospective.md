@@ -77,3 +77,10 @@ description: "작업 회고. 완료된 작업에서 의사결정, 실수, 패턴
 ```
 
 환경변수 미설정 시 자동 스킵되므로 에러 없음.
+
+## Notion 현황 페이지 갱신
+
+회고 완료 후 Notion 현황 페이지도 갱신 (knowledge 건수 변경):
+```bash
+./scripts/update-notion-status.sh update
+```

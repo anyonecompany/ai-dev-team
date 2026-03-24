@@ -65,6 +65,14 @@ git add .claude/handoff/ .claude/knowledge/
 git commit -m "chore: session handoff $(date +%Y-%m-%d_%H:%M)"
 ```
 
+## Notion 현황 페이지 갱신
+
+세션 저장 완료 후 Notion 현황 페이지를 자동 갱신:
+```bash
+./scripts/update-notion-status.sh update
+```
+환경변수 미설정 시 자동 스킵.
+
 ## 외부 보고
 
 핸드오프 저장 후 Slack에 자동 보고:
