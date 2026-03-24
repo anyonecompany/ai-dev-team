@@ -228,7 +228,7 @@ def _build_version_block(version: str, description: str) -> list[dict]:
 
 
 def update_status_page(page_id: str = "") -> bool:
-    """현황 페이지 갱신."""
+    """콜아웃 2개 + 타임스탬프만 갱신 (전체 구조는 건드리지 않음)."""
     page_id = page_id or STATUS_PAGE_ID
 
     if not page_id:
@@ -244,66 +244,81 @@ def update_status_page(page_id: str = "") -> bool:
         return False
 
     status = _collect_status()
-    blocks = _build_status_blocks(status)
+    infra = status.get("infra", {})
+    ts = datetime.now().strftime("%Y-%m-%d %H:%M")
 
     with httpx.Client(timeout=30.0) as client:
-        # 기존 블록 중 인프라 현황 관련만 삭제
         resp = client.get(
             f"https://api.notion.com/v1/blocks/{page_id}/children?page_size=100",
             headers=_headers(),
         )
 
-        if resp.status_code == 200:
-            # 자동 갱신 블록만 삭제 (버전 기록 보존)
-            auto_keywords = (
-                "인프라 현황",
-                "현재 상태",
-                "상세 인프라 수치",
-                "자동 갱신:",
-                "커맨드 ",
-                "브랜치:",
-                "마지막 커밋:",
-                "현재 작업:",
-                "다음 단계:",
-            )
-            for block in resp.json().get("results", []):
-                bt = block.get("type", "")
-                text = ""
-                if bt in block and "rich_text" in block[bt]:
-                    texts = block[bt]["rich_text"]
-                    if texts:
-                        text = texts[0].get("text", {}).get("content", "")
+        if resp.status_code != 200:
+            print(f"블록 조회 실패: {resp.status_code}")
+            return False
 
-                should_delete = (
-                    any(text.startswith(kw) for kw in auto_keywords)
-                    or bt == "table"
-                    or (
-                        bt == "callout"
-                        and any(
-                            kw in text for kw in ("커맨드", "브랜치:", "현재 작업:")
-                        )
+        for block in resp.json().get("results", []):
+            bt = block.get("type", "")
+
+            # 콜아웃 갱신
+            if bt == "callout":
+                texts = block["callout"].get("rich_text", [])
+                if not texts:
+                    continue
+                content = texts[0].get("text", {}).get("content", "")
+                icon = block["callout"].get("icon", {}).get("emoji", "")
+                new_content = None
+
+                if icon == "📊" or content.startswith("커맨드"):
+                    new_content = (
+                        f"커맨드 {infra.get('commands', '?')} | "
+                        f"에이전트 {infra.get('agents', '?')} "
+                        f"(Opus {infra.get('agents_opus', '?')}, "
+                        f"Sonnet {infra.get('agents_sonnet', '?')}, "
+                        f"Haiku {infra.get('agents_haiku', '?')}) | "
+                        f"스킬 {infra.get('skills', '?')} | "
+                        f"훅 {infra.get('hooks', '?')} ({infra.get('hook_events', '?')} events) | "
+                        f"스크립트 {infra.get('scripts', '?')} | "
+                        f"CI/CD {infra.get('workflows', '?')}"
                     )
-                )
 
-                if should_delete:
-                    client.delete(
+                elif icon == "🔄" or content.startswith("브랜치"):
+                    new_content = (
+                        f"브랜치: {status.get('branch', '?')} | "
+                        f"마지막 커밋: {status.get('last_commit', '?')}\n"
+                        f"현재 작업: {status.get('current_work', '없음')}\n"
+                        f"다음 단계: {status.get('next_step', '없음')}"
+                    )
+
+                if new_content:
+                    client.patch(
                         f"https://api.notion.com/v1/blocks/{block['id']}",
                         headers=_headers(),
+                        json={
+                            "callout": {
+                                "rich_text": [{"text": {"content": new_content}}]
+                            }
+                        },
                     )
 
-        # 새 블록 추가
-        resp = client.patch(
-            f"https://api.notion.com/v1/blocks/{page_id}/children",
-            headers=_headers(),
-            json={"children": blocks},
-        )
+            # 타임스탬프 갱신
+            elif bt == "paragraph":
+                texts = block["paragraph"].get("rich_text", [])
+                if texts and texts[0].get("text", {}).get("content", "").startswith(
+                    "자동 갱신"
+                ):
+                    client.patch(
+                        f"https://api.notion.com/v1/blocks/{block['id']}",
+                        headers=_headers(),
+                        json={
+                            "paragraph": {
+                                "rich_text": [{"text": {"content": f"자동 갱신: {ts}"}}]
+                            }
+                        },
+                    )
 
-    if resp.status_code == 200:
-        print(f"Notion 현황 갱신 완료 ({status.get('timestamp', '')[:19]})")
-        return True
-
-    print(f"Notion 갱신 실패: {resp.status_code} — {resp.text[:200]}")
-    return False
+    print(f"Notion 현황 갱신 완료 ({ts})")
+    return True
 
 
 def add_version_record(version: str, description: str, page_id: str = "") -> bool:
