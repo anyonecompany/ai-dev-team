@@ -20,11 +20,24 @@ $ARGUMENTS
    git tag -a "{버전}" -m "{설명}"
    git push origin "{버전}"
    ```
-3. Notion에 현황 갱신 + 버전 기록:
+3. Notion 현황 페이지 갱신:
    ```bash
-   ./scripts/update-notion-status.sh both "{버전}" "{설명}"
+   ./scripts/update-notion-status.sh update
    ```
-4. Slack에도 알림
+4. Notion 버전 관리 DB에 기록 (문제→가설→해결→결과 본문 포함):
+   ```bash
+   python3 integrations/notion/version_recorder.py \
+       --title "{버전} — {설명}" \
+       --type "{유형}" \
+       --summary "{한줄 요약}" \
+       --scope "{영향 범위}" \
+       --problem "{이전 문제점}" \
+       --hypothesis "{가설}" \
+       --solution "{해결 방식}" \
+       --result "{결과}"
+   ```
+   사용자가 --problem 등을 안 주면 빈 템플릿이 들어감. Notion에서 직접 채울 수 있음.
+5. Slack에도 알림
 
 ## 버전 규칙
 
