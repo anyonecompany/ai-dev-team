@@ -1,6 +1,6 @@
 """
-Notion 태스크 큐 매니저.
-태스크 등록/조회/상태 갱신.
+Notion 태스크 보드 매니저.
+기존 "태스크 보드" DB (31a37b6f...80f3)에 연결.
 
 사용법:
     python task_manager.py add "태스크 제목" --project portfiq --size M
@@ -11,19 +11,57 @@ Notion 태스크 큐 매니저.
 
 import argparse
 import json
+import logging
 import os
 import sys
-from datetime import datetime
 
 sys.path.insert(0, os.path.dirname(__file__))
 from config import NOTION_API_KEY
+
+logger = logging.getLogger(__name__)
 
 try:
     import requests
 except ImportError:
     requests = None
 
-TASK_DB_ID = os.getenv("NOTION_TASKQUEUE_DB_ID", "32d37b6f-6bf8-8160-bf01-c203ce7ef790")
+# 기존 태스크 보드 DB (primary) → 태스크 큐 DB (fallback)
+TASK_DB_ID = os.getenv(
+    "NOTION_TASKBOARD_DB_ID",
+    os.getenv("NOTION_TASKQUEUE_DB_ID", "31a37b6f-6bf8-80f3-9017-d5df9ed5559a"),
+)
+
+PROJECT_DB_ID = os.getenv(
+    "NOTION_PROJECT_DB_ID", "31a37b6f-6bf8-8036-90e9-e2720d2c10b5"
+)
+
+# 프로젝트명 → Notion 페이지 ID 캐시
+_PROJECT_CACHE: dict[str, str] = {
+    "portfiq": "31f37b6f-6bf8-81dd-a6b1-e59895438f80",
+    "la-paz": "31a37b6f-6bf8-8009-a65c-e101b96857cc",
+    "lapaz-live": "31a37b6f-6bf8-8009-a65c-e101b96857cc",
+    "adaptfitai": "31a37b6f-6bf8-809f-a969-fb1baa842f7c",
+    "서로연": "31b37b6f-6bf8-81dc-8f6d-f52cfab34ec3",
+    "foundloop": "32037b6f-6bf8-8170-889e-d6968aa0014b",
+    "ai-dev-team": "32037b6f-6bf8-8161-a940-c0e2cc103c8d",
+    "tactical-gnn": "32437b6f-6bf8-81da-accf-feb252ff7e14",
+}
+
+# 기존 태스크 보드 상태 매핑
+STATUS_MAP = {
+    "📋 대기": "⏳ 진행 전",
+    "🔄 진행중": "🔨 진행중",
+    "✅ 완료": "✅ 완료",
+    "❌ 실패": "⏸ 중단됨",
+    "⏸️ 보류": "⏸ 중단됨",
+}
+
+PRIORITY_MAP = {
+    "🔴 긴급": "🔴 P0",
+    "🟠 높음": "🔴 P0",
+    "🟡 보통": "🟡 P1",
+    "🟢 낮음": "🟢 P2",
+}
 
 
 def _headers() -> dict:
@@ -32,6 +70,40 @@ def _headers() -> dict:
         "Content-Type": "application/json",
         "Notion-Version": "2022-06-28",
     }
+
+
+def _get_project_id(project_name: str) -> str | None:
+    """프로젝트명 → Notion 프로젝트 페이지 ID."""
+    if not project_name:
+        return None
+
+    # 캐시 확인
+    lower = project_name.lower().replace(" ", "-")
+    for key, pid in _PROJECT_CACHE.items():
+        if lower in key.lower() or key.lower() in lower:
+            return pid
+
+    # Notion에서 검색
+    if not requests:
+        return None
+    resp = requests.post(
+        f"https://api.notion.com/v1/databases/{PROJECT_DB_ID}/query",
+        headers=_headers(),
+        json={
+            "filter": {
+                "property": "프로젝트명",
+                "title": {"contains": project_name},
+            },
+            "page_size": 1,
+        },
+    )
+    if resp.status_code == 200:
+        results = resp.json().get("results", [])
+        if results:
+            pid = results[0]["id"]
+            _PROJECT_CACHE[lower] = pid
+            return pid
+    return None
 
 
 def add_task(
@@ -43,33 +115,33 @@ def add_task(
     parent_task: str = "",
     description: str = "",
 ) -> str | None:
-    """태스크를 Notion DB에 추가. 페이지 ID 반환."""
+    """태스크를 기존 태스크 보드 DB에 추가."""
     if not NOTION_API_KEY or not requests:
         print("Notion 설정 미완료 — 스킵")
         return None
 
+    mapped_status = STATUS_MAP.get("📋 대기", "⏳ 진행 전")
+    mapped_priority = PRIORITY_MAP.get(priority, "🟡 P1")
+
     props: dict = {
-        "태스크": {"title": [{"text": {"content": title}}]},
-        "상태": {"select": {"name": "📋 대기"}},
+        "태스크명": {"title": [{"text": {"content": title}}]},
+        "상태": {"select": {"name": mapped_status}},
+        "우선순위": {"select": {"name": mapped_priority}},
         "크기": {"select": {"name": size}},
-        "우선순위": {"select": {"name": priority}},
         "순서": {"number": order},
-        "생성일": {"date": {"start": datetime.now().strftime("%Y-%m-%d")}},
     }
-    if project:
-        props["프로젝트"] = {"select": {"name": project}}
+
+    if description:
+        props["완료 조건"] = {"rich_text": [{"text": {"content": description[:2000]}}]}
     if parent_task:
         props["상위 태스크"] = {"rich_text": [{"text": {"content": parent_task}}]}
 
+    # 프로젝트 relation
+    project_id = _get_project_id(project)
+    if project_id:
+        props["프로젝트"] = {"relation": [{"id": project_id}]}
+
     page: dict = {"parent": {"database_id": TASK_DB_ID}, "properties": props}
-    if description:
-        page["children"] = [
-            {
-                "object": "block",
-                "type": "paragraph",
-                "paragraph": {"rich_text": [{"text": {"content": description[:2000]}}]},
-            }
-        ]
 
     resp = requests.post(
         "https://api.notion.com/v1/pages", headers=_headers(), json=page
@@ -79,7 +151,7 @@ def add_task(
         print(f"  📋 등록: {title} ({page_id[:8]})")
         return page_id
 
-    print(f"  등록 실패: {title} — {resp.status_code}")
+    print(f"  등록 실패: {title} — {resp.status_code} {resp.text[:150]}")
     return None
 
 
@@ -89,7 +161,7 @@ def get_next_task() -> dict | None:
         return None
 
     query = {
-        "filter": {"property": "상태", "select": {"equals": "📋 대기"}},
+        "filter": {"property": "상태", "select": {"equals": "⏳ 진행 전"}},
         "sorts": [
             {"property": "우선순위", "direction": "ascending"},
             {"property": "순서", "direction": "ascending"},
@@ -107,13 +179,11 @@ def get_next_task() -> dict | None:
         results = resp.json().get("results", [])
         if results:
             task = results[0]
-            title = task["properties"]["태스크"]["title"]
-            project = task["properties"].get("프로젝트", {}).get("select", {})
+            title = task["properties"]["태스크명"]["title"]
             size = task["properties"].get("크기", {}).get("select", {})
             return {
                 "id": task["id"],
                 "title": title[0]["text"]["content"] if title else "무제",
-                "project": project.get("name", "") if project else "",
                 "size": size.get("name", "M") if size else "M",
             }
     return None
@@ -127,22 +197,23 @@ def get_all_tasks() -> list[dict]:
     resp = requests.post(
         f"https://api.notion.com/v1/databases/{TASK_DB_ID}/query",
         headers=_headers(),
-        json={"sorts": [{"property": "순서", "direction": "ascending"}]},
+        json={
+            "sorts": [{"property": "순서", "direction": "ascending"}],
+            "page_size": 100,
+        },
     )
     if resp.status_code != 200:
         return []
 
     tasks = []
     for r in resp.json().get("results", []):
-        title = r["properties"]["태스크"]["title"]
+        title = r["properties"]["태스크명"]["title"]
         status = r["properties"].get("상태", {}).get("select", {})
-        project = r["properties"].get("프로젝트", {}).get("select", {})
         tasks.append(
             {
                 "id": r["id"],
                 "title": title[0]["text"]["content"] if title else "무제",
                 "status": status.get("name", "?") if status else "?",
-                "project": project.get("name", "") if project else "",
             }
         )
     return tasks
@@ -160,9 +231,10 @@ def update_task(
 
     props: dict = {}
     if status:
-        props["상태"] = {"select": {"name": status}}
+        mapped = STATUS_MAP.get(status, status)
+        props["상태"] = {"select": {"name": mapped}}
     if result:
-        props["결과"] = {"rich_text": [{"text": {"content": result[:2000]}}]}
+        props["비고"] = {"rich_text": [{"text": {"content": result[:2000]}}]}
     if commit:
         props["커밋"] = {"rich_text": [{"text": {"content": commit}}]}
 
@@ -197,7 +269,7 @@ def print_status() -> None:
     print(f"  총: {len(tasks)}건")
     print()
     for t in tasks:
-        print(f"  {t['status']} [{t['project']}] {t['title']}")
+        print(f"  {t['status']} {t['title']}")
 
 
 if __name__ == "__main__":
