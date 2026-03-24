@@ -464,6 +464,12 @@ ai-dev-team/
 - STATE.md: 현재 진행 상태
 - `/compact` 후에도 `.planning/` 파일에서 맥락 복원 가능
 
+### 자동 작업 (/work)
+- `/work {작업 설명}` → 태스크 자동 분해 → Notion 등록 → 순차 실행 → 완료 갱신
+- Notion "태스크 큐" DB에서 진행 상황 실시간 확인 가능
+- 실패 태스크는 1회 재시도 후 보류 처리
+- 전체 완료 시 /retrospective + /session-save + Slack 알림
+
 ### 새 세션 시작 시
 1. **자동** → SessionStart 훅이 codemap 신선도 + 비용 체크
 2. **수동** → `/session-restore`로 이전 세션 이어받기
