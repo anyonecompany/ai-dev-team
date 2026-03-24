@@ -67,121 +67,139 @@ def _table_row(cells: list[str]) -> dict:
     }
 
 
+def _callout(text: str, icon: str = "📊", color: str = "blue_background") -> dict:
+    """Notion 콜아웃 블록."""
+    return {
+        "object": "block",
+        "type": "callout",
+        "callout": {
+            "rich_text": [{"type": "text", "text": {"content": text}}],
+            "icon": {"type": "emoji", "emoji": icon},
+            "color": color,
+        },
+    }
+
+
+def _toggle_heading(text: str, level: int = 2, children: list = None) -> dict:
+    """Notion 토글 가능 헤딩 블록."""
+    key = f"heading_{level}"
+    block = {
+        "object": "block",
+        "type": key,
+        key: {
+            "rich_text": [{"type": "text", "text": {"content": text}}],
+            "is_toggleable": True,
+        },
+    }
+    if children:
+        block[key]["children"] = children
+    return block
+
+
+def _bullet(text: str) -> dict:
+    """Notion 불릿 블록."""
+    return {
+        "object": "block",
+        "type": "bulleted_list_item",
+        "bulleted_list_item": {
+            "rich_text": [{"type": "text", "text": {"content": text}}]
+        },
+    }
+
+
 def _build_status_blocks(status: dict) -> list[dict]:
-    """현황 데이터를 Notion 블록으로 변환."""
+    """현황 데이터를 Notion 블록으로 변환. 토글/콜아웃 활용."""
     infra = status.get("infra", {})
     ts = status.get("timestamp", "")[:19]
 
+    cmds = infra.get("commands", "?")
+    agents = infra.get("agents", "?")
+    skills = infra.get("skills", "?")
+    hooks = infra.get("hooks", "?")
+    hook_ev = infra.get("hook_events", "?")
+    scripts = infra.get("scripts", "?")
+    wf = infra.get("workflows", "?")
+
+    # 1. 핵심 수치 콜아웃 (항상 보임)
+    summary_text = (
+        f"커맨드 {cmds} | 에이전트 {agents} "
+        f"(Opus {infra.get('agents_opus', '?')}, "
+        f"Sonnet {infra.get('agents_sonnet', '?')}, "
+        f"Haiku {infra.get('agents_haiku', '?')}) | "
+        f"스킬 {skills} | 훅 {hooks} ({hook_ev} events) | "
+        f"스크립트 {scripts} | CI/CD {wf}"
+    )
+
+    # 2. 현재 상태 콜아웃
+    current = status.get("current_work", "없음")
+    next_step = status.get("next_step", "없음")
+    branch = status.get("branch", "?")
+    commit = status.get("last_commit", "?")
+
+    state_text = (
+        f"브랜치: {branch}\n"
+        f"마지막 커밋: {commit}\n"
+        f"현재 작업: {current}\n"
+        f"다음 단계: {next_step}"
+    )
+
+    # 3. 상세 수치 테이블 (토글 안에)
+    detail_table = {
+        "object": "block",
+        "type": "table",
+        "table": {
+            "table_width": 2,
+            "has_column_header": True,
+            "has_row_header": False,
+            "children": [
+                _table_row(["항목", "수량"]),
+                _table_row(["커맨드", str(cmds)]),
+                _table_row(
+                    [
+                        "에이전트",
+                        f"{agents} (Opus {infra.get('agents_opus', '?')}, Sonnet {infra.get('agents_sonnet', '?')}, Haiku {infra.get('agents_haiku', '?')})",
+                    ]
+                ),
+                _table_row(["스킬", str(skills)]),
+                _table_row(["훅", f"{hooks} ({hook_ev} events)"]),
+                _table_row(["스크립트", str(scripts)]),
+                _table_row(["CI/CD 워크플로우", str(wf)]),
+                _table_row(["규칙 파일", str(infra.get("rules", "?"))]),
+                _table_row(["Codemap", str(infra.get("codemaps", "?"))]),
+                _table_row(
+                    ["프로젝트 CLAUDE.md", str(infra.get("project_claudemd", "?"))]
+                ),
+                _table_row(
+                    [
+                        "Knowledge",
+                        f"ADR {infra.get('knowledge_adr', '?')} + 실수 {infra.get('knowledge_mistakes', '?')} + 패턴 {infra.get('knowledge_patterns', '?')}",
+                    ]
+                ),
+            ],
+        },
+    }
+
     return [
+        # 갱신 시각
         {
             "object": "block",
-            "type": "heading_2",
-            "heading_2": {
-                "rich_text": [
-                    {"type": "text", "text": {"content": f"인프라 현황 (갱신: {ts})"}}
-                ]
-            },
-        },
-        {
-            "object": "block",
-            "type": "table",
-            "table": {
-                "table_width": 2,
-                "has_column_header": True,
-                "has_row_header": False,
-                "children": [
-                    _table_row(["항목", "수량"]),
-                    _table_row(["커맨드", str(infra.get("commands", "?"))]),
-                    _table_row(
-                        [
-                            "에이전트",
-                            f"{infra.get('agents', '?')} (Opus {infra.get('agents_opus', '?')}, Sonnet {infra.get('agents_sonnet', '?')}, Haiku {infra.get('agents_haiku', '?')})",
-                        ]
-                    ),
-                    _table_row(["스킬", str(infra.get("skills", "?"))]),
-                    _table_row(
-                        [
-                            "훅",
-                            f"{infra.get('hooks', '?')} ({infra.get('hook_events', '?')} events)",
-                        ]
-                    ),
-                    _table_row(["스크립트", str(infra.get("scripts", "?"))]),
-                    _table_row(["CI/CD 워크플로우", str(infra.get("workflows", "?"))]),
-                    _table_row(["규칙 파일", str(infra.get("rules", "?"))]),
-                    _table_row(["Codemap", str(infra.get("codemaps", "?"))]),
-                    _table_row(
-                        ["프로젝트 CLAUDE.md", str(infra.get("project_claudemd", "?"))]
-                    ),
-                    _table_row(
-                        [
-                            "Knowledge",
-                            f"ADR {infra.get('knowledge_adr', '?')} + 실수 {infra.get('knowledge_mistakes', '?')} + 패턴 {infra.get('knowledge_patterns', '?')}",
-                        ]
-                    ),
-                ],
-            },
-        },
-        {
-            "object": "block",
-            "type": "heading_3",
-            "heading_3": {
-                "rich_text": [{"type": "text", "text": {"content": "현재 상태"}}]
-            },
-        },
-        {
-            "object": "block",
-            "type": "bulleted_list_item",
-            "bulleted_list_item": {
+            "type": "paragraph",
+            "paragraph": {
                 "rich_text": [
                     {
                         "type": "text",
-                        "text": {"content": f"브랜치: {status.get('branch', '?')}"},
+                        "text": {"content": f"자동 갱신: {ts}"},
+                        "annotations": {"color": "gray"},
                     }
                 ]
             },
         },
-        {
-            "object": "block",
-            "type": "bulleted_list_item",
-            "bulleted_list_item": {
-                "rich_text": [
-                    {
-                        "type": "text",
-                        "text": {
-                            "content": f"마지막 커밋: {status.get('last_commit', '?')}"
-                        },
-                    }
-                ]
-            },
-        },
-        {
-            "object": "block",
-            "type": "bulleted_list_item",
-            "bulleted_list_item": {
-                "rich_text": [
-                    {
-                        "type": "text",
-                        "text": {
-                            "content": f"현재 작업: {status.get('current_work', '없음')}"
-                        },
-                    }
-                ]
-            },
-        },
-        {
-            "object": "block",
-            "type": "bulleted_list_item",
-            "bulleted_list_item": {
-                "rich_text": [
-                    {
-                        "type": "text",
-                        "text": {
-                            "content": f"다음 단계: {status.get('next_step', '없음')}"
-                        },
-                    }
-                ]
-            },
-        },
+        # 핵심 수치 콜아웃
+        _callout(summary_text, "📊", "blue_background"),
+        # 현재 상태 콜아웃
+        _callout(state_text, "🔄", "yellow_background"),
+        # 상세 수치 (토글)
+        _toggle_heading("상세 인프라 수치", 3, [detail_table]),
     ]
 
 
@@ -236,6 +254,18 @@ def update_status_page(page_id: str = "") -> bool:
         )
 
         if resp.status_code == 200:
+            # 자동 갱신 블록만 삭제 (버전 기록 보존)
+            auto_keywords = (
+                "인프라 현황",
+                "현재 상태",
+                "상세 인프라 수치",
+                "자동 갱신:",
+                "커맨드 ",
+                "브랜치:",
+                "마지막 커밋:",
+                "현재 작업:",
+                "다음 단계:",
+            )
             for block in resp.json().get("results", []):
                 bt = block.get("type", "")
                 text = ""
@@ -244,20 +274,18 @@ def update_status_page(page_id: str = "") -> bool:
                     if texts:
                         text = texts[0].get("text", {}).get("content", "")
 
-                if text.startswith("인프라 현황") or text.startswith("현재 상태"):
-                    client.delete(
-                        f"https://api.notion.com/v1/blocks/{block['id']}",
-                        headers=_headers(),
+                should_delete = (
+                    any(text.startswith(kw) for kw in auto_keywords)
+                    or bt == "table"
+                    or (
+                        bt == "callout"
+                        and any(
+                            kw in text for kw in ("커맨드", "브랜치:", "현재 작업:")
+                        )
                     )
-                elif bt == "table":
-                    client.delete(
-                        f"https://api.notion.com/v1/blocks/{block['id']}",
-                        headers=_headers(),
-                    )
-                elif any(
-                    text.startswith(p)
-                    for p in ("브랜치:", "마지막 커밋:", "현재 작업:", "다음 단계:")
-                ):
+                )
+
+                if should_delete:
                     client.delete(
                         f"https://api.notion.com/v1/blocks/{block['id']}",
                         headers=_headers(),
