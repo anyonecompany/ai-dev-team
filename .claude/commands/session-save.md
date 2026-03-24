@@ -51,7 +51,13 @@ cp .claude/handoff/current.md ".claude/handoff/history/$(date +%Y%m%d_%H%M%S).md
 4. 코드맵 갱신 (변경사항 있을 경우)
 5. 복원 명령어 안내
 
-### 5. 커밋 (선택)
+### 5. 상태 파일 갱신
+
+.planning/STATE.md도 함께 갱신하라:
+- 현재 작업, 마지막 완료, 다음 단계
+- /phase-loop 사용 중이면: 현재 어떤 단계에 있는지
+
+### 6. 커밋 (선택)
 
 핸드오프 문서 변경이 있으면:
 ```bash

@@ -448,6 +448,22 @@ ai-dev-team/
 
 ## 인프라 가이드 (Phase 1-3)
 
+### 워크플로우 선택 가이드 (GSD 패턴 통합)
+
+| 작업 크기 | 커맨드 | 흐름 |
+|-----------|--------|------|
+| Small (1-2파일) | `/quick` | 실행 → lint → test → commit |
+| Small (빠른 수정) | `/auto` | 계획 → 실행 → commit |
+| Medium (3-5파일) | `/plan` → `/orchestrate` → `/verify-loop` | 또는 `/phase-loop` |
+| Large (5파일+) | `/phase-loop` | discuss → plan → execute → verify → qa |
+| CI 실패 | `/ci-fix` | 자동 진단 → 수정 → 검증 → 회고 |
+
+### 영속 상태 (.planning/)
+- CONTEXT.md: `/discuss` 출력 (결정 사항)
+- PLAN.md: `/plan` 출력 (실행 계획)
+- STATE.md: 현재 진행 상태
+- `/compact` 후에도 `.planning/` 파일에서 맥락 복원 가능
+
 ### 새 세션 시작 시
 1. **자동** → SessionStart 훅이 codemap 신선도 + 비용 체크
 2. **수동** → `/session-restore`로 이전 세션 이어받기

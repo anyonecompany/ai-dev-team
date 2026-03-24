@@ -110,6 +110,12 @@ report_task_done("orchestrate: [작업]", "✅ 완료", "팀원 N명, Wave M개,
 | 테스트/배포 | QA-DevOps | code-quality, deployment |
 | 보안 | Security-Developer | security-review |
 
+## .planning/ 참조
+
+/orchestrate 실행 시 .planning/ 에 해당 작업의 PLAN.md가 있으면
+이를 에이전트별 태스크 분배의 기반으로 사용하라.
+PLAN.md의 완료 조건과 수정 범위를 각 에이전트에게 전달.
+
 ## 사용 예시
 
 ```bash
