@@ -57,10 +57,32 @@
 - **이유**: 200k 컨텍스트 창이 MCP/도구 수에 따라 실질 70k까지 축소되는 문제. 세션 간 상태 유실 방지
 - **결과**: `/session-save`, `/session-restore` 커맨드 추가. 세션 메모리 시스템 구축
 
+## ADR-008: html2pdf.js PDF에서 다크→라이트 전환은 DOM 순회 방식 사용
+- **날짜**: 2026-03-26
+- **커밋**: `9db4d8d`
+- **결정**: html2pdf.js의 `onclone` 콜백에서 CSS 변수 오버라이드 대신 `getComputedStyle` 기반 DOM 순회로 다크→라이트 테마 전환
+- **이유**: Tailwind arbitrary values(`bg-[#0f1829]`)는 CSS 변수를 참조하지 않으므로 변수 오버라이드만으로는 불충분. `display:none→block` 전환된 요소의 CSS 배경도 html2canvas가 렌더하지 못함
+- **결과**: luminance 기반 색상 매핑으로 모든 다크 배경→라이트, 밝은 텍스트→어두운 텍스트 자동 전환. 커버 페이지는 skip 로직으로 보존
+
+## ADR-009: Plotly 차트 PDF 렌더링은 window.Plotly.toImage() 사전 변환 사용
+- **날짜**: 2026-03-26
+- **커밋**: `9db4d8d`
+- **결정**: PDF 생성 직전 Plotly 차트를 `window.Plotly.toImage()`로 PNG 변환 후 `<img>`로 교체, PDF 후 원본 복원
+- **이유**: html2canvas가 Plotly SVG를 렌더하지 못함. `import("plotly.js")` 직접 사용 시 Next.js webpack이 `buffer/` 모듈을 찾지 못해 빌드 실패. `react-plotly.js`가 전역 `window.Plotly`를 노출하므로 이를 활용
+- **결과**: 레이더 차트, 바 차트 모두 PDF에 정상 렌더링
+
+## ADR-010: 데모 모드는 사전 생성된 AnalysisResult JSON 직접 로드
+- **날짜**: 2026-03-26
+- **커밋**: `3afc3aa`
+- **결정**: `?demo=true` 시 Gemini API를 호출하지 않고, 사전 생성된 `AnalysisResult`를 포함한 JSON 파일을 직접 로드
+- **이유**: 데모 로드 시간 10-30초 → 300ms 미만으로 단축. 세일즈 시연 시 API 지연/실패 리스크 제거
+- **결과**: Gemini API 호출 0건, 288ms 로드, 오프라인에서도 데모 동작
+
 ---
 
 ## 변경 이력
 
 | 날짜 | 변경 내용 |
 |------|----------|
+| 2026-03-26 | 회고: ADR 3건 추가 (html2pdf dark→light, Plotly toImage, 데모 사전 생성) |
 | 2026-03-23 | git log 200건 분석 기반 ADR 7건 신규 작성 |

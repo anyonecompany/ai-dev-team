@@ -50,10 +50,25 @@
 - **원인**: 서브모듈이 있는 레포에서 기본 checkout이 서브모듈을 재귀적으로 fetch 시도
 - **예방**: `actions/checkout`에 `submodules: false` 명시
 
+## M-008: html2canvas가 display:none→block 전환된 요소의 CSS 배경을 무시
+- **프로젝트**: AdaptFit (report-builder)
+- **증상**: PDF 커버 페이지의 네이비 그라데이션 배경이 렌더링되지 않음. `onclone`에서 인라인 `background-color`를 설정해도 무시됨
+- **원인**: html2canvas는 CSS 클래스에서 `display: none`이었던 요소를 JS로 `display: block`으로 전환해도, 해당 요소의 배경 스타일을 제대로 렌더하지 못함 (html2canvas 내부 렌더 트리 구성 시점의 한계)
+- **해결**: 네이비 배경 포기 → 흰색 배경 + 네이비 텍스트의 기업 보고서 스타일로 디자인 변경
+- **예방**: html2pdf/html2canvas로 PDF 생성 시 동적 표시/숨김 요소의 배경은 인라인 스타일이 아닌 **항상 표시되는 요소**에 적용하거나, CSS 배경 대신 인라인 `<div>` 배경 레이어 사용
+
+## M-009: Tailwind arbitrary values와 CSS 변수 오버라이드의 불일치
+- **프로젝트**: AdaptFit (report-builder)
+- **증상**: PDF 다크→라이트 전환 시 CSS 변수(`--bg`, `--surface`)만 오버라이드했으나, 다크 테마 적용 후 Tailwind arbitrary values(`bg-[#0f1829]`)가 CSS 변수를 참조하지 않아 여전히 다크 배경
+- **원인**: FE 에이전트가 CSS 변수 기반 설계(`bg-surface`)를 Tailwind arbitrary values(`bg-[#0f1829]`)로 하드코딩
+- **해결**: `onclone`에서 `getComputedStyle` 기반 DOM 순회로 luminance 판별 후 색상 교체
+- **예방**: 다크/라이트 전환이 필요한 프로젝트에서는 **CSS 변수 기반 색상만 사용**하고, Tailwind arbitrary hex values 사용 금지. 또는 Tailwind `dark:` 접두사 활용
+
 ---
 
 ## 변경 이력
 
 | 날짜 | 변경 내용 |
 |------|----------|
+| 2026-03-26 | 회고: M-008, M-009 추가 (html2canvas 배경 한계, Tailwind arbitrary values 불일치) |
 | 2026-03-23 | git log 분석 기반 시스템 레벨 실수 패턴 7건 신규 작성 |
