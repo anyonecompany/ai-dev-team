@@ -458,6 +458,16 @@ ai-dev-team/
 | Large (5파일+) | `/phase-loop` | discuss → plan → execute → verify → qa |
 | CI 실패 | `/ci-fix` | 자동 진단 → 수정 → 검증 → 회고 |
 
+### 디자인 시스템 참조
+
+UI 파일(.dart/.tsx/.jsx/.css) 수정 시:
+1. `design-system/{프로젝트}/MASTER.md`를 먼저 읽는다
+2. 페이지별 오버라이드: `design-system/{프로젝트}/pages/{페이지}.md`
+3. MASTER.md에 없는 컬러/폰트/스페이싱 임의 사용 금지
+4. PostToolUse 훅(design-system-check.sh)이 자동으로 넛지
+
+디자인 시스템 생성: `/portfiq-design` 또는 `ui-ux-pro-max` 스킬 사용
+
 ### 영속 상태 (.planning/)
 - CONTEXT.md: `/discuss` 출력 (결정 사항)
 - PLAN.md: `/plan` 출력 (실행 계획)

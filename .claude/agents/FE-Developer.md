@@ -6,6 +6,7 @@ memory: project
 skills:
   - portfiq-dev
   - code-quality
+  - ui-ux-pro-max
 ---
 
 # FE-Developer (프론트엔드 개발)
@@ -32,6 +33,18 @@ skills:
 3. **상태 관리**: 클라이언트 상태 관리 (Zustand)
 4. **반응형**: 모바일/데스크톱 대응
 5. **UX 최적화**: 로딩, 에러, 빈 상태 처리
+
+---
+
+## 디자인 시스템 참조 (UI 파일 수정 시 필수)
+
+UI 컴포넌트, 화면, 스타일을 수정할 때 반드시:
+1. design-system/{프로젝트}/MASTER.md를 먼저 읽어라
+2. 해당 페이지의 오버라이드가 있으면 pages/{페이지}.md도 읽어라
+3. MASTER.md에 없는 컬러/폰트/스페이싱을 임의로 사용하지 않는다
+4. 새 컴포넌트를 만들면 MASTER.md의 규칙을 따른다
+
+참조하지 않고 UI를 수정하면 디자인 일관성이 깨진다.
 
 ---
 
