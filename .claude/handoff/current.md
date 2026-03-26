@@ -2,34 +2,12 @@
 
 > 최종 갱신: 2026-03-26
 
----
+## 세션 요약
+AdaptFit 리포트 빌더 4-Phase 자율 고도화 + 최종 QA 진행 중.
+PDF 방법 B(iframe 라이트 라우트) 전환, MASTER.md 리스킨, CI fix, 디스클레이머 추가 완료.
 
-## 세션 요약 (2026-03-26 밤)
+## 배포
+- Vercel: https://report-builder-eight.vercel.app (da3aa50)
+- GitHub: anyonecompany/Adapted-ai main
 
-AdaptFit 리포트 빌더 4-Phase 자율 고도화 완료 → SHIP.
-
-### 완료 PHASE
-1. **PHASE 1 — PDF BLOCKER**: 한글 깨짐 해결 (truncate 클래스 + document.fonts.ready + Pretendard 강제)
-2. **PHASE 2 — 웹 디자인**: MASTER.md 기준 전면 리스킨 (KPI/인사이트/테이블/차트/랜딩/헤더 전부)
-3. **PHASE 3 — DOCX + QA**: DOCX 날짜 동적화, 편집→다운로드 파이프라인 검증
-4. **PHASE 4 — SHIP**: Vercel 배포 + 전 항목 PASS
-
-### 핵심 지표
-- 데모 속도: **94ms** (Gemini API 호출 0건)
-- PDF 한글 깨짐: **0건** (35명 전원 정상)
-- 빌드: **0 에러**
-
-## 배포 현황
-
-| 서비스 | URL | 상태 |
-|--------|-----|------|
-| 웹 리포트 빌더 | https://report-builder-eight.vercel.app | 운영 중 |
-| 데모 모드 | https://report-builder-eight.vercel.app/report?demo=true | 94ms 로드 |
-| GitHub | https://github.com/anyonecompany/Adapted-ai | main `e7cc015` |
-
-## 다음 단계
-
-1. **경주 한수원 세일즈 발송** (P0) — PDF + 웹 URL + NDA 3종 세트
-2. **NDA 문서 생성** (P0) — `data_nda_gyeongju.docx`
-3. **Vercel GitHub 자동 배포 연동** — 대시보드에서 수동 설정 필요
-4. **여주FC 리포트** (P2)
+## 다음: 최종 QA → SHIP → 세일즈 발송
