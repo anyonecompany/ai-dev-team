@@ -1,18 +1,18 @@
 # 프로젝트 상태
-> 자동 갱신: 2026-03-24
+> 자동 갱신: 2026-04-07
 
 ## 현재 작업
-없음 — 오늘 세션 전체 완료
+- 일본어 학습 앱 — PM 유저 플로우 대기 중 (기술 검증 완료)
 
 ## 마지막 완료
-- Phase 1-3 인프라 고도화 (codemap, CLAUDE.md, knowledge, skills, hooks, agents)
-- GSD 규율 시스템 통합 (phase-loop, discuss, quick, Nyquist, workflow-gate)
-- Portfiq QA GO (13/13 통과) + CI/CD 8개 워크플로우
-- Notion 연동 (현황 자동 갱신, 버전 DB 7건, 기존 태스크 보드 relation 연결)
-- Cross-ref 기술 부채 6건 해결/문서화 + TTLCache 추출
+- AI Dev Team 대시보드 완전 리빌드 (7탭, Notion 실시간, CLI 실행, 모니터)
+- 팀 현황 필터링/네비게이션 (전체/자체/KMONG/완료)
+- Notion DB 실시간 연동 (PROJECT + KMONG, 20개 프로젝트)
+- 일본어 학습 앱 기술 검증 (Gemini Flash + Google TTS 권장)
+- PM 답변 작성 (비용/속도/6주 일정 분석)
 
 ## 다음 단계
-- Portfiq 프로덕션 배포 (GitHub Secrets 설정 후)
-- Play Store 서비스 계정 설정
-- 실전 /work 워크플로우 테스트
-- Portfiq 어드민 미해결 버그 3건 수정
+1. [대기] PM 유저 플로우 수신 → /discuss → /plan → 개발 착수
+2. [선택] 대시보드 v2 — 팀 빌더 UI, 토큰 사용량, STATUS_PAGE 파싱
+3. [기존] Portfiq App Store Connect 등록
+4. [기존] 리본랩스 전자계약서 RLS 이슈 해결
